@@ -1,0 +1,21 @@
+{
+  "name": "x-celerate-the-tree",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npx concurrently \"npm run dev -w apps/frontend\" \"npm run dev -w apps/backend\"",
+    "build": "npm run build -w apps/frontend && npm run build -w apps/backend",
+    "test": "npm run test -w apps/frontend && npm run test -w apps/backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
