@@ -8,18 +8,23 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     private readonly logger = new Logger(PrismaService.name);
 
     constructor() {
-        // Jika ada TURSO env vars, gunakan Turso adapter
-        if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
-            const libsql = createClient({
-                url: process.env.TURSO_DATABASE_URL,
-                authToken: process.env.TURSO_AUTH_TOKEN,
-            });
-            const adapter = new PrismaLibSQL(libsql);
-            super({ adapter } as any);
+        // Cek cloud credentials
+        const url = process.env.TURSO_DATABASE_URL;
+        const authToken = process.env.TURSO_AUTH_TOKEN;
+
+        let adapter: any = undefined;
+
+        if (url && authToken) {
+            const libsql = createClient({ url, authToken });
+            adapter = new PrismaLibSQL(libsql);
+        }
+
+        // Panggil super dengan adapter jika ada
+        super(adapter ? { adapter } as any : undefined);
+
+        if (adapter) {
             console.log('✅ Prisma connected via Turso (Cloud)');
         } else {
-            // Fallback ke SQLite lokal untuk development
-            super();
             console.log('✅ Prisma connected via SQLite (Local)');
         }
     }

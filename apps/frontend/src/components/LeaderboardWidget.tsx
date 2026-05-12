@@ -19,7 +19,11 @@ export default function LeaderboardWidget() {
             try {
                 const res = await fetch(`${getBackendUrl()}/leaderboard`);
                 const data = await res.json();
-                setLeaderboard(data);
+                if (Array.isArray(data)) {
+                    setLeaderboard(data);
+                } else {
+                    console.error('Leaderboard data is not an array:', data);
+                }
             } catch (err) {
                 console.error('Failed to fetch leaderboard');
             }
@@ -40,7 +44,7 @@ export default function LeaderboardWidget() {
             </div>
 
             <div className={styles.leadBody}>
-                {leaderboard.map((entry, i) => (
+                {Array.isArray(leaderboard) && leaderboard.map((entry, i) => (
                     <div key={i} className={styles.leadRow} style={{ padding: '0.8rem 1.5rem', gridTemplateColumns: '40px 1fr 60px 60px', alignItems: 'center' }}>
                         <span className={styles.leadRank} style={{ fontSize: '0.9rem' }}>#{i + 1}</span>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -51,7 +55,7 @@ export default function LeaderboardWidget() {
                         <span style={{ textAlign: 'right', fontSize: '1rem', fontWeight: 700 }}>{entry.score}</span>
                     </div>
                 ))}
-                {leaderboard.length === 0 && <p style={{ textAlign: 'center', padding: '1rem', fontSize: '0.8rem' }}>No data yet...</p>}
+                {(!Array.isArray(leaderboard) || leaderboard.length === 0) && <p style={{ textAlign: 'center', padding: '1rem', fontSize: '0.8rem' }}>No data yet...</p>}
             </div>
         </div>
     );
