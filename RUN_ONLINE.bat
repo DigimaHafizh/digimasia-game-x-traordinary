@@ -32,8 +32,10 @@ echo.
 echo CARA MENGGUNAKAN:
 echo 1. Lihat jendela "Tunnel Backend" (Zrok), copy link-nya.
 echo 2. Masukkan ke file apps/frontend/.env.local (lalu Refresh).
-echo 3. BAGIKAN LINK PERMANEN BERIKUT KE PESERTA (PAKAI QR CODE):
-echo    https://parkway-guts-humped.ngrok-free.dev
+echo 3. UPDATE juga di Vercel Dashboard (NEXT_PUBLIC_BACKEND_URL)
+echo    jika link Zrok-nya berubah agar QR Code tetap aktif.
+echo 4. BAGIKAN LINK PERMANEN BERIKUT KE PESERTA (PAKAI QR CODE):
+echo    https://digimasia-game-x-traordinary-frontend.vercel.app
 echo.
 echo ===========================================
 pause
