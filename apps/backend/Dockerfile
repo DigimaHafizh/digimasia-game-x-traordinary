@@ -33,4 +33,4 @@ COPY dist ./dist
 
 EXPOSE 3001
 
-CMD ["node", "dist/src/main"]
+CMD ["npm", "run", "start"]
