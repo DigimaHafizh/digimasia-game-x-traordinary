@@ -16,10 +16,10 @@ export default function AdminPage() {
     const { phase, setSessionState, currentQuestion, totalWater, treeStage } = useGameStore();
     const [showWinnerReveal, setShowWinnerReveal] = useState(false);
     const [showQRModal, setShowQRModal] = useState(false);
-    const [localIp, setLocalIp] = useState('');
+    const [origin, setOrigin] = useState('');
 
     useEffect(() => {
-        fetch('/api/ip').then(res => res.json()).then(data => setLocalIp(data.ip)).catch(console.error);
+        setOrigin(window.location.origin);
     }, []);
 
     // Global Socket Sync
@@ -190,9 +190,9 @@ export default function AdminPage() {
                     <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
                         <h2 className="gradient-text" style={{ fontSize: '2.5rem' }}>User Portal QR</h2>
                         <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1.5rem', display: 'inline-block', marginTop: '1.5rem' }}>
-                            <QRCode value={`http://${localIp || 'localhost'}:3000`} size={200} />
+                            <QRCode value={origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'} size={200} />
                         </div>
-                        <p style={{ marginTop: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>http://{localIp || 'localhost'}:3000</p>
+                        <p style={{ marginTop: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>{origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'}</p>
                         <button className="btn-primary" style={{ marginTop: '2rem', width: '100%' }} onClick={() => setShowQRModal(false)}>
                             TUTUP
                         </button>

@@ -26,9 +26,9 @@ echo ===========================================
 echo.
 echo CARA MENGGUNAKAN:
 echo 1. Backend sudah ONLINE PERMANEN di Railway!
-echo    Tidak perlu Zrok lagi untuk backend.
+echo    URL: https://backend-production-51da.up.railway.app
 echo 2. BAGIKAN LINK PERMANEN BERIKUT KE PESERTA:
-echo    https://digimasia-game-x-traordinary-frontend.vercel.app
+echo    https://digimasia-game-x-traordinary-fronte.vercel.app
 echo.
 echo ===========================================
 echo CATATAN: Jika ingin development lokal,
