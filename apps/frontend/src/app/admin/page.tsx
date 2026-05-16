@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import QRCode from 'react-qr-code';
-import styles from '../page.module.css';
+import RegistrationLobby from '@/components/RegistrationLobby';
 import LeaderboardWidget from '@/components/LeaderboardWidget';
 import TriviaMonitor from '@/components/TriviaMonitor';
 import WinnerAnnouncer from '@/components/WinnerAnnouncer';
@@ -12,19 +12,25 @@ import TreeMonitor from '@/components/TreeMonitor';
 import { useSocket } from '@/hooks/useSocket';
 import { getBackendUrl } from '@/lib/config';
 
+// ── Phase config ──────────────────────────────
+const PHASES = [
+    { targetPhase: 'LOGIN', icon: '🔑', label: 'Registration', sub: 'QR scan & team assign' },
+    { targetPhase: 'VOTING_TEAM', icon: '👥', label: 'Team Voting', sub: 'Team of the Year' },
+    { targetPhase: 'VOTING_DIGIMER', icon: '🌟', label: 'Digimer Voting', sub: 'Digimer of the Year' },
+    { targetPhase: 'TRIVIA', icon: '🧠', label: 'Trivia Quiz', sub: 'Earn water points!' },
+    { targetPhase: 'WATERING', icon: '🌳', label: 'Grow The Tree', sub: 'Water the tree' },
+];
+
 export default function AdminPage() {
-    const { phase, setSessionState, currentQuestion, totalWater, treeStage } = useGameStore();
+    const { phase, setSessionState, totalWater, treeStage } = useGameStore();
     const [showWinnerReveal, setShowWinnerReveal] = useState(false);
     const [showQRModal, setShowQRModal] = useState(false);
     const [origin, setOrigin] = useState('');
 
-    useEffect(() => {
-        setOrigin(window.location.origin);
-    }, []);
-
-    // Global Socket Sync
+    useEffect(() => { setOrigin(window.location.origin); }, []);
     useSocket();
 
+    // ── Handlers ──────────────────────────────
     const handlePhaseChange = async (newPhase: string) => {
         setShowWinnerReveal(false);
         try {
@@ -34,20 +40,14 @@ export default function AdminPage() {
                 body: JSON.stringify({ phase: newPhase }),
             });
             setSessionState({ phase: newPhase as any });
-        } catch (err) {
-            alert('Gagal update fase');
-        }
+        } catch { alert('Gagal update fase'); }
     };
 
     const handleStartTrivia = async () => {
         try {
-            await fetch(`${getBackendUrl()}/admin/start-trivia`, {
-                method: 'POST',
-            });
+            await fetch(`${getBackendUrl()}/admin/start-trivia`, { method: 'POST' });
             setSessionState({ phase: 'TRIVIA' });
-        } catch (err) {
-            alert('Gagal start trivia');
-        }
+        } catch { alert('Gagal start trivia'); }
     };
 
     const handleReset = async () => {
@@ -56,149 +56,260 @@ export default function AdminPage() {
             await fetch(`${getBackendUrl()}/admin/reset`, { method: 'POST' });
             alert('System reset successfully!');
             window.location.reload();
-        } catch (err) {
-            alert('Gagal reset system');
-        }
+        } catch { alert('Gagal reset system'); }
     };
 
-    const PhaseButton = ({ targetPhase, icon, label, description, action }: any) => (
-        <button
-            className={`${styles.phaseCard} ${phase === targetPhase ? styles.active : ''}`}
-            onClick={action || (() => handlePhaseChange(targetPhase))}
-        >
-            <div className={styles.phaseIcon}>{icon}</div>
-            <div className={styles.phaseInfo}>
-                <span className={styles.phaseTitle}>{label}</span>
-                <span style={{ fontSize: '0.65rem', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>{description}</span>
-            </div>
-            {phase === targetPhase && <div className={styles.activeCheck}>●</div>}
-        </button>
-    );
-
-    const MonitorButton = ({ url, label, color1, color2 }: any) => (
-        <button
-            className={styles.monitorActionBtn}
-            style={{ background: `linear-gradient(45deg, ${color1}, ${color2})` }}
-            onClick={() => window.open(url, '_blank')}
-        >
-            <span>{label}</span>
-            <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>↗</span>
-        </button>
-    );
+    // ── Phase label for status bar ────────────
+    const phaseLabel: Record<string, string> = {
+        LOGIN: 'REGISTRASI DIBUKA',
+        VOTING_TEAM: 'VOTING TEAM',
+        VOTING_DIGIMER: 'VOTING DIGIMER',
+        TRIVIA: 'TRIVIA QUIZ',
+        WATERING: 'GROW THE TREE',
+        TRANSITION: 'TRANSISI',
+        FINAL: 'SELESAI',
+    };
 
     return (
-        <main className={styles.main} style={{ background: '#0f172a' }}>
-            <div className={styles.adminContainer}>
-                {/* TOP HEADER */}
-                <header className={styles.adminHeader} style={{ marginBottom: '3rem' }}>
+        <div style={{
+            minHeight: 'calc(100vh - 90px)',
+            padding: '20px',
+            maxWidth: '1400px',
+            margin: '0 auto',
+        }}>
+
+            {/* ── COMMAND BAR (HEADER) ── */}
+            <div className="card animate-pop-in" style={{
+                background: 'var(--blue-bright)',
+                border: '4px solid var(--black)',
+                boxShadow: '6px 6px 0 var(--black)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '20px',
+                padding: '16px 24px',
+                position: 'sticky',
+                top: 0,
+                zIndex: 100,
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    {/* Retro Pop Icon Container */}
+                    <div style={{
+                        width: '56px', height: '56px',
+                        background: 'var(--pink-hot)',
+                        color: 'var(--white)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '28px',
+                        borderRadius: '14px',
+                        border: '3px solid var(--black)',
+                        boxShadow: '4px 4px 0 var(--black)',
+                        transform: 'rotate(-4deg)'
+                    }}>
+                        {PHASES.find(p => p.targetPhase === phase)?.icon || '🎮'}
+                    </div>
                     <div>
-                        <h1 className="gradient-text" style={{ fontSize: '2.8rem', margin: 0, fontWeight: 900 }}>Control Center</h1>
-                        <p style={{ opacity: 0.5, letterSpacing: '3px', fontWeight: 700, fontSize: '0.7rem' }}>X-CELERATE THE TREE v2.0</p>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px', lineHeight: 1.1, color: 'var(--white)', textShadow: '2px 2px 0 var(--black)' }}>
+                            {phaseLabel[phase] ?? phase}
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--white)', opacity: 0.9, letterSpacing: '1px', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span className="live-dot" style={{ background: 'var(--lime)' }} /> SYSTEM STATUS: OPERATIONAL
+                        </div>
                     </div>
+                </div>
 
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button onClick={() => setShowQRModal(true)} className={styles.utilBtnBlue}>
-                            📱 QR LOGIN
-                        </button>
-                        <button onClick={handleReset} className={styles.utilBtnRed}>
-                            🔄 RESET
-                        </button>
-                    </div>
-                </header>
-
-                <div className={styles.adminGrid}>
-                    {/* LEFT PANEL: SEQUENCE CONTROL */}
-                    <aside className={styles.adminSidebar}>
-                        <div className={styles.panelHeader}>
-                            <h3>SEQUENCE FLOW</h3>
-                            <span className={styles.statusBadge}>STEP-BY-STEP</span>
-                        </div>
-
-                        <div className={styles.phaseList}>
-                            <PhaseButton targetPhase="LOGIN" icon="🔑" label="OPEN REGISTRATION" description="Izinkan peserta masuk menggunakan PIN" />
-                            <PhaseButton targetPhase="VOTING_TEAM" icon="👥" label="START TEAM VOTING" description="Voting kategori Best Team of the Year" />
-                            <PhaseButton targetPhase="VOTING_DIGIMER" icon="🌟" label="START DIGIMER VOTING" description="Voting kategori Digimer of the Year" />
-                            <PhaseButton targetPhase="TRIVIA" icon="🧠" label="START TRIVIA QUIZ" description="Sesi kuis interaktif 10 soal" action={handleStartTrivia} />
-                            <PhaseButton targetPhase="WATERING" icon="🌳" label="GROW THE TREE" description="Mainkan game interaktif siram pohon" />
-                        </div>
-
-                        {/* DISPLAY TOOLS BOX */}
-                        <div className={styles.displayPanel} style={{ marginTop: '3rem' }}>
-                            <div className={styles.panelHeader}>
-                                <h3>EXTERNAL MONITORS</h3>
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1rem' }}>
-                                <MonitorButton url="/monitoring/voting" label="VOTING MONITOR" color1="#6366f1" color2="#a855f7" />
-                                <MonitorButton url="/monitoring/trivia" label="TRIVIA MONITOR" color1="#ec4899" color2="#f43f5e" />
-                                <MonitorButton url="/monitoring/results" label="RESULT REVEAL" color1="#eab308" color2="#f97316" />
-                            </div>
-                        </div>
-                    </aside>
-
-                    {/* MAIN PANEL: LIVE MONITORING */}
-                    <section className={styles.adminContent}>
-                        <div className={styles.monitorHeader}>
-                            <h2 style={{ fontSize: '1.6rem', fontWeight: 900 }}>
-                                {showWinnerReveal ? 'Final Results Mode' : `Live: ${phase.replace('_', ' ')}`}
-                            </h2>
-                            <div className={styles.statusLive}>
-                                <div className={styles.liveDot}></div>
-                                <span>LIVE DATA</span>
-                            </div>
-                        </div>
-
-                        <div className={styles.monitorViewport}>
-                            {showWinnerReveal ? (
-                                <WinnerAnnouncer onClose={() => setShowWinnerReveal(false)} />
-                            ) : (
-                                <>
-                                    {(phase === 'VOTING_TEAM' || phase === 'VOTING_DIGIMER') && (
-                                        <NomineeMonitor category={phase === 'VOTING_TEAM' ? 'team' : 'digimer'} />
-                                    )}
-                                    {(phase === 'TRIVIA' || phase === 'TRANSITION') && (
-                                        <TriviaMonitor />
-                                    )}
-                                    {phase === 'WATERING' && (
-                                        <div style={{ animation: 'fadeIn 0.5s ease' }}>
-                                            <TreeMonitor />
-                                            <div style={{ marginTop: '2rem' }}>
-                                                <h4 style={{ color: 'gold', marginBottom: '1rem' }}>Active Contributors</h4>
-                                                <LeaderboardWidget />
-                                            </div>
-                                        </div>
-                                    )}
-                                    {phase === 'LOGIN' && (
-                                        <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-                                            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔓</div>
-                                            <h3>Registrasi Dibuka</h3>
-                                            <p style={{ opacity: 0.5 }}>Silakan arahkan user untuk scan QR dan masukkan PIN mereka.</p>
-                                            <div style={{ marginTop: '3rem' }}>
-                                                <LeaderboardWidget />
-                                            </div>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                        </div>
-                    </section>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <button className="btn" style={{
+                        background: 'var(--blue-bright)',
+                        color: 'var(--white)',
+                        padding: '10px 20px',
+                        fontSize: '13px',
+                        boxShadow: '4px 4px 0 var(--black)'
+                    }} onClick={() => setShowQRModal(true)}>
+                        📱 MOBILE QR
+                    </button>
+                    <div style={{ width: '2px', height: '32px', background: 'rgba(0,0,0,0.1)', margin: '0 4px' }} />
+                    <button className="btn" style={{
+                        background: 'var(--pink-hot)',
+                        color: 'var(--white)',
+                        padding: '10px 20px',
+                        fontSize: '13px',
+                        boxShadow: '4px 4px 0 var(--black)'
+                    }} onClick={handleReset}>
+                        ↺ RESET SYSTEM
+                    </button>
                 </div>
             </div>
 
-            {/* QR MODAL */}
-            {showQRModal && (
-                <div className={styles.modalOverlay} onClick={() => setShowQRModal(false)}>
-                    <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-                        <h2 className="gradient-text" style={{ fontSize: '2.5rem' }}>User Portal QR</h2>
-                        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1.5rem', display: 'inline-block', marginTop: '1.5rem' }}>
-                            <QRCode value={origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'} size={200} />
+            {/* ── MAIN LAYOUT ── */}
+            <div className="g-sidebar" style={{ alignItems: 'start' }}>
+
+                {/* ─── LEFT SIDEBAR ─── */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '110px' }}>
+
+                    {/* Control Panel */}
+                    <div className="card card-navy animate-pop-in" style={{ padding: '16px' }}>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', letterSpacing: '2px', color: 'var(--yellow)', marginBottom: '2px' }}>
+                            CONTROL CENTER
                         </div>
-                        <p style={{ marginTop: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>{origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'}</p>
-                        <button className="btn-primary" style={{ marginTop: '2rem', width: '100%' }} onClick={() => setShowQRModal(false)}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.4)', letterSpacing: '1px', marginBottom: '14px' }}>
+                            PHASE SELECTION
+                        </div>
+                        <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)', marginBottom: '12px' }} />
+
+                        <div className="step-list">
+                            {PHASES.map((p, idx) => {
+                                const phaseOrder = PHASES.map(x => x.targetPhase);
+                                const currentIdx = phaseOrder.indexOf(phase);
+                                const thisIdx = phaseOrder.indexOf(p.targetPhase);
+                                const isDone = thisIdx < currentIdx;
+                                const isActive = phase === p.targetPhase;
+
+                                return (
+                                    <button
+                                        key={p.targetPhase}
+                                        className={`step-item${isDone ? ' done' : isActive ? ' active animate-pulse' : ' todo'}`}
+                                        style={{ border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}
+                                        onClick={() => p.targetPhase === 'TRIVIA' ? handleStartTrivia() : handlePhaseChange(p.targetPhase)}
+                                    >
+                                        <div className={`step-num${isDone ? ' done-n' : isActive ? ' active-n' : ' todo-n'}`}>
+                                            {isDone ? '✓' : idx + 1}
+                                        </div>
+                                        <div>
+                                            <div className="step-text">{p.label}</div>
+                                            <div className="step-sub">{p.sub}</div>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* External Monitors */}
+                    <div className="card" style={{ padding: '16px' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', marginBottom: '10px' }}>
+                            EXTERNAL MONITORS
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/voting', '_blank')}>
+                                📊 Voting Monitor ↗
+                            </button>
+                            <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/trivia', '_blank')}>
+                                ❓ Trivia Monitor ↗
+                            </button>
+                            <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/results', '_blank')}>
+                                🏆 Result Reveal ↗
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* ─── MAIN CONTENT ─── */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Monitor content */}
+                    <div className="card animate-pop-in" style={{ padding: '20px', minHeight: '400px' }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            paddingBottom: '16px',
+                            borderBottom: '2px solid rgba(0,0,0,0.1)',
+                            marginBottom: '16px',
+                        }}>
+                            <div>
+                                <div style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px' }}>
+                                    {showWinnerReveal ? 'FINAL RESULTS' : (phaseLabel[phase] ?? phase)}
+                                </div>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    DATA UPDATING
+                                </div>
+                            </div>
+                        </div>
+
+                        {showWinnerReveal ? (
+                            <WinnerAnnouncer onClose={() => setShowWinnerReveal(false)} />
+                        ) : (
+                            <>
+                                {(phase === 'VOTING_TEAM' || phase === 'VOTING_DIGIMER') && (
+                                    <NomineeMonitor category={phase === 'VOTING_TEAM' ? 'team' : 'digimer'} />
+                                )}
+                                {(phase === 'TRIVIA' || phase === 'TRANSITION') && (
+                                    <TriviaMonitor />
+                                )}
+                                {phase === 'WATERING' && (
+                                    <div>
+                                        <TreeMonitor />
+                                        <div style={{ marginTop: '16px' }}>
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', marginBottom: '10px' }}>
+                                                TOP CONTRIBUTORS
+                                            </div>
+                                            <LeaderboardWidget />
+                                        </div>
+                                    </div>
+                                )}
+                                {phase === 'LOGIN' && (
+                                    <div className="card" style={{ padding: '24px', border: '3px solid var(--black)', background: 'rgba(255, 255, 255, 0.5)' }}>
+                                        <div className="screen-header" style={{ marginBottom: '24px', paddingBottom: '16px', borderBottom: '3px dashed var(--black)' }}>
+                                            <div style={{
+                                                width: '64px', height: '64px',
+                                                background: 'var(--lime)',
+                                                border: '3px solid var(--black)',
+                                                boxShadow: '4px 4px 0 var(--black)',
+                                                borderRadius: '16px',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontSize: '32px',
+                                                transform: 'rotate(5deg)'
+                                            }}>🔐</div>
+                                            <div>
+                                                <div className="screen-title" style={{ fontSize: '32px', color: 'var(--black)', textShadow: '1px 1px 0 var(--white)' }}>LOGIN STAGE</div>
+                                                <div className="screen-sub" style={{ fontSize: '12px', fontWeight: 'bold' }}>
+                                                    WAITING FOR PARTICIPANTS · REGISTRASI DIBUKA
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <RegistrationLobby />
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* ── QR MODAL ── */}
+            {showQRModal && (
+                <div
+                    style={{
+                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        zIndex: 1000, padding: '24px',
+                    }}
+                    onClick={() => setShowQRModal(false)}
+                >
+                    <div
+                        className="card"
+                        style={{ maxWidth: '380px', width: '100%', textAlign: 'center', padding: '32px' }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px', marginBottom: '4px' }}>
+                            USER PORTAL QR
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#666', letterSpacing: '1px', marginBottom: '20px' }}>
+                            SCAN UNTUK AKSES GAME
+                        </div>
+                        <div style={{ background: 'white', padding: '16px', borderRadius: '8px', border: 'var(--border)', display: 'inline-block', marginBottom: '16px' }}>
+                            <QRCode value={origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'} size={180} />
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--blue-bright)', wordBreak: 'break-all', marginBottom: '20px' }}>
+                            {origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'}
+                        </div>
+                        <button className="btn btn-danger btn-full" onClick={() => setShowQRModal(false)}>
                             TUTUP
                         </button>
                     </div>
                 </div>
             )}
-        </main>
+        </div>
     );
 }

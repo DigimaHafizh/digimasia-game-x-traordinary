@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import styles from '../app/page.module.css';
 import { getBackendUrl } from '@/lib/config';
 
 interface NomineeStats {
@@ -18,16 +17,10 @@ interface ParticipationMetadata {
     voterNames?: string[];
 }
 
-const SilhouetteIcon = ({ color, size }: { color: string; size: number }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12Z" fill={color} />
-        <path d="M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill={color} />
-    </svg>
-);
+const getInitials = (name: string) =>
+    name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
-const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-};
+const AVATAR_COLORS = ['var(--pink-hot)', 'var(--orange)', 'var(--lime)', 'var(--blue-bright)', 'var(--navy-dark)', '#8B5CF6'];
 
 export default function NomineeMonitor({ category }: { category: 'team' | 'digimer' }) {
     const [stats, setStats] = useState<NomineeStats[]>([]);
@@ -52,56 +45,55 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
         return () => clearInterval(interval);
     }, [category]);
 
-    if (loading) return <div style={{ opacity: 0.5, fontSize: '0.8rem' }}>Loading nominees...</div>;
+    if (loading) return (
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '1px', color: '#888', padding: '16px' }}>
+            MEMUAT DATA...
+        </div>
+    );
+
+    const maxVotes = Math.max(...stats.map(s => s.count), 1);
+    const totalVotes = stats.reduce((sum, s) => sum + s.count, 0);
+    const accentColor = category === 'team' ? 'var(--yellow)' : 'var(--blue-bright)';
 
     return (
-        <div style={{ marginTop: '1.5rem' }}>
-            {/* Participation Header */}
-            <div className="glass" style={{ marginBottom: '2rem', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '1.5rem', background: 'rgba(255,255,255,0.02)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.8rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Participation header */}
+            <div className="card" style={{ padding: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
                     <div>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '1px' }}>VOTING PARTICIPATION</span>
-                        <h3 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 900 }}>
-                            {metadata?.votedCount || 0} <span style={{ opacity: 0.3, fontSize: '1.2rem' }}>/ {metadata?.totalVoters || 0}</span>
-                        </h3>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px' }}>VOTING PARTICIPATION</div>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '32px', letterSpacing: '1px', lineHeight: 1, marginTop: '2px' }}>
+                            {metadata?.votedCount ?? 0}
+                            <span style={{ fontSize: '16px', color: '#aaa', fontFamily: 'var(--font-mono)', fontWeight: 400 }}>
+                                {' '}/ {metadata?.totalVoters ?? 0}
+                            </span>
+                        </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--primary)' }}>{Math.round(metadata?.percentage || 0)}%</span>
-                        <p style={{ margin: 0, fontSize: '0.65rem', opacity: 0.5, fontWeight: 700 }}>OF TOTAL USERS</p>
+                        <span style={{ fontFamily: 'var(--font-display)', fontSize: '32px', color: category === 'team' ? 'var(--orange)' : 'var(--blue-bright)' }}>
+                            {Math.round(metadata?.percentage ?? 0)}%
+                        </span>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px' }}>OF TOTAL</div>
                     </div>
                 </div>
-                <div style={{ width: '100%', height: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '5px', overflow: 'hidden', marginBottom: '1.5rem' }}>
-                    <div style={{
-                        width: `${metadata?.percentage || 0}%`,
-                        height: '100%',
-                        background: 'var(--primary)',
-                        boxShadow: '0 0 15px var(--primary)',
-                        transition: 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)'
+
+                {/* Participation bar */}
+                <div className="progress-track" style={{ height: '14px' }}>
+                    <div className="progress-fill" style={{
+                        width: `${metadata?.percentage ?? 0}%`,
+                        background: category === 'team' ? 'var(--orange)' : 'var(--blue-bright)',
                     }} />
                 </div>
 
-                {/* Voter Roll Section */}
+                {/* Recent voters */}
                 {metadata?.voterNames && metadata.voterNames.length > 0 && (
-                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
-                        <div style={{ fontSize: '0.65rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', marginBottom: '0.8rem', letterSpacing: '1px' }}>RECENT VOTERS</div>
-                        <div style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: '0.6rem',
-                            maxHeight: '80px',
-                            overflowY: 'auto',
-                            paddingRight: '0.5rem'
-                        }}>
+                    <div style={{ marginTop: '10px', borderTop: '1px dashed #ddd', paddingTop: '10px' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px', marginBottom: '6px' }}>
+                            RECENT VOTERS
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', maxHeight: '64px', overflowY: 'auto' }}>
                             {metadata.voterNames.map((name, i) => (
-                                <span key={i} style={{
-                                    padding: '0.3rem 0.8rem',
-                                    background: 'rgba(255,255,255,0.05)',
-                                    borderRadius: '1rem',
-                                    fontSize: '0.7rem',
-                                    fontWeight: 600,
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    animation: 'fadeIn 0.5s ease-out'
-                                }}>
+                                <span key={i} className="badge badge-blue" style={{ animation: 'fadeIn 0.4s ease-out' }}>
                                     {name}
                                 </span>
                             ))}
@@ -110,51 +102,64 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
                 )}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h4 style={{ margin: 0, fontSize: '1rem', color: category === 'team' ? 'gold' : '#00d2ff', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 900 }}>
-                    {category === 'team' ? '🏆 Team Candidates' : '🌟 Individual Nominees'}
-                </h4>
-                <span style={{ fontSize: '0.8rem', opacity: 0.5, fontWeight: 700 }}>{stats.length} NOMINEES</span>
+            {/* Section label */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="section-label" style={{ background: category === 'team' ? 'var(--orange)' : 'var(--blue-bright)' }}>
+                    {category === 'team' ? '🏆 TEAM CANDIDATES' : '🌟 INDIVIDUAL NOMINEES'}
+                </div>
+                <span className="badge badge-blue">{stats.length} NOMINEES</span>
             </div>
 
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '1rem',
-                width: '100%'
-            }}>
+            {/* Candidate Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                 {stats.map((item, idx) => (
-                    <div key={item.id} className="glass" style={{
-                        padding: '1.2rem',
-                        borderLeft: `4px solid ${category === 'team' ? 'gold' : '#00d2ff'}`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '1.2rem'
-                    }}>
-                        {/* Avatar Selection */}
-                        <div style={{
-                            width: '60px',
-                            height: '60px',
-                            borderRadius: '1.2rem',
-                            background: 'rgba(255,255,255,0.05)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            border: `1px solid ${category === 'team' ? 'rgba(255,215,0,0.3)' : 'rgba(0,210,255,0.3)'}`,
-                            flexShrink: 0
-                        }}>
-                            {category === 'digimer' ? (
-                                <SilhouetteIcon color="#00d2ff" size={32} />
-                            ) : (
-                                <span style={{ color: 'gold', fontWeight: 950, fontSize: '1.1rem' }}>
-                                    {getInitials(item.name)}
-                                </span>
-                            )}
+                    <div key={item.id} className="candidate" style={{ padding: '12px', cursor: 'default', overflow: 'hidden' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                            {/* Blurred Avatar - mystery effect */}
+                            <div className="cand-avatar" style={{
+                                background: AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                                width: '44px',
+                                height: '44px',
+                                fontSize: '16px',
+                                filter: 'blur(6px)',
+                                userSelect: 'none'
+                            }}>
+                                {getInitials(item.name)}
+                            </div>
+                            <div style={{ overflow: 'hidden', flex: 1 }}>
+                                {/* Censored name */}
+                                <div className="cand-name" style={{ fontSize: '14px', filter: 'blur(5px)', userSelect: 'none', letterSpacing: '2px', color: '#222' }}>
+                                    {'▓▓▓▓▓▓▓'}
+                                </div>
+                                {item.division && (
+                                    <span className="cand-div" style={{ fontSize: '9px', filter: 'blur(4px)', userSelect: 'none' }}>
+                                        {'▒▒▒▒▒'}
+                                    </span>
+                                )}
+                            </div>
+                            {/* Mystery badge */}
+                            <div style={{
+                                fontFamily: 'var(--font-mono)',
+                                fontSize: '18px',
+                                color: '#bbb',
+                                fontWeight: 900,
+                                letterSpacing: '-2px'
+                            }}>
+                                ???
+                            </div>
                         </div>
 
-                        <div style={{ overflow: 'hidden' }}>
-                            <div style={{ fontSize: '1.1rem', fontWeight: 900, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</div>
-                            {item.division && <div style={{ fontSize: '0.75rem', opacity: 0.4, textTransform: 'uppercase', marginTop: '0.2rem', fontWeight: 600 }}>{item.division}</div>}
+                        {/* Vote bar - also blurred */}
+                        <div className="progress-track" style={{ height: '10px' }}>
+                            <div className="progress-fill" style={{
+                                width: `${(item.count / maxVotes) * 100}%`,
+                                background: AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                                filter: 'blur(3px)',
+                            }} />
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', marginTop: '4px', display: 'flex', justifyContent: 'space-between' }}>
+                            <span>{item.count} votes</span>
+                            <span>{totalVotes > 0 ? Math.round((item.count / totalVotes) * 100) : 0}%</span>
                         </div>
                     </div>
                 ))}

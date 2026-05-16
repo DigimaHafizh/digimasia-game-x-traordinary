@@ -2,16 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/useGameStore';
-import styles from '../app/page.module.css';
 import { getBackendUrl } from '@/lib/config';
+import LeaderboardWidget from './LeaderboardWidget';
 
 interface TriviaStats {
     totalUsers: number;
     totalAnswers: number;
     questionText: string;
     correctAnswer: number;
+    options?: string[];
     stats: { option: number; count: number }[];
 }
+
+const OPT_LETTERS = ['A', 'B', 'C', 'D'];
+const OPT_COLORS = ['var(--pink-hot)', 'var(--orange)', 'var(--blue-bright)', 'var(--lime)'];
 
 export default function TriviaMonitor() {
     const { currentQuestion, phase, timer } = useGameStore();
@@ -37,9 +41,7 @@ export default function TriviaMonitor() {
 
     const handleNext = async () => {
         try {
-            await fetch(`${getBackendUrl()}/admin/next-question`, {
-                method: 'POST',
-            });
+            await fetch(`${getBackendUrl()}/admin/next-question`, { method: 'POST' });
         } catch (err) {
             console.error('Failed to trigger next question');
         }
@@ -48,96 +50,253 @@ export default function TriviaMonitor() {
     if (phase !== 'TRIVIA' && phase !== 'TRANSITION') {
         if (phase === 'WATERING' || phase === 'FINAL') {
             return (
-                <div className="glass" style={{ padding: '2rem', textAlign: 'center', marginTop: '1rem' }}>
-                    <h3 style={{ color: 'var(--primary)', margin: 0 }}>🎉 Trivia Selesai!</h3>
-                    <p style={{ fontSize: '0.9rem', opacity: 0.7, marginTop: '0.5rem' }}>Seluruh pertanyaan telah dijawab. Memasuki fase perayaan.</p>
+                <div className="card card-yellow" style={{ textAlign: 'center', padding: '24px' }}>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px' }}>
+                        🎉 TRIVIA SELESAI!
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', marginTop: '8px' }}>
+                        SELURUH PERTANYAAN TELAH DIJAWAB
+                    </div>
                 </div>
             );
         }
-        return <p style={{ opacity: 0.5, fontSize: '0.9rem', padding: '2rem', textAlign: 'center' }}>Monitor aktif saat fase Trivia dimulai.</p>;
-    }
-
-    if (!stats && currentQuestion > 0) {
         return (
-            <div className="glass" style={{ padding: '2rem', textAlign: 'center', marginTop: '1rem' }}>
-                <div className={styles.pulseLoader} style={{ margin: '0 auto 1rem' }}></div>
-                <p style={{ opacity: 0.5, fontSize: '0.9rem' }}>Menghubungkan ke Statistik Trivia...</p>
+            <div className="card" style={{ textAlign: 'center', padding: '24px' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#888', letterSpacing: '1px' }}>
+                    MONITOR AKTIF SAAT FASE TRIVIA DIMULAI
+                </div>
             </div>
         );
     }
 
+    if (!stats && currentQuestion > 0) return (
+        <div className="card" style={{ textAlign: 'center', padding: '24px' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#888', letterSpacing: '1px' }}>
+                MENGHUBUNGKAN KE STATISTIK TRIVIA...
+            </div>
+        </div>
+    );
+
     if (!stats) return null;
 
-    return (
-        <div className="glass" style={{ padding: '1.5rem', marginTop: '1rem', background: 'rgba(255,255,255,0.03)' }}>
-            <div style={{ marginBottom: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <h4 style={{ color: 'var(--primary)', margin: 0 }}>Pertanyaan #{currentQuestion}</h4>
-                        <span style={{ fontSize: '0.8rem', background: 'rgba(255,255,255,0.1)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
-                            {stats?.totalAnswers || 0} Jawaban
-                        </span>
-                    </div>
-                    <p style={{ fontSize: '0.95rem', fontWeight: 500, lineHeight: '1.4', borderLeft: '3px solid var(--primary)', paddingLeft: '0.8rem', marginTop: '0.5rem', color: 'white' }}>
-                        {stats?.questionText || 'Memuat pertanyaan...'}
-                    </p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '1.8rem', fontWeight: 800, color: timer <= 3 ? '#ef4444' : 'var(--primary)' }}>
-                        {timer}s
-                    </div>
-                    <span style={{ fontSize: '0.7rem', opacity: 0.5 }}>TIMER</span>
-                </div>
-            </div>
+    const isFinished = timer === 0 && currentQuestion >= 10 || phase === 'TRANSITION';
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                {[0, 1, 2, 3].map((optIdx) => {
-                    const count = stats?.stats.find(s => s.option === optIdx)?.count || 0;
-                    const percent = stats?.totalAnswers ? (count / stats.totalAnswers) * 100 : 0;
+    if (isFinished) {
+        return (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                animation: 'fadeIn 0.8s ease-out',
+                maxWidth: '900px',
+                margin: '0 auto',
+                width: '100%'
+            }}>
+                {/* Hero Banner */}
+                <div className="card card-lime" style={{
+                    padding: '40px 24px',
+                    textAlign: 'center',
+                    background: 'var(--lime)',
+                    border: '5px solid var(--black)',
+                    boxShadow: '10px 10px 0 var(--black)',
+                    borderRadius: '20px',
+                }}>
+                    <div style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '64px',
+                        letterSpacing: '4px',
+                        color: 'var(--black)',
+                        lineHeight: 1,
+                        marginBottom: '12px',
+                        textShadow: '2px 2px 0 rgba(0,0,0,0.1)'
+                    }}>
+                        🎉 TRIVIA SELESAI!
+                    </div>
+                    <div style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '14px',
+                        color: 'rgba(0,0,0,0.6)',
+                        letterSpacing: '4px',
+                        fontWeight: 700
+                    }}>
+                        GAME HAS ENDED · FINAL RANKINGS REVEALED
+                    </div>
+                </div>
 
-                    return (
-                        <div key={optIdx} style={{ position: 'relative' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.3rem', zIndex: 1 }}>
-                                <span>Opsi {String.fromCharCode(65 + optIdx)}</span>
-                                <span style={{ fontWeight: 600 }}>{count}</span>
-                            </div>
-                            <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
-                                <div style={{
-                                    width: `${percent}%`,
-                                    height: '100%',
-                                    background: 'var(--primary)',
-                                    transition: 'width 0.5s ease-out'
-                                }}></div>
-                            </div>
+                {/* Main Content: Leaderboard focused */}
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr',
+                    gap: '24px'
+                }}>
+                    <div className="card" style={{
+                        padding: '32px',
+                        border: '5px solid var(--black)',
+                        boxShadow: '10px 10px 0 var(--black)',
+                        background: '#FFF',
+                        borderRadius: '20px'
+                    }}>
+                        <div style={{
+                            fontFamily: 'var(--font-display)',
+                            fontSize: '28px',
+                            letterSpacing: '2px',
+                            marginBottom: '24px',
+                            color: '#000',
+                            textAlign: 'center',
+                            background: 'var(--orange)',
+                            padding: '12px',
+                            border: '3px solid var(--black)',
+                            borderRadius: '10px',
+                            display: 'inline-block',
+                            position: 'relative',
+                            left: '50%',
+                            transform: 'translateX(-50%)'
+                        }}>
+                            🏆 THE LEADERBOARD
                         </div>
-                    );
-                })}
+                        <LeaderboardWidget />
+                    </div>
+                </div>
+
+                {/* Footer Action */}
+                <div className="card card-navy" style={{ padding: '20px', textAlign: 'center', opacity: 0.8 }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(255,255,255,0.5)', letterSpacing: '2px' }}>
+                        ADMIN: PROCEED TO THE NEXT PHASE ONCE RANKINGS ARE ANNOUNCED
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {/* Header Card */}
+            <div className="card" style={{ padding: '24px', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '16px', right: '24px' }}>
+                    <span className="badge badge-pink" style={{ fontSize: '10px' }}>ADMIN VIEW</span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', marginBottom: '24px' }}>
+                    {/* Timer Circle */}
+                    <div style={{
+                        width: '72px',
+                        height: '72px',
+                        borderRadius: '50%',
+                        background: 'var(--orange)',
+                        border: '4px solid #000',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        animation: timer <= 3 ? 'pulse 0.5s infinite' : 'none',
+                    }}>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '32px', color: '#FFF', lineHeight: 1 }}>{timer}</div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#FFF', letterSpacing: '1px' }}>SECS</div>
+                    </div>
+
+                    {/* Question Info */}
+                    <div style={{ paddingTop: '4px' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '2px', marginBottom: '8px' }}>
+                            PERTANYAAN #{currentQuestion} · {stats.totalAnswers} JAWABAN
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-body)', fontSize: '20px', fontWeight: 800, color: '#000', lineHeight: 1.4 }}>
+                            {stats.questionText || 'Memuat pertanyaan...'}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Option Bars Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    {[0, 1, 2, 3].map((optIdx) => {
+                        const count = stats.stats.find(s => s.option === optIdx)?.count || 0;
+                        const percent = stats.totalAnswers ? Math.round((count / stats.totalAnswers) * 100) : 0;
+                        const optionText = stats.options?.[optIdx] || `Option ${OPT_LETTERS[optIdx]}`;
+                        const isCorrect = timer === 0 && stats.correctAnswer === optIdx;
+
+                        return (
+                            <div key={optIdx} className="card" style={{
+                                padding: '16px 20px',
+                                background: isCorrect ? 'var(--lime)' : '#FFF',
+                                border: isCorrect ? '4px solid var(--black)' : '3px solid #000',
+                                boxShadow: isCorrect ? '5px 5px 0 var(--black)' : '4px 4px 0 #000',
+                                borderRadius: '12px',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '16px',
+                                transition: 'all 0.4s ease',
+                            }}>
+                                {/* Background Progress Fill */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: 0, left: 0, bottom: 0,
+                                    width: `${percent}%`,
+                                    background: isCorrect ? 'rgba(0,0,0,0.08)' : OPT_COLORS[optIdx],
+                                    opacity: isCorrect ? 1 : 0.2,
+                                    transition: 'width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                    zIndex: 0,
+                                }} />
+
+                                {/* Content */}
+                                <div style={{ zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: isCorrect ? 'var(--black)' : OPT_COLORS[optIdx], WebkitTextStroke: '1px #000' }}>
+                                            {OPT_LETTERS[optIdx]}
+                                        </div>
+                                        <div style={{ fontFamily: 'var(--font-body)', fontSize: '15px', fontWeight: 600, color: '#000' }}>
+                                            {optionText}
+                                        </div>
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: '#000', background: '#FFF', padding: '4px 8px', border: '2px solid #000', borderRadius: '4px' }}>
+                                        {count} ({percent}%)
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
-            {timer === 0 && currentQuestion < 10 && (
-                <button
-                    onClick={handleNext}
-                    style={{
-                        marginTop: '1.5rem',
-                        width: '100%',
-                        padding: '1rem',
-                        background: 'gold',
-                        color: 'black',
-                        borderRadius: '0.5rem',
-                        fontWeight: 700,
-                        border: 'none',
-                        cursor: 'pointer',
-                        boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)'
-                    }}
-                >
-                    LANJUT SOAL BERIKUTNYA (#{currentQuestion + 1}) →
-                </button>
+            {/* Correct Answer Reveal — shown when timer = 0 */}
+            {timer === 0 && stats.correctAnswer !== undefined && (
+                <div style={{
+                    background: 'var(--lime)',
+                    border: '4px solid var(--black)',
+                    boxShadow: '6px 6px 0 var(--black)',
+                    borderRadius: '14px',
+                    padding: '18px 24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    animation: 'pop-in 0.4s ease-out',
+                }}>
+                    <div style={{
+                        width: '52px', height: '52px',
+                        background: 'var(--black)',
+                        color: 'var(--lime)',
+                        borderRadius: '50%',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: 'var(--font-display)', fontSize: '28px',
+                        flexShrink: 0,
+                    }}>
+                        {OPT_LETTERS[stats.correctAnswer]}
+                    </div>
+                    <div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '2px', color: '#333', marginBottom: '4px' }}>JAWABAN BENAR</div>
+                        <div style={{ fontFamily: 'var(--font-body)', fontSize: '18px', fontWeight: 800, color: 'var(--black)' }}>
+                            {stats.options?.[stats.correctAnswer] || `Option ${OPT_LETTERS[stats.correctAnswer]}`}
+                        </div>
+                    </div>
+                </div>
             )}
 
-            {timer === 0 && currentQuestion >= 10 && (
-                <div style={{ marginTop: '1.5rem', textAlign: 'center', color: '#22c55e', fontWeight: 700, background: 'rgba(34, 197, 94, 0.1)', padding: '1rem', borderRadius: '0.5rem' }}>
-                    🎉 SELURUH TRIVIA SELESAI
-                </div>
+            {/* Next question */}
+            {timer === 0 && currentQuestion < 10 && (
+                <button className="btn btn-primary btn-full" style={{ padding: '14px', fontSize: '14px' }} onClick={handleNext}>
+                    ➤ LANJUT SOAL BERIKUTNYA (#{currentQuestion + 1})
+                </button>
             )}
         </div>
     );

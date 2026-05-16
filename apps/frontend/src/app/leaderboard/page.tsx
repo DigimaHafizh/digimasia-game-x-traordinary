@@ -34,7 +34,7 @@ export default function LeaderboardPage() {
             <div className={styles.leaderboardWrapper}>
                 <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
                     <h1 className="gradient-text" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>TOP CONTRIBUTORS</h1>
-                    <p style={{ fontSize: '1.2rem', opacity: 0.7, letterSpacing: '2px' }}>X-CELERATE THE TREE: LIVE MONITORING</p>
+                    <p style={{ fontSize: '1.2rem', opacity: 0.7, letterSpacing: '2px' }}>X-TRAORDINARY — GROW WITH HEART : LIVE MONITORING</p>
                 </header>
 
                 <div className={styles.leadTableGlass}>

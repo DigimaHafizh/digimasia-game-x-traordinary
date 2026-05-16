@@ -1,121 +1,212 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { useSocket } from '@/hooks/useSocket';
-import styles from './page.module.css';
 import Login from './Login';
 import Vote from './Vote';
 import Trivia from './Trivia';
 import Tree from './Tree';
 import Final from './Final';
+import LeaderboardWidget from '@/components/LeaderboardWidget';
+
+const getInitials = (name: string) =>
+  name?.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) ?? '?';
+
+function WaitingCard({ user }: { user: any }) {
+  return (
+    <div style={{
+      minHeight: 'calc(100vh - 90px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '24px',
+    }}>
+      <div className="card card-navy" style={{
+        maxWidth: '360px',
+        width: '100%',
+        textAlign: 'center',
+        padding: '36px 28px',
+      }}>
+        {/* Avatar Bubble */}
+        <div style={{
+          width: '72px',
+          height: '72px',
+          borderRadius: '50%',
+          border: '3px solid var(--yellow)',
+          background: 'var(--white)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 16px',
+          boxShadow: 'var(--shadow-sm)',
+          overflow: 'hidden'
+        }}>
+          <img
+            src={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent((user?.name ?? '') + (user?.division ?? ''))}`}
+            alt="Avatar"
+            style={{ width: '120%', height: '120%', imageRendering: 'pixelated', marginTop: '8px' }}
+          />
+        </div>
+
+        {/* Name */}
+        <div style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: '28px',
+          letterSpacing: '2px',
+          color: 'var(--yellow)',
+          lineHeight: 1,
+        }}>
+          Welcome, {user?.name?.split(' ')[0]}!
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10px',
+          color: 'rgba(255,255,255,0.5)',
+          letterSpacing: '2px',
+          margin: '6px 0 24px',
+        }}>
+          DIVISI {user?.division?.toUpperCase()}
+        </div>
+
+        {/* Waiting box */}
+        <div style={{
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px dashed rgba(255,255,255,0.2)',
+          borderRadius: '10px',
+          padding: '20px',
+        }}>
+          <div style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '14px',
+            letterSpacing: '2px',
+            color: 'rgba(255,255,255,0.5)',
+            marginBottom: '6px',
+          }}>
+            MENUNGGU INSTRUKSI ADMIN...
+          </div>
+          <div style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: '13px',
+            color: 'rgba(255,255,255,0.6)',
+          }}>
+            Game akan dimulai segera.
+          </div>
+          {/* Yellow spinner */}
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '3px solid rgba(255,255,255,0.1)',
+            borderTopColor: 'var(--yellow)',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '16px auto 0',
+          }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const { user, phase, treeStage } = useGameStore();
 
-  // Initialize Socket Connection
   useSocket();
 
+  useEffect(() => {
+    if ((user as any)?.isAdmin) {
+      window.location.href = '/admin';
+    }
+  }, [user]);
+
   if (!user) {
-    return (
-      <main className={styles.userMain}>
-        <Login />
-      </main>
-    );
+    return <Login />;
   }
 
-  // Phase Handling
   switch (phase) {
     case 'LOGIN':
     case 'WAITING':
-      return (
-        <main className={styles.userMain}>
-          <div className="glass" style={{ padding: '3rem', textAlign: 'center', maxWidth: '450px' }}>
-            <h1 className="gradient-text" style={{ fontSize: '2rem', marginBottom: '1rem' }}>
-              Welcome, {user.name}!
-            </h1>
-            <p style={{ opacity: 0.8, marginBottom: '2rem' }}>
-              Divisi: {user.division}
-            </p>
-            <div className={styles.waitingIcon}>
-              <div className="pulse-dot"></div>
-            </div>
-            <p style={{ fontWeight: 600, letterSpacing: '0.5px' }}>
-              MENUNGGU INSTRUKSI ADMIN...
-            </p>
-            <p style={{ fontSize: '0.85rem', opacity: 0.6, marginTop: '2rem' }}>
-              Game akan dimulai segera. Jangan tutup halaman ini.
-            </p>
-          </div>
-        </main>
-      );
+      return <WaitingCard user={user} />;
 
     case 'VOTING_TEAM':
-      return (
-        <main className={styles.userMain}>
-          <Vote type="team" />
-        </main>
-      );
+      return <Vote type="team" />;
 
     case 'VOTING_DIGIMER':
-      return (
-        <main className={styles.userMain}>
-          <Vote type="digimer" />
-        </main>
-      );
+      return <Vote type="digimer" />;
 
     case 'TRIVIA':
-      return (
-        <main className={styles.userMain}>
-          <Trivia />
-        </main>
-      );
+      return <Trivia />;
 
     case 'TRANSITION':
       return (
-        <main className={styles.userMain}>
-          <div className="glass" style={{ padding: '3rem', textAlign: 'center' }}>
-            <h1 className="gradient-text" style={{ fontSize: '2rem', marginBottom: '1rem' }}>
-              Trivia Selesai!
-            </h1>
-            <p style={{ opacity: 0.7 }}>Siapkan jarimu untuk fase berikutnya...</p>
-            <div className={styles.waitingIcon}>
-              <div className="pulse-dot"></div>
+        <div style={{
+          minHeight: 'calc(100vh - 90px)',
+          padding: '24px',
+          maxWidth: '600px',
+          margin: '0 auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}>
+          {/* Header */}
+          <div className="card" style={{
+            background: 'var(--navy-dark)',
+            border: '4px solid var(--black)',
+            boxShadow: '6px 6px 0 var(--black)',
+            padding: '24px',
+            textAlign: 'center',
+          }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: '40px', letterSpacing: '3px', color: 'var(--yellow)', lineHeight: 1, marginBottom: '6px' }}>
+              🏆 TRIVIA SELESAI!
             </div>
-            <h2 style={{ letterSpacing: '2px' }}>GET READY TO WATER THE TREE!</h2>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(255,255,255,0.5)', letterSpacing: '2px' }}>
+              SKOR AKHIRMU MASUK KE LEADERBOARD
+            </div>
           </div>
-        </main>
+
+          {/* Leaderboard */}
+          <div className="card" style={{ padding: '20px', border: '3px solid var(--black)', boxShadow: '5px 5px 0 var(--black)' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px', color: '#333' }}>
+              📊 LEADERBOARD
+            </div>
+            <LeaderboardWidget />
+          </div>
+
+          {/* Waiting message */}
+          <div className="card" style={{ textAlign: 'center', padding: '16px', background: 'rgba(255,255,255,0.05)', border: '2px dashed rgba(255,255,255,0.3)' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.5)', letterSpacing: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <div style={{ width: '24px', height: '24px', border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--yellow)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+              MENUNGGU FASE BERIKUTNYA...
+            </div>
+          </div>
+        </div>
       );
 
     case 'WATERING':
-      if (treeStage >= 4) {
-        return (
-          <main className={styles.userMain}>
-            <Final />
-          </main>
-        );
-      }
-      return (
-        <main className={styles.userMain}>
-          <Tree />
-        </main>
-      );
+      if (treeStage >= 4) return <Final />;
+      return <Tree />;
 
     case 'FINAL':
-      return (
-        <main className={styles.userMain}>
-          <Final />
-        </main>
-      );
+      return <Final />;
 
     default:
       return (
-        <main className={styles.userMain}>
-          <div className="glass" style={{ padding: '2rem', textAlign: 'center' }}>
-            <h2 className="gradient-text" style={{ marginBottom: '1rem' }}>Sesi Dimulai!</h2>
-            <p>Phase: <strong>{phase}</strong></p>
-            <p style={{ marginTop: '1rem', opacity: 0.7 }}>Fitur sedang diaktifkan oleh admin...</p>
+        <div style={{
+          minHeight: 'calc(100vh - 90px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px',
+        }}>
+          <div className="card" style={{ textAlign: 'center', padding: '28px 40px' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px', marginBottom: '8px' }}>
+              SESI DIMULAI!
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#666', letterSpacing: '1px' }}>
+              PHASE: {phase} · FITUR SEDANG DIAKTIFKAN OLEH ADMIN...
+            </div>
           </div>
-        </main>
+        </div>
       );
   }
 }

@@ -51,7 +51,14 @@ export class TriviaService {
                 // STOP TIMER at 0. Waiting for Admin to click "Next"
                 if (this.timerInstance) clearInterval(this.timerInstance);
                 this.logger.log(`Question ${state.currentQuestion} timer expired. Waiting for Admin.`);
-                // We DON'T call nextQuestion automatically anymore
+
+                // If it's the last question, automatically transition to Leaderboard after 5 seconds
+                if (state.currentQuestion >= 10) {
+                    this.logger.log('Last question finished. Auto-transitioning to Leaderboard in 5 seconds.');
+                    setTimeout(async () => {
+                        await this.session.updatePhase('TRANSITION');
+                    }, 5000);
+                }
             }
         }, 1000);
     }
@@ -85,18 +92,25 @@ export class TriviaService {
             });
 
             // Logic Reward (hanya jika ada perubahan status kebenaran)
+            let pointsEarned = 0;
             if (isCorrect && !wasCorrect) {
+                // Calculate speed bonus based on current timer state
+                const currentTimer = this.session.getState().timer;
+                pointsEarned = 10 + (currentTimer > 0 ? currentTimer : 0);
+
                 await tx.user.update({
                     where: { id: userId },
                     data: {
-                        collectedWater: { increment: 10 },
-                        contributedWater: { increment: 10 },
-                        score: { increment: 10 },
+                        collectedWater: { increment: pointsEarned },
+                        contributedWater: { increment: pointsEarned },
+                        score: { increment: pointsEarned },
                     }
                 });
                 // Update global tree state INSIDE transaction
-                await this.session.incrementWaterInTransaction(tx, 10);
+                await this.session.incrementWaterInTransaction(tx, pointsEarned);
             } else if (!isCorrect && wasCorrect) {
+                // If they somehow change from correct to wrong, assume standard 10 deduction to be safe.
+                // Normally UI blocks multiple submissions, so this relies on basic 10 point assumption.
                 await tx.user.update({
                     where: { id: userId },
                     data: {
@@ -109,7 +123,7 @@ export class TriviaService {
                 await this.session.incrementWaterInTransaction(tx, -10);
             }
 
-            return { correct: isCorrect, points: isCorrect ? 10 : 0 };
+            return { correct: isCorrect, points: pointsEarned };
         });
     }
 
@@ -137,9 +151,15 @@ export class TriviaService {
             where: { questionId: question.id }
         });
 
+        let parsedOptions = [];
+        try {
+            parsedOptions = JSON.parse(question.options);
+        } catch (e) { }
+
         return {
             questionIndex,
             questionText: question.text,
+            options: parsedOptions,
             correctAnswer: question.answer,
             totalUsers,
             totalAnswers,

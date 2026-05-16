@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/useGameStore';
-import styles from './page.module.css';
 import { getBackendUrl } from '@/lib/config';
 
 interface Candidate {
@@ -12,6 +11,11 @@ interface Candidate {
     imageUrl: string;
     type: string;
 }
+
+const getInitials = (name: string) =>
+    name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+
+const AVATAR_COLORS = ['var(--pink-hot)', 'var(--orange)', 'var(--lime)', 'var(--blue-bright)', 'var(--navy-dark)'];
 
 export default function Vote({ type }: { type: 'team' | 'digimer' }) {
     const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -74,80 +78,156 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
         }
     };
 
-    if (isLoading) return <div className={styles.main}><h3>Loading Candidates...</h3></div>;
+    if (isLoading) return null;
 
     return (
-        <div className={styles.voteWrapper}>
-            <header style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                <h2 className="gradient-text" style={{ fontSize: '1.5rem', textTransform: 'uppercase', fontWeight: 900 }}>
-                    {type === 'team' ? 'Team of the Year' : 'Digimer of the Year'}
-                </h2>
-                <p style={{ opacity: 0.7, fontSize: '0.8rem' }}>
+        <div style={{
+            minHeight: 'calc(100vh - 90px)',
+            padding: '24px',
+            maxWidth: '960px',
+            margin: '0 auto',
+        }}>
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                <div style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '42px',
+                    letterSpacing: '3px',
+                    color: 'var(--yellow)',
+                    textShadow: '3px 3px 0px var(--black)',
+                    lineHeight: 1,
+                }}>
+                    {type === 'team' ? 'TEAM OF THE YEAR' : 'DIGIMER OF THE YEAR'}
+                </div>
+                <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '11px',
+                    color: 'var(--white)',
+                    letterSpacing: '2px',
+                    marginTop: '6px',
+                }}>
                     {type === 'team'
-                        ? 'Pilih jagoanmu (selain tim sendiri)'
-                        : 'Pilih jagoanmu lalu tekan Submit.'}
-                </p>
-            </header>
+                        ? 'PILIH JAGOAN TIM KAMU (SELAIN TIM SENDIRI)'
+                        : 'PILIH DIGIMER TERBAIK TAHUN INI'}
+                </div>
+            </div>
 
-            <div className={styles.candidateGrid}>
-                {candidates.map((c) => {
+            {/* Grid Container */}
+            <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                gap: '20px',
+                margin: '0 auto 40px auto',
+                maxWidth: '800px',
+                padding: '0 20px',
+            }}>
+                {candidates.map((c, idx) => {
                     const isSelected = selectedId === c.id;
                     const isVoted = votedId === c.id;
                     const isOwnTeam = type === 'team' && c.division === user?.division;
+                    const avatarColor = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+                    const isDisabled = Boolean(votedId) || isOwnTeam;
 
                     return (
                         <div
                             key={c.id}
-                            className={`glass ${styles.candidateCard} ${isVoted ? styles.voted : ''}`}
+                            className={`candidate animate-pop-in${isSelected ? ' selected' : ''}${isDisabled && !isVoted ? ' locked' : ''}`}
                             style={{
-                                border: isSelected ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.1)',
-                                transform: isSelected ? 'scale(1.05)' : 'scale(1)',
-                                opacity: (votedId && !isVoted) || isOwnTeam ? 0.4 : 1,
-                                cursor: votedId || isOwnTeam ? 'default' : 'pointer',
-                                filter: isOwnTeam ? 'grayscale(1)' : 'none'
+                                position: 'relative',
+                                padding: '24px 16px 20px',
+                                border: isVoted ? '4px solid var(--navy-dark)' : isSelected ? '4px solid var(--blue-bright)' : '3px solid var(--black)',
+                                background: isVoted ? 'var(--lime)' : isSelected ? '#EEF6FF' : 'var(--white)',
+                                opacity: (votedId && c.id !== votedId) ? 0.55 : 1,
+                                filter: (votedId && c.id !== votedId) ? 'grayscale(0.7)' : 'none',
+                                width: '180px',
+                                minWidth: '160px',
+                                textAlign: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '12px',
+                                animationDelay: `${idx * 0.05}s`,
+                                cursor: isDisabled ? 'default' : 'pointer',
+                                borderRadius: '16px',
+                                boxShadow: isSelected ? '5px 5px 0 var(--blue-bright)' : '4px 4px 0 var(--black)',
+                                transition: 'box-shadow 0.15s, border 0.15s',
                             }}
-                            onClick={() => !votedId && !isOwnTeam && setSelectedId(c.id)}
+                            onClick={() => !isDisabled && setSelectedId(c.id)}
                         >
-                            <div className={styles.avatarWrapper}>
-                                <div className={styles.placeholderAvatar}>
-                                    {c.name.charAt(0)}
+                            {/* Status Badge - inside card, no overflow clipping risk */}
+                            {(isVoted || isOwnTeam || isSelected) && (
+                                <div style={{
+                                    background: isVoted ? 'var(--navy-dark)' : isOwnTeam ? '#555' : 'var(--blue-bright)',
+                                    color: 'var(--white)',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontSize: '9px',
+                                    fontWeight: 700,
+                                    padding: '4px 12px',
+                                    borderRadius: '20px',
+                                    border: '2px solid var(--black)',
+                                    whiteSpace: 'nowrap',
+                                    letterSpacing: '1px',
+                                    boxShadow: '2px 2px 0 var(--black)',
+                                    order: -1,
+                                }}>
+                                    {isVoted ? '✔ TERKUNCI' : isOwnTeam ? '🚫 TIM SENDIRI' : '★ TERPILIH'}
                                 </div>
+                            )}
+
+                            {/* Avatar — Bigger, centered */}
+                            <div className="cand-avatar" style={{
+                                background: avatarColor,
+                                width: '72px',
+                                height: '72px',
+                                fontSize: '26px',
+                                margin: '4px 0 0',
+                                flexShrink: 0,
+                            }}>
+                                {getInitials(c.name)}
                             </div>
-                            <div style={{ textAlign: 'center', padding: '0.8rem 0.5rem 0' }}>
-                                <h3 style={{ fontSize: '0.95rem', marginBottom: '0.1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</h3>
-                                <p style={{ fontSize: '0.7rem', opacity: 0.5 }}>{c.division}</p>
+
+                            {/* Name + Division below */}
+                            <div>
+                                <div className="cand-name" style={{ fontSize: '14px', lineHeight: '1.2' }}>{c.name}</div>
+                                <span className="cand-div" style={{ marginTop: '6px', display: 'inline-block' }}>{c.division}</span>
                             </div>
-                            {isVoted && <div className={styles.voteBadge}>TERKUNCI ✅</div>}
-                            {isSelected && !isVoted && <div className={styles.voteBadge} style={{ background: '#22c55e' }}>TERPILIH</div>}
-                            {isOwnTeam && <div className={styles.voteBadge} style={{ background: '#666', fontSize: '0.6rem' }}>TIM SENDIRI</div>}
                         </div>
                     );
                 })}
             </div>
 
-            <div style={{ marginTop: '2rem', textAlign: 'center', minHeight: '60px' }}>
+            {/* Submit / Confirmed */}
+            <div style={{ textAlign: 'center', marginTop: '32px', paddingBottom: '24px' }}>
                 {!votedId ? (
                     <button
-                        className="btn-primary"
+                        className="btn"
                         style={{
-                            padding: '1rem 3rem',
-                            fontSize: '1rem',
-                            borderRadius: '2rem',
-                            fontWeight: 900,
-                            opacity: selectedId ? 1 : 0.5,
-                            transform: selectedId ? 'scale(1.05)' : 'scale(1)',
-                            transition: 'all 0.3s ease'
+                            padding: '18px 52px',
+                            fontSize: '16px',
+                            fontFamily: 'var(--font-display)',
+                            letterSpacing: '2px',
+                            background: selectedId ? 'var(--pink-hot)' : '#888',
+                            color: 'var(--white)',
+                            border: '3px solid var(--black)',
+                            boxShadow: selectedId ? '6px 6px 0 var(--black)' : '3px 3px 0 var(--black)',
+                            opacity: selectedId ? 1 : 0.6,
+                            transform: selectedId ? 'none' : 'none',
+                            transition: 'all 0.15s',
                         }}
                         disabled={!selectedId || isSubmitting}
                         onClick={handleSubmit}
                     >
-                        {isSubmitting ? 'MENGIRIM...' : 'SUBMIT VOTE 🚀'}
+                        {isSubmitting ? 'MENGIRIM...' : 'SUBMIT'}
                     </button>
                 ) : (
-                    <div style={{ animation: 'fadeIn 1s ease-out' }}>
-                        <p style={{ fontSize: '1.2rem', fontWeight: 900, color: '#22c55e' }}>
-                            TERIMA KASIH!
-                        </p>
+                    <div className="card" style={{ display: 'inline-block', padding: '16px 32px', background: 'var(--lime)', animation: 'fadeIn 0.5s ease-out' }}>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '2px' }}>
+                            ✔ SUARA TERKIRIM!
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', marginTop: '4px' }}>
+                            TERIMA KASIH ATAS PARTISIPASIMU
+                        </div>
                     </div>
                 )}
             </div>

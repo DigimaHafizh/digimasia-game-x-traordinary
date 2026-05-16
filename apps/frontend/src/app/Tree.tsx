@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { useSocket } from '@/hooks/useSocket';
-import styles from './page.module.css';
 import TreeVisual from '@/components/TreeVisual';
 import { getBackendUrl } from '@/lib/config';
 
@@ -23,24 +22,19 @@ export default function Tree() {
     useEffect(() => {
         const fetchStats = async () => {
             if (!user?.id) {
-                console.warn('Tree: No user ID found in store');
                 setIsSyncing(false);
                 return;
             }
 
-            console.log(`Tree: Syncing stats for user ${user.id}`);
             try {
                 const res = await fetch(`${getBackendUrl()}/users/${user.id}/stats`);
                 if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
 
                 const data = await res.json();
-                console.log('Tree: Received stats:', data);
-
                 if (data) {
                     setUserState({
                         collectedWater: data.collectedWater ?? 0,
                         contributedWater: data.contributedWater ?? 0,
-                        // Update local score too if needed
                     } as any);
                 }
             } catch (err) {
@@ -55,61 +49,133 @@ export default function Tree() {
 
     const handleTap = () => {
         if (!user || collectedWater <= 0) return;
-
-        // Decrement local score, emit to server
         setUserState({
             collectedWater: Math.max(0, collectedWater - 1),
             contributedWater: contributedWater + 1
         });
-
         emitWaterTap();
     };
 
-    if (isSyncing) return <div className={styles.main}><h3>Menyiapkan Peralatan...</h3></div>;
-    if (!user) return <div className={styles.main}><h3>Silakan Login Kembali</h3></div>;
-
-    // Threshold untuk pohon (placeholder 1000 water for max growth)
     const progress = Math.min(100, (totalWater / 1000) * 100);
+    const waterLevelPct = Math.min(100, (collectedWater / 100) * 100);
+
+    if (isSyncing) return (
+        <div style={{ minHeight: 'calc(100vh - 90px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="card" style={{ padding: '24px 40px', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', letterSpacing: '2px' }}>MENYIAPKAN PERALATAN...</div>
+            </div>
+        </div>
+    );
 
     return (
-        <div className={styles.treeWrapper}>
-            <header style={{ textAlign: 'center' }}>
-                <h2 className="gradient-text" style={{ fontSize: '2rem' }}>GROW THE TREE</h2>
-                <p style={{ opacity: 0.7 }}>Tap untuk menyumbang air bagi pertumbuhan pohon kita!</p>
-            </header>
+        <div style={{
+            minHeight: 'calc(100vh - 90px)',
+            padding: '24px',
+            maxWidth: '480px',
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+        }}>
+            {/* Title */}
+            <div style={{ textAlign: 'center' }}>
+                <div style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '42px',
+                    letterSpacing: '3px',
+                    color: 'var(--yellow)',
+                    textShadow: '3px 3px 0px var(--black)',
+                    lineHeight: 1,
+                }}>
+                    GROW THE TREE
+                </div>
+                <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '10px',
+                    color: 'var(--white)',
+                    letterSpacing: '2px',
+                    marginTop: '4px',
+                }}>
+                    TAP UNTUK MENYUMBANG AIR!
+                </div>
+            </div>
 
-            <div className={styles.treeContainer}>
-                <div style={{ width: '250px', height: '250px', marginBottom: '2rem' }}>
+            {/* Tree Visual */}
+            <div className="card" style={{ textAlign: 'center', padding: '20px' }}>
+                <div style={{ width: '200px', height: '200px', margin: '0 auto 16px' }}>
                     <TreeVisual stage={treeStage} />
                 </div>
 
-                <div className={styles.waterTank}>
-                    <div className={styles.tankFill} style={{ height: `${progress}%` }}></div>
-                    <div className={styles.tankText} style={{ color: treeStage >= 4 ? 'gold' : 'white' }}>
-                        {totalWater} / 1000 L
-                    </div>
+                {/* Tree Progress */}
+                <div className="progress-track">
+                    <div className="progress-fill" style={{ width: `${progress}%` }} />
                 </div>
-                {treeStage >= 4 && (
-                    <div style={{ position: 'absolute', top: '-1rem', background: 'gold', color: 'black', padding: '0.2rem 1rem', borderRadius: '1rem', fontWeight: 800, fontSize: '0.8rem', zIndex: 10 }}>
-                        MAKSIMAL! 🎆
-                    </div>
-                )}
+                <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '10px',
+                    color: '#666',
+                    letterSpacing: '1px',
+                    marginTop: '4px',
+                }}>
+                    {Math.round(progress)}% → GRAND TREE · {totalWater} / 1000 L
+                </div>
             </div>
 
-            <footer className={styles.actionFooter}>
-                <div className={styles.userInfoMini}>
-                    <p>Air Tersedia: <strong>{collectedWater} L</strong></p>
-                    <p>Kontribusi Anda: <strong>{contributedWater} L</strong></p>
+            {/* Water Tank Widget */}
+            <div className="water-tank">
+                <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '10px',
+                    color: '#666',
+                    letterSpacing: '1px',
+                    marginBottom: '4px',
+                }}>
+                    AIR TERSEDIA
                 </div>
+                <div style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '40px',
+                    color: 'var(--blue-bright)',
+                    lineHeight: 1,
+                }}>
+                    {collectedWater}L
+                </div>
+                <div className="water-level-wrap">
+                    <div className="water-level" style={{ height: `${waterLevelPct}%` }}>
+                        <div className="water-waves" />
+                    </div>
+                </div>
+                <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '10px',
+                    color: '#666',
+                    letterSpacing: '1px',
+                }}>
+                    KONTRIBUSI KAMU: {contributedWater}L
+                </div>
+            </div>
 
+            {/* Tap Button */}
+            {treeStage >= 4 ? (
+                <div className="card card-yellow" style={{ textAlign: 'center', padding: '20px' }}>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px' }}>
+                        🌳 POHON SUDAH MAKSIMAL!
+                    </div>
+                </div>
+            ) : (
                 <button
-                    className={`btn-primary ${styles.tapBtn} ${collectedWater <= 0 ? styles.disabled : ''}`}
+                    className="btn btn-primary btn-full"
+                    style={{
+                        padding: '18px',
+                        fontSize: '16px',
+                        opacity: collectedWater <= 0 ? 0.5 : 1,
+                    }}
                     onClick={handleTap}
                     disabled={collectedWater <= 0}
                 >
-                    {collectedWater > 0 ? 'TAP UNTUK SIRAM! 💧' : 'AIR HABIS'}
+                    {collectedWater > 0 ? '💧 TAP TO WATER!' : '💧 AIR HABIS'}
                 </button>
-            </footer>
+            )}
         </div>
     );
 }

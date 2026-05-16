@@ -24,10 +24,12 @@ export declare class TriviaService {
         stats: never[];
         questionText: string;
         questionIndex?: undefined;
+        options?: undefined;
         correctAnswer?: undefined;
     } | {
         questionIndex: number;
         questionText: string;
+        options: never[];
         correctAnswer: number;
         totalUsers: number;
         totalAnswers: number;

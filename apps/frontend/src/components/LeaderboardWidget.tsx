@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import styles from '../app/page.module.css';
 import { getBackendUrl } from '@/lib/config';
 
 interface LeaderboardEntry {
@@ -11,6 +10,11 @@ interface LeaderboardEntry {
     score: number;
 }
 
+const getInitials = (name: string) =>
+    name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+
+const AVATAR_COLORS = ['var(--pink-hot)', 'var(--orange)', 'var(--lime)', 'var(--blue-bright)', 'var(--navy-dark)'];
+
 export default function LeaderboardWidget() {
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
@@ -19,11 +23,7 @@ export default function LeaderboardWidget() {
             try {
                 const res = await fetch(`${getBackendUrl()}/leaderboard`);
                 const data = await res.json();
-                if (Array.isArray(data)) {
-                    setLeaderboard(data);
-                } else {
-                    console.error('Leaderboard data is not an array:', data);
-                }
+                if (Array.isArray(data)) setLeaderboard(data);
             } catch (err) {
                 console.error('Failed to fetch leaderboard');
             }
@@ -34,29 +34,31 @@ export default function LeaderboardWidget() {
         return () => clearInterval(interval);
     }, []);
 
-    return (
-        <div className={styles.leadTableGlass} style={{ borderRadius: '1rem', marginTop: '1rem' }}>
-            <div className={styles.leadHeaderRow} style={{ padding: '1rem 1.5rem', fontSize: '0.8rem', gridTemplateColumns: '40px 1fr 60px 60px' }}>
-                <span>RANK</span>
-                <span>NAME</span>
-                <span style={{ textAlign: 'center' }}>WATER</span>
-                <span style={{ textAlign: 'right' }}>SCORE</span>
-            </div>
+    if (!leaderboard.length) return (
+        <div style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#888', letterSpacing: '1px', padding: '16px' }}>
+            MENUNGGU DATA...
+        </div>
+    );
 
-            <div className={styles.leadBody}>
-                {Array.isArray(leaderboard) && leaderboard.map((entry, i) => (
-                    <div key={i} className={styles.leadRow} style={{ padding: '0.8rem 1.5rem', gridTemplateColumns: '40px 1fr 60px 60px', alignItems: 'center' }}>
-                        <span className={styles.leadRank} style={{ fontSize: '0.9rem' }}>#{i + 1}</span>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span className={styles.leadName} style={{ fontSize: '0.86rem' }}>{entry.name}</span>
-                            <span className={styles.leadDiv} style={{ fontSize: '0.7rem' }}>{entry.division}</span>
-                        </div>
-                        <span style={{ textAlign: 'center', fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 600 }}>{entry.amount}L</span>
-                        <span style={{ textAlign: 'right', fontSize: '1rem', fontWeight: 700 }}>{entry.score}</span>
+    return (
+        <div className="rank-list">
+            {leaderboard.map((entry, i) => (
+                <div key={i} className="rank-row" style={{
+                    background: i === 0 ? 'var(--lime)' : i === 1 ? '#E8E8E8' : i === 2 ? '#FFE4CC' : 'var(--white)',
+                }}>
+                    <div className="rank-num">#{i + 1}</div>
+                    <div className="rank-avatar" style={{ background: AVATAR_COLORS[i % AVATAR_COLORS.length] }}>
+                        {getInitials(entry.name)}
                     </div>
-                ))}
-                {(!Array.isArray(leaderboard) || leaderboard.length === 0) && <p style={{ textAlign: 'center', padding: '1rem', fontSize: '0.8rem' }}>No data yet...</p>}
-            </div>
+                    <div className="rank-info">
+                        <div className="rank-name">{entry.name}</div>
+                        <div className="rank-team">{entry.division}</div>
+                    </div>
+                    <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center' }}>
+                        <div className="rank-water" style={{ fontSize: '20px' }}>{entry.amount}L</div>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 }

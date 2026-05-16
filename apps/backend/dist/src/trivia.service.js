@@ -58,6 +58,12 @@ let TriviaService = TriviaService_1 = class TriviaService {
                 if (this.timerInstance)
                     clearInterval(this.timerInstance);
                 this.logger.log(`Question ${state.currentQuestion} timer expired. Waiting for Admin.`);
+                if (state.currentQuestion >= 10) {
+                    this.logger.log('Last question finished. Auto-transitioning to Leaderboard in 5 seconds.');
+                    setTimeout(async () => {
+                        await this.session.updatePhase('TRANSITION');
+                    }, 5000);
+                }
             }
         }, 1000);
     }
@@ -83,16 +89,19 @@ let TriviaService = TriviaService_1 = class TriviaService {
                 update: { selected: optionIndex, isCorrect },
                 create: { userId, questionId: question.id, selected: optionIndex, isCorrect },
             });
+            let pointsEarned = 0;
             if (isCorrect && !wasCorrect) {
+                const currentTimer = this.session.getState().timer;
+                pointsEarned = 10 + (currentTimer > 0 ? currentTimer : 0);
                 await tx.user.update({
                     where: { id: userId },
                     data: {
-                        collectedWater: { increment: 10 },
-                        contributedWater: { increment: 10 },
-                        score: { increment: 10 },
+                        collectedWater: { increment: pointsEarned },
+                        contributedWater: { increment: pointsEarned },
+                        score: { increment: pointsEarned },
                     }
                 });
-                await this.session.incrementWaterInTransaction(tx, 10);
+                await this.session.incrementWaterInTransaction(tx, pointsEarned);
             }
             else if (!isCorrect && wasCorrect) {
                 await tx.user.update({
@@ -105,7 +114,7 @@ let TriviaService = TriviaService_1 = class TriviaService {
                 });
                 await this.session.incrementWaterInTransaction(tx, -10);
             }
-            return { correct: isCorrect, points: isCorrect ? 10 : 0 };
+            return { correct: isCorrect, points: pointsEarned };
         });
     }
     async getStats(questionIndex) {
@@ -128,9 +137,15 @@ let TriviaService = TriviaService_1 = class TriviaService {
         const totalAnswers = await this.prisma.userAnswer.count({
             where: { questionId: question.id }
         });
+        let parsedOptions = [];
+        try {
+            parsedOptions = JSON.parse(question.options);
+        }
+        catch (e) { }
         return {
             questionIndex,
             questionText: question.text,
+            options: parsedOptions,
             correctAnswer: question.answer,
             totalUsers,
             totalAnswers,
