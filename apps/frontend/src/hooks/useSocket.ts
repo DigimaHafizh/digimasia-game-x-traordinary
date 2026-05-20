@@ -32,15 +32,19 @@ export const useSocket = () => {
 
         socket.on('system_resetted', () => {
             console.log('System reset by admin - cleaning up...');
-            const currentUser = useGameStore.getState().user;
+            const store = useGameStore.getState();
 
-            if (currentUser?.isAdmin) {
-                // Admins stay logged in, just informed
-                useGameStore.getState().setToastMessage("SISTEM TELAH DI-RESET. DATA GAME TELAH DIKOSONGKAN.");
+            if (store.user?.isAdmin) {
+                store.setToastMessage("SISTEM TELAH DI-RESET. DATA GAME TELAH DIKOSONGKAN.");
             } else {
-                // Users get logged out and redirected
-                useGameStore.getState().reset();
-                window.location.href = '/';
+                // Users get logged out and redirected via re-render + hard redirect
+                console.log('User logout triggered by system reset');
+                store.reset();
+
+                // Hard redirect to be safe
+                if (typeof window !== 'undefined') {
+                    window.location.replace('/');
+                }
             }
         });
 
