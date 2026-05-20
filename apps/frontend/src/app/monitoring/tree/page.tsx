@@ -5,6 +5,7 @@ import TreeVisual, { TREE_STAGE_LABELS } from '@/components/TreeVisual';
 import TVFrame from '@/components/TVFrame';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useTreeAudio } from '@/hooks/useTreeAudio';
+import { useSocket } from '@/hooks/useSocket';
 
 const TOTAL_WATER_GOAL = 1000;
 
@@ -15,6 +16,8 @@ export default function TreeMonitorExternal() {
     const audio = useTreeAudio();
     const prevStageRef = useRef(treeStage);
     const bgmStarted = useRef(false);
+
+    useSocket(); // Vital to subscribe to backend state broadcasts
 
     useEffect(() => {
         setMounted(true);
