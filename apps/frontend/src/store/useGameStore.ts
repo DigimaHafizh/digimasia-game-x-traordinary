@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type GamePhase = 'LOGIN' | 'WAITING' | 'VOTING_TEAM' | 'VOTING_DIGIMER' | 'TRIVIA' | 'TRANSITION' | 'WATERING' | 'FINAL';
 
@@ -35,16 +36,21 @@ interface GameStore {
         id: string;
         name: string;
         division: string;
+        isAdmin: boolean;
     } | null;
     collectedWater: number;
     contributedWater: number;
     voteTeam: string | null;
     voteDigi: string | null;
+    _hasHydrated: boolean;
+    toastMessage: string | null;
 
     // Actions
     setSessionState: (state: Partial<SessionState>) => void;
     setUser: (user: GameStore['user']) => void;
     setUserState: (state: Partial<{ collectedWater: number; contributedWater: number; voteTeam: string; voteDigi: string }>) => void;
+    setHasHydrated: (state: boolean) => void;
+    setToastMessage: (msg: string | null) => void;
     reset: () => void;
 }
 
@@ -59,16 +65,26 @@ const initialState = {
     contributedWater: 0,
     voteTeam: null,
     voteDigi: null,
+    _hasHydrated: false,
+    toastMessage: null,
 };
 
-export const useGameStore = create<GameStore>((set) => ({
-    ...initialState,
-
-    setSessionState: (state) => set((s) => ({ ...s, ...state })),
-
-    setUser: (user) => set({ user }),
-
-    setUserState: (state) => set((s) => ({ ...s, ...state })),
-
-    reset: () => set(initialState),
-}));
+export const useGameStore = create<GameStore>()(
+    persist(
+        (set) => ({
+            ...initialState,
+            setSessionState: (state) => set((s) => ({ ...s, ...state })),
+            setUser: (user) => set({ user }),
+            setUserState: (state) => set((s) => ({ ...s, ...state })),
+            setHasHydrated: (state) => set({ _hasHydrated: state }),
+            setToastMessage: (msg) => set({ toastMessage: msg }),
+            reset: () => set((state) => ({ ...initialState, _hasHydrated: state._hasHydrated })),
+        }),
+        {
+            name: 'x-celerate-storage',
+            onRehydrateStorage: () => (state) => {
+                state?.setHasHydrated(true);
+            }
+        }
+    )
+);

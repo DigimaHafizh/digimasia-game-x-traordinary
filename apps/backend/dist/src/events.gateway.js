@@ -30,6 +30,9 @@ let EventsGateway = EventsGateway_1 = class EventsGateway {
         this.sessionService.onStateChange = (state) => {
             this.server.emit('session_state', state);
         };
+        this.sessionService.onReset = () => {
+            this.server.emit('system_resetted');
+        };
     }
     handleConnection(client) {
         this.logger.log(`Client connected: ${client.id}`);

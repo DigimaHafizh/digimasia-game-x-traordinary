@@ -1,10 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { useSocket } from '@/hooks/useSocket';
-import TreeVisual from '@/components/TreeVisual';
+import TreeVisual, { TREE_STAGE_LABELS } from '@/components/TreeVisual';
 import { getBackendUrl } from '@/lib/config';
+import { useTreeAudio } from '@/hooks/useTreeAudio';
+
+interface Droplet {
+    id: number;
+    x: number;
+    y: number;
+}
+
+const TOTAL_WATER_GOAL = 1000;
+const WATER_PER_STAGE = 100; // 10 stages × 100L
 
 export default function Tree() {
     const {
@@ -18,18 +28,21 @@ export default function Tree() {
 
     const { emitWaterTap } = useSocket();
     const [isSyncing, setIsSyncing] = useState(true);
+    const [isPumping, setIsPumping] = useState(false);
+    const [droplets, setDroplets] = useState<Droplet[]>([]);
+    const [stageToast, setStageToast] = useState<string | null>(null);
+    const [ripples, setRipples] = useState<number[]>([]);
+    const [isMuted, setIsMutedState] = useState(false);
+    const prevStageRef = useRef(treeStage);
+    const dropletIdRef = useRef(0);
+    const audio = useTreeAudio();
 
+    // Sync user water balance from backend on mount
     useEffect(() => {
         const fetchStats = async () => {
-            if (!user?.id) {
-                setIsSyncing(false);
-                return;
-            }
-
+            if (!user?.id) { setIsSyncing(false); return; }
             try {
                 const res = await fetch(`${getBackendUrl()}/users/${user.id}/stats`);
-                if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-
                 const data = await res.json();
                 if (data) {
                     setUserState({
@@ -43,24 +56,70 @@ export default function Tree() {
                 setIsSyncing(false);
             }
         };
-
         fetchStats();
     }, [user?.id, setUserState]);
 
-    const handleTap = () => {
-        if (!user || collectedWater <= 0) return;
+    // Start BGM when page loads — user interaction required so we hook into tap
+    const bgmStarted = useRef(false);
+    const startBGMOnce = useCallback(() => {
+        if (!bgmStarted.current) {
+            bgmStarted.current = true;
+            audio.playBGM();
+        }
+    }, [audio]);
+
+    // Stage-up toast + SFX
+    useEffect(() => {
+        if (treeStage > prevStageRef.current) {
+            const label = TREE_STAGE_LABELS[Math.min(treeStage, 9)];
+            setStageToast(`🌱 POHON NAIK KE STAGE ${treeStage + 1}: ${label}!`);
+            setTimeout(() => setStageToast(null), 3000);
+            audio.playStageUp();
+            if (treeStage >= 9) audio.playComplete();
+        }
+        prevStageRef.current = treeStage;
+    }, [treeStage, audio]);
+
+    const handleTap = useCallback(() => {
+        if (!user || collectedWater <= 0 || isPumping) return;
+
+        // Start BGM on first tap (browser policy: user gesture required)
+        startBGMOnce();
+
+        // Play water drop SFX
+        audio.playWaterDrop();
+
+        // Pump animation
+        setIsPumping(true);
+        setTimeout(() => setIsPumping(false), 350);
+
+        // Spawn a water droplet
+        const id = dropletIdRef.current++;
+        const x = 44 + Math.random() * 12; // near pump nozzle
+        setDroplets(prev => [...prev, { id, x, y: 0 }]);
+        setTimeout(() => setDroplets(prev => prev.filter(d => d.id !== id)), 900);
+
+        // Spawn a ripple on tree base
+        const rippleId = Date.now();
+        setRipples(prev => [...prev, rippleId]);
+        setTimeout(() => setRipples(prev => prev.filter(r => r !== rippleId)), 800);
+
+        // Update state
         setUserState({
             collectedWater: Math.max(0, collectedWater - 1),
             contributedWater: contributedWater + 1
         });
         emitWaterTap();
-    };
+    }, [user, collectedWater, contributedWater, isPumping, setUserState, emitWaterTap]);
 
-    const progress = Math.min(100, (totalWater / 1000) * 100);
-    const waterLevelPct = Math.min(100, (collectedWater / 100) * 100);
+    const progress = Math.min(100, (totalWater / TOTAL_WATER_GOAL) * 100);
+    const stageProgress = ((totalWater % WATER_PER_STAGE) / WATER_PER_STAGE) * 100;
+    const waterLevelPct = Math.min(100, (collectedWater / 50) * 100);
+    const isMaxStage = treeStage >= 9;
+    const isOutOfWater = collectedWater <= 0;
 
     if (isSyncing) return (
-        <div style={{ minHeight: 'calc(100vh - 90px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ minHeight: 'calc(100dvh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="card" style={{ padding: '24px 40px', textAlign: 'center' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', letterSpacing: '2px' }}>MENYIAPKAN PERALATAN...</div>
             </div>
@@ -69,113 +128,438 @@ export default function Tree() {
 
     return (
         <div style={{
-            minHeight: 'calc(100vh - 90px)',
-            padding: '24px',
+            minHeight: 'calc(100dvh - 120px)',
+            padding: '16px',
             maxWidth: '480px',
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px',
+            gap: '14px',
+            position: 'relative',
         }}>
-            {/* Title */}
-            <div style={{ textAlign: 'center' }}>
+
+            {/* Stage-up Toast */}
+            {stageToast && (
                 <div style={{
+                    position: 'fixed',
+                    top: '80px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 1000,
+                    background: 'var(--lime)',
+                    border: '3px solid var(--black)',
+                    boxShadow: '5px 5px 0 var(--black)',
+                    borderRadius: '12px',
+                    padding: '12px 20px',
                     fontFamily: 'var(--font-display)',
-                    fontSize: '42px',
-                    letterSpacing: '3px',
-                    color: 'var(--yellow)',
-                    textShadow: '3px 3px 0px var(--black)',
-                    lineHeight: 1,
-                }}>
-                    GROW THE TREE
-                </div>
-                <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '10px',
-                    color: 'var(--white)',
-                    letterSpacing: '2px',
-                    marginTop: '4px',
-                }}>
-                    TAP UNTUK MENYUMBANG AIR!
-                </div>
-            </div>
-
-            {/* Tree Visual */}
-            <div className="card" style={{ textAlign: 'center', padding: '20px' }}>
-                <div style={{ width: '200px', height: '200px', margin: '0 auto 16px' }}>
-                    <TreeVisual stage={treeStage} />
-                </div>
-
-                {/* Tree Progress */}
-                <div className="progress-track">
-                    <div className="progress-fill" style={{ width: `${progress}%` }} />
-                </div>
-                <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '10px',
-                    color: '#666',
+                    fontSize: '15px',
                     letterSpacing: '1px',
-                    marginTop: '4px',
+                    color: 'var(--black)',
+                    animation: 'pop-in 0.4s ease-out',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '90vw',
+                    textAlign: 'center',
                 }}>
-                    {Math.round(progress)}% → GRAND TREE · {totalWater} / 1000 L
+                    {stageToast}
                 </div>
-            </div>
+            )}
 
-            {/* Water Tank Widget */}
-            <div className="water-tank">
-                <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '10px',
-                    color: '#666',
-                    letterSpacing: '1px',
-                    marginBottom: '4px',
-                }}>
-                    AIR TERSEDIA
-                </div>
-                <div style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '40px',
-                    color: 'var(--blue-bright)',
-                    lineHeight: 1,
-                }}>
-                    {collectedWater}L
-                </div>
-                <div className="water-level-wrap">
-                    <div className="water-level" style={{ height: `${waterLevelPct}%` }}>
-                        <div className="water-waves" />
+            {/* ── TITLE ─────────────────────── */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                    <div style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 'clamp(26px, 7vw, 38px)',
+                        letterSpacing: '3px',
+                        color: 'var(--yellow)',
+                        textShadow: '3px 3px 0px var(--black)',
+                        lineHeight: 1,
+                    }}>
+                        GROW THE TREE
+                    </div>
+                    <div style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '10px',
+                        color: 'rgba(255,255,255,0.7)',
+                        letterSpacing: '2px',
+                        marginTop: '4px',
+                    }}>
+                        POMPA AIR · SIRAMI POHON · TUMBUH BERSAMA!
                     </div>
                 </div>
+                {/* 🔇 Mute Toggle Button */}
+                <button
+                    onClick={() => {
+                        const next = !isMuted;
+                        setIsMutedState(next);
+                        audio.setMuted(next);
+                        if (!next) startBGMOnce();
+                    }}
+                    style={{
+                        background: isMuted ? '#444' : 'var(--lime)',
+                        border: '3px solid var(--black)',
+                        boxShadow: '3px 3px 0 var(--black)',
+                        borderRadius: '10px',
+                        padding: '6px 12px',
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '18px',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                        flexShrink: 0,
+                    }}
+                    title={isMuted ? 'Aktifkan suara' : 'Matikan suara'}
+                >
+                    {isMuted ? '🔇' : '🔊'}
+                </button>
+            </div>
+
+            {/* ── TREE HERO CARD ─────────────── */}
+            <div className="card" style={{ padding: '0', position: 'relative', overflow: 'hidden' }}>
+                {/* Background shimmer on max stage */}
+                {isMaxStage && (
+                    <div style={{
+                        position: 'absolute', inset: 0,
+                        background: 'linear-gradient(135deg, rgba(255,215,0,0.15), rgba(0,200,0,0.12))',
+                        animation: 'pulse-glow 2s ease-in-out infinite',
+                        zIndex: 0,
+                    }} />
+                )}
+
+                {/* Tree image — hero zone */}
                 <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '10px',
-                    color: '#666',
-                    letterSpacing: '1px',
+                    position: 'relative',
+                    height: 'clamp(260px, 55vw, 340px)',
+                    width: '100%',
+                    background: 'linear-gradient(to bottom, #f0fdf4, #dcfce7)',
                 }}>
-                    KONTRIBUSI KAMU: {contributedWater}L
+                    <TreeVisual stage={treeStage} size="100%" />
+
+                    {/* Stage badge top-left */}
+                    <div style={{
+                        position: 'absolute', top: '12px', left: '12px',
+                        background: 'var(--black)', color: 'var(--yellow)',
+                        fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700,
+                        letterSpacing: '1px', padding: '4px 10px', borderRadius: '20px',
+                    }}>
+                        STAGE {treeStage + 1} / 10
+                    </div>
+
+                    {/* Total water badge top-right */}
+                    <div style={{
+                        position: 'absolute', top: '12px', right: '12px',
+                        background: 'var(--blue-bright)', color: 'white',
+                        fontFamily: 'var(--font-display)', fontSize: '18px', letterSpacing: '1px',
+                        padding: '4px 12px', borderRadius: '20px',
+                        border: '2px solid var(--black)',
+                    }}>
+                        {totalWater}L
+                    </div>
+
+                    {/* Ripple effects at tree base */}
+                    {ripples.map(rippleId => (
+                        <div key={rippleId} style={{
+                            position: 'absolute',
+                            bottom: '12px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '40px',
+                            height: '14px',
+                            borderRadius: '50%',
+                            background: 'rgba(59,130,246,0.4)',
+                            animation: 'ripple-expand 0.7s ease-out forwards',
+                        }} />
+                    ))}
+                </div>
+
+                {/* Stage name strip */}
+                <div style={{
+                    padding: '12px 16px',
+                    borderTop: '3px solid var(--black)',
+                    background: isMaxStage ? 'var(--lime)' : 'var(--white)',
+                    position: 'relative', zIndex: 1,
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{
+                            fontFamily: 'var(--font-display)',
+                            fontSize: 'clamp(18px, 5vw, 24px)',
+                            letterSpacing: '1px',
+                            color: 'var(--black)',
+                        }}>
+                            {isMaxStage ? '🌳 GRAND TREE TERCAPAI!' : TREE_STAGE_LABELS[Math.min(treeStage, 9)]}
+                        </div>
+                        <div style={{
+                            fontFamily: 'var(--font-mono)', fontSize: '9px',
+                            color: '#888', letterSpacing: '1px', textAlign: 'right',
+                        }}>
+                            {Math.round(progress)}% SELESAI
+                        </div>
+                    </div>
+
+                    {/* Global progress bar */}
+                    <div style={{ marginTop: '8px' }}>
+                        <div className="progress-track" style={{ height: '10px', borderRadius: '5px' }}>
+                            <div className="progress-fill" style={{
+                                width: `${progress}%`,
+                                borderRadius: '5px',
+                                background: isMaxStage ? 'linear-gradient(90deg, #ffd700, #b8860b)' : undefined,
+                            }} />
+                        </div>
+                    </div>
+
+                    {/* Stage-level progress */}
+                    {!isMaxStage && (
+                        <div style={{ marginTop: '6px' }}>
+                            <div style={{
+                                display: 'flex', justifyContent: 'space-between',
+                                fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#aaa',
+                                letterSpacing: '1px', marginBottom: '3px'
+                            }}>
+                                <span>KE STAGE BERIKUTNYA</span>
+                                <span>{totalWater % WATER_PER_STAGE} / {WATER_PER_STAGE} L</span>
+                            </div>
+                            <div style={{ height: '6px', background: '#e5e7eb', borderRadius: '3px', overflow: 'hidden' }}>
+                                <div style={{
+                                    height: '100%', width: `${stageProgress}%`,
+                                    background: 'var(--lime)', borderRadius: '3px',
+                                    transition: 'width 0.3s ease',
+                                }} />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Tap Button */}
-            {treeStage >= 4 ? (
-                <div className="card card-yellow" style={{ textAlign: 'center', padding: '20px' }}>
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px' }}>
-                        🌳 POHON SUDAH MAKSIMAL!
+            {/* ── PUMP + RESERVOIR SECTION ──── */}
+            {!isMaxStage && (
+                <div className="card" style={{ padding: '20px', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'stretch' }}>
+
+                        {/* LEFT: Animated Pump SVG */}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '8px',
+                            flexShrink: 0,
+                            width: '80px',
+                            position: 'relative',
+                        }}>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#888', letterSpacing: '1px', textAlign: 'center' }}>
+                                POMPA AIR
+                            </div>
+                            {/* Droplet spray area */}
+                            <div style={{ position: 'relative', width: '80px', height: '110px' }}>
+                                {/* Flying droplets */}
+                                {droplets.map(d => (
+                                    <div key={d.id} style={{
+                                        position: 'absolute',
+                                        left: `${d.x}%`,
+                                        top: '10px',
+                                        fontSize: '14px',
+                                        animation: 'dropletFly 0.9s ease-out forwards',
+                                        pointerEvents: 'none',
+                                    }}>💧</div>
+                                ))}
+
+                                {/* Pump SVG */}
+                                <svg viewBox="0 0 80 110" width="80" height="110">
+                                    {/* Pump body */}
+                                    <rect x="28" y="60" width="24" height="40" rx="4" fill="#3B82F6" stroke="#000" strokeWidth="2" />
+                                    <rect x="32" y="64" width="16" height="12" rx="2" fill="#60A5FA" />
+                                    {/* Pipe going up */}
+                                    <rect x="35" y="25" width="10" height="38" rx="3" fill="#1D4ED8" stroke="#000" strokeWidth="1.5" />
+                                    {/* Nozzle */}
+                                    <rect x="27" y="22" width="26" height="8" rx="4" fill="#2563EB" stroke="#000" strokeWidth="1.5" />
+                                    {/* Pump handle */}
+                                    <g style={{
+                                        transformOrigin: '60px 48px',
+                                        animation: isPumping ? 'pumpCrank 0.35s ease-in-out' : 'none',
+                                    }}>
+                                        <line x1="40" y1="50" x2="68" y2="38" stroke="#1E3A8A" strokeWidth="4" strokeLinecap="round" />
+                                        <circle cx="68" cy="38" r="6" fill="#FBBF24" stroke="#000" strokeWidth="2" />
+                                    </g>
+                                    {/* Base */}
+                                    <rect x="22" y="98" width="36" height="8" rx="3" fill="#1E40AF" stroke="#000" strokeWidth="1.5" />
+                                </svg>
+                            </div>
+                            {/* Water flowing down pipe indicator */}
+                            {isPumping && (
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '38px',
+                                    left: '37px',
+                                    width: '6px',
+                                    height: '20px',
+                                    background: 'linear-gradient(to bottom, rgba(59,130,246,0), rgba(59,130,246,0.8))',
+                                    borderRadius: '3px',
+                                    animation: 'waterFlow 0.35s ease-in-out',
+                                }} />
+                            )}
+                        </div>
+
+                        {/* RIGHT: Reservoir tank */}
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <div style={{
+                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#888', letterSpacing: '1px'
+                            }}>
+                                <span>TANGKI AIR KAMU</span>
+                                <span style={{ fontFamily: 'var(--font-display)', fontSize: '22px', color: 'var(--blue-bright)', lineHeight: 1 }}>
+                                    {collectedWater}<span style={{ fontSize: '12px' }}>L</span>
+                                </span>
+                            </div>
+
+                            {/* Reservoir tank visual */}
+                            <div style={{
+                                height: '80px',
+                                background: '#e5e7eb',
+                                border: '3px solid var(--black)',
+                                boxShadow: '3px 3px 0 var(--black)',
+                                borderRadius: '8px',
+                                overflow: 'hidden',
+                                position: 'relative',
+                            }}>
+                                {/* Water fill */}
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: `${waterLevelPct}%`,
+                                    background: 'linear-gradient(to bottom, rgba(147,197,253,0.9), rgba(59,130,246,0.95))',
+                                    transition: 'height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                }}>
+                                    {/* Wave top */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '-8px',
+                                        left: '-50%',
+                                        width: '200%',
+                                        height: '16px',
+                                        background: 'rgba(147,197,253,0.7)',
+                                        borderRadius: '50%',
+                                        animation: 'waterWave 2s linear infinite',
+                                    }} />
+                                </div>
+                                {/* Empty label */}
+                                {isOutOfWater && (
+                                    <div style={{
+                                        position: 'absolute', inset: 0,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#aaa',
+                                        letterSpacing: '1px',
+                                    }}>
+                                        TANGKI KOSONG
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Contribution */}
+                            <div style={{
+                                fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#888',
+                                letterSpacing: '1px', textAlign: 'right'
+                            }}>
+                                TOTAL KONTRIBUSIMU: <strong style={{ color: 'var(--black)' }}>{contributedWater}L</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── TAP BUTTON ──────────────────── */}
+            {isMaxStage ? (
+                <div className="card card-yellow" style={{ textAlign: 'center', padding: '24px' }}>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px', color: 'var(--black)' }}>
+                        🌳 GRAND TREE TERCAPAI!
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '1px', marginTop: '6px' }}>
+                        POHON TUMBUH SUBUR BERKAT KONTRIBUSI KALIAN
+                    </div>
+                </div>
+            ) : isOutOfWater ? (
+                <div className="card" style={{
+                    textAlign: 'center', padding: '20px',
+                    background: '#f0f0f0', border: '3px solid #ccc',
+                }}>
+                    <div style={{ fontSize: '36px', marginBottom: '8px' }}>💧</div>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', letterSpacing: '1px', color: '#555' }}>
+                        AIR KAMU SUDAH TERSALURKAN!
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px', marginTop: '6px' }}>
+                        SEMUA {contributedWater}L SUDAH KAMU SUMBANGKAN 🎉
                     </div>
                 </div>
             ) : (
                 <button
-                    className="btn btn-primary btn-full"
-                    style={{
-                        padding: '18px',
-                        fontSize: '16px',
-                        opacity: collectedWater <= 0 ? 0.5 : 1,
-                    }}
                     onClick={handleTap}
-                    disabled={collectedWater <= 0}
+                    disabled={isOutOfWater}
+                    style={{
+                        background: isPumping
+                            ? 'linear-gradient(135deg, #0ea5e9, #2563eb)'
+                            : 'linear-gradient(135deg, #22c55e, #16a34a)',
+                        border: '4px solid var(--black)',
+                        boxShadow: isPumping ? '2px 2px 0 var(--black)' : '6px 6px 0 var(--black)',
+                        borderRadius: '18px',
+                        padding: '20px',
+                        width: '100%',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '4px',
+                        transform: isPumping ? 'translate(4px, 4px)' : 'translate(0,0)',
+                        transition: 'all 0.12s ease',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        touchAction: 'manipulation',
+                    }}
                 >
-                    {collectedWater > 0 ? '💧 TAP TO WATER!' : '💧 AIR HABIS'}
+                    <div style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 'clamp(22px, 6vw, 28px)',
+                        letterSpacing: '2px',
+                        color: 'var(--white)',
+                        textShadow: '2px 2px 0 rgba(0,0,0,0.3)',
+                    }}>
+                        {isPumping ? '💧 MENGALIR...' : '💧 TAP UNTUK MEMOMPA!'}
+                    </div>
+                    <div style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '10px',
+                        color: 'rgba(255,255,255,0.8)',
+                        letterSpacing: '2px',
+                    }}>
+                        {collectedWater}L TERSISA · TAP SEBANYAK MUNGKIN!
+                    </div>
                 </button>
             )}
+
+            {/* Global CSS for animations */}
+            <style>{`
+                @keyframes dropletFly {
+                    0% { transform: translateY(0) scale(1); opacity: 1; }
+                    60% { transform: translateY(-90px) translateX(30px) scale(1.2); opacity: 0.9; }
+                    100% { transform: translateY(-60px) translateX(60px) scale(0.5); opacity: 0; }
+                }
+                @keyframes pumpCrank {
+                    0% { transform: rotate(0deg); }
+                    40% { transform: rotate(-35deg); }
+                    100% { transform: rotate(0deg); }
+                }
+                @keyframes waterFlow {
+                    0% { opacity: 0; transform: scaleY(0); }
+                    50% { opacity: 1; transform: scaleY(1); }
+                    100% { opacity: 0; }
+                }
+                @keyframes waterWave {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(50%); }
+                }
+                @keyframes ripple-expand {
+                    0% { transform: translateX(-50%) scale(0.5); opacity: 0.8; }
+                    100% { transform: translateX(-50%) scale(3); opacity: 0; }
+                }
+            `}</style>
         </div>
     );
 }

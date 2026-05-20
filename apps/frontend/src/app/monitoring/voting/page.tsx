@@ -2,29 +2,36 @@
 
 import NomineeMonitor from '@/components/NomineeMonitor';
 import { useSocket } from '@/hooks/useSocket';
+import TVFrame from '@/components/TVFrame';
 
 export default function VotingMonitoringPage() {
     useSocket();
     return (
-        <div style={{ minHeight: 'calc(100vh - 90px)', padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '48px', letterSpacing: '4px', color: 'var(--yellow)', textShadow: '4px 4px 0 var(--black)' }}>
-                    LIVE VOTING MONITOR
+        <TVFrame bgImage="/assets/branding/BG2.png">
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
+                <div style={{ textAlign: 'center', flexShrink: 0 }}>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', letterSpacing: '4px', color: 'var(--yellow)', textShadow: '3px 3px 0 var(--black)' }}>
+                        LIVE VOTING MONITOR
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 1.2vw, 14px)', color: 'var(--white)', letterSpacing: '3px', marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        <span className="live-dot" style={{ width: '8px', height: '8px', background: 'red', borderRadius: '50%', animation: 'blink 1.5s infinite' }} /> X-TRAORDINARY — GROW WITH HEART : REAL-TIME PARTICIPATION
+                    </div>
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--white)', letterSpacing: '3px', marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <span className="live-dot" /> X-TRAORDINARY — GROW WITH HEART : REAL-TIME PARTICIPATION
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', flex: 1, minHeight: 0 }}>
+                    <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                        <div className="section-label" style={{ flexShrink: 0 }}>👥 TEAM NOMINEES</div>
+                        <div style={{ flex: 1, overflowY: 'auto' }}>
+                            <NomineeMonitor category="team" />
+                        </div>
+                    </div>
+                    <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                        <div className="section-label" style={{ background: 'var(--blue-bright)', flexShrink: 0 }}>🌟 DIGIMER NOMINEES</div>
+                        <div style={{ flex: 1, overflowY: 'auto' }}>
+                            <NomineeMonitor category="digimer" />
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                <div className="card" style={{ padding: '20px' }}>
-                    <div className="section-label">👥 TEAM NOMINEES</div>
-                    <NomineeMonitor category="team" />
-                </div>
-                <div className="card" style={{ padding: '20px' }}>
-                    <div className="section-label" style={{ background: 'var(--blue-bright)' }}>🌟 DIGIMER NOMINEES</div>
-                    <NomineeMonitor category="digimer" />
-                </div>
-            </div>
-        </div>
+        </TVFrame>
     );
 }

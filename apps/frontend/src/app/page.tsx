@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { useSocket } from '@/hooks/useSocket';
 import Login from './Login';
@@ -16,7 +16,7 @@ const getInitials = (name: string) =>
 function WaitingCard({ user }: { user: any }) {
   return (
     <div style={{
-      minHeight: 'calc(100vh - 90px)',
+      minHeight: 'calc(100dvh - 120px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -52,7 +52,7 @@ function WaitingCard({ user }: { user: any }) {
         {/* Name */}
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '28px',
+          fontSize: 'clamp(20px, 6vw, 28px)',
           letterSpacing: '2px',
           color: 'var(--yellow)',
           lineHeight: 1,
@@ -109,15 +109,40 @@ function WaitingCard({ user }: { user: any }) {
 }
 
 export default function Home() {
-  const { user, phase, treeStage } = useGameStore();
+  const { user, phase, treeStage, totalWater, _hasHydrated } = useGameStore();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useSocket();
 
   useEffect(() => {
-    if ((user as any)?.isAdmin) {
+    if (_hasHydrated && (user as any)?.isAdmin) {
       window.location.href = '/admin';
     }
-  }, [user]);
+  }, [user, _hasHydrated]);
+
+  // Reset scroll position on phase change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [phase]);
+
+  if (!mounted || !_hasHydrated) {
+    return (
+      <div style={{
+        minHeight: 'calc(100dvh - 120px)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <div style={{ width: '48px', height: '48px', border: '5px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--yellow)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--white)', letterSpacing: '2px' }}>MENYINKRONKAN...</div>
+      </div>
+    );
+  }
 
   if (!user) {
     return <Login />;
@@ -140,7 +165,7 @@ export default function Home() {
     case 'TRANSITION':
       return (
         <div style={{
-          minHeight: 'calc(100vh - 90px)',
+          minHeight: 'calc(100dvh - 120px)',
           padding: '24px',
           maxWidth: '600px',
           margin: '0 auto',
@@ -156,7 +181,7 @@ export default function Home() {
             padding: '24px',
             textAlign: 'center',
           }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '40px', letterSpacing: '3px', color: 'var(--yellow)', lineHeight: 1, marginBottom: '6px' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 8vw, 40px)', letterSpacing: '3px', color: 'var(--yellow)', lineHeight: 1, marginBottom: '6px' }}>
               🏆 TRIVIA SELESAI!
             </div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(255,255,255,0.5)', letterSpacing: '2px' }}>
@@ -183,7 +208,7 @@ export default function Home() {
       );
 
     case 'WATERING':
-      if (treeStage >= 4) return <Final />;
+      if (treeStage >= 9 || totalWater >= 1000) return <Final />;
       return <Tree />;
 
     case 'FINAL':
@@ -192,7 +217,7 @@ export default function Home() {
     default:
       return (
         <div style={{
-          minHeight: 'calc(100vh - 90px)',
+          minHeight: 'calc(100dvh - 120px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

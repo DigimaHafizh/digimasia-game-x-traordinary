@@ -17,6 +17,13 @@ interface ParticipationMetadata {
     voterNames?: string[];
 }
 
+const PLACEHOLDER_IMAGES = [
+    '/assets/candidates/media__1779164263170.jpg',
+    '/assets/candidates/media__1779164294994.jpg',
+    '/assets/candidates/media__1779164304832.jpg',
+    '/assets/candidates/media__1779164313964.jpg',
+    '/assets/candidates/media__1779164322572.jpg'
+];
 const getInitials = (name: string) =>
     name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
@@ -56,9 +63,9 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
     const accentColor = category === 'team' ? 'var(--yellow)' : 'var(--blue-bright)';
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', justifyContent: 'center' }}>
             {/* Participation header */}
-            <div className="card" style={{ padding: '16px' }}>
+            <div className="card" style={{ padding: '12px 16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
                     <div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px' }}>VOTING PARTICIPATION</div>
@@ -104,27 +111,38 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
 
             {/* Section label */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div className="section-label" style={{ background: category === 'team' ? 'var(--orange)' : 'var(--blue-bright)' }}>
-                    {category === 'team' ? '🏆 TEAM CANDIDATES' : '🌟 INDIVIDUAL NOMINEES'}
-                </div>
+                <img
+                    src={category === 'team' ? '/assets/branding/Logo_X-Traordinary Squad.png' : '/assets/branding/Logo_X-Traordinary Digimers.png'}
+                    alt={category === 'team' ? 'Squad Candidates' : 'Individual Nominees'}
+                    style={{ height: '48px', width: 'auto' }}
+                />
                 <span className="badge badge-blue">{stats.length} NOMINEES</span>
             </div>
 
             {/* Candidate Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                 {stats.map((item, idx) => (
-                    <div key={item.id} className="candidate" style={{ padding: '12px', cursor: 'default', overflow: 'hidden' }}>
+                    <div key={item.id} className="candidate" style={{ padding: '10px', cursor: 'default', overflow: 'hidden' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                             {/* Blurred Avatar - mystery effect */}
-                            <div className="cand-avatar" style={{
-                                background: AVATAR_COLORS[idx % AVATAR_COLORS.length],
-                                width: '44px',
-                                height: '44px',
-                                fontSize: '16px',
-                                filter: 'blur(6px)',
-                                userSelect: 'none'
+                            <div style={{
+                                width: '48px',
+                                height: '48px',
+                                borderRadius: '8px',
+                                overflow: 'hidden',
+                                border: '2px solid var(--black)',
                             }}>
-                                {getInitials(item.name)}
+                                <img
+                                    src={PLACEHOLDER_IMAGES[idx % PLACEHOLDER_IMAGES.length]}
+                                    alt="Mystery Candidate"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        filter: 'blur(6px) grayscale(50%)',
+                                        userSelect: 'none'
+                                    }}
+                                />
                             </div>
                             <div style={{ overflow: 'hidden', flex: 1 }}>
                                 {/* Censored name */}

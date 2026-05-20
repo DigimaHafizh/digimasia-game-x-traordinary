@@ -30,6 +30,20 @@ export const useSocket = () => {
             setUserState(state);
         });
 
+        socket.on('system_resetted', () => {
+            console.log('System reset by admin - cleaning up...');
+            const currentUser = useGameStore.getState().user;
+
+            if (currentUser?.isAdmin) {
+                // Admins stay logged in, just informed
+                useGameStore.getState().setToastMessage("SISTEM TELAH DI-RESET. DATA GAME TELAH DIKOSONGKAN.");
+            } else {
+                // Users get logged out and redirected
+                useGameStore.getState().reset();
+                window.location.href = '/';
+            }
+        });
+
         socket.on('disconnect', () => {
             console.log('Disconnected from WebSocket');
         });

@@ -9,15 +9,15 @@ import SplashScreen from '@/components/c-SplashScreen';
 const PinSlot = ({ value, isFocused, index, showValue, colorOverride }: { value: string; isFocused: boolean; index: number; showValue?: boolean; colorOverride?: string }) => {
     return (
         <div style={{
-            width: '72px',
-            height: '84px',
+            width: 'clamp(44px, 12vw, 72px)',
+            height: 'clamp(60px, 16vw, 84px)',
             background: colorOverride || (value ? '#FFD600' : '#FFF'),
             border: '4px solid #000',
             boxShadow: value ? '6px 6px 0 #000' : '2px 2px 0 #000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '42px',
+            fontSize: 'clamp(28px, 8vw, 42px)',
             fontWeight: '900',
             color: '#000', // Always black for White/Yellow/Pink contrast
             borderRadius: '8px',
@@ -130,7 +130,7 @@ export default function Login() {
 
     return (
         <div style={{
-            minHeight: 'calc(100vh - 90px)',
+            minHeight: 'calc(100dvh - 120px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -185,7 +185,7 @@ export default function Login() {
                     border: '4px solid #000',
                     borderTop: 'none',
                     boxShadow: '10px 10px 0 #000',
-                    padding: '36px 36px 32px',
+                    padding: 'clamp(24px, 6vw, 36px) clamp(16px, 5vw, 36px)',
                     textAlign: 'center',
                 }}>
                     {/* Title Block */}
@@ -201,23 +201,18 @@ export default function Login() {
                         }}>
                             <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', letterSpacing: '4px', color: '#000', fontWeight: 900 }}>ACCESS PORTAL</span>
                         </div>
-                        <div style={{
-                            fontFamily: 'var(--font-display)',
-                            fontSize: '52px',
-                            letterSpacing: '1px',
-                            color: '#FFD600',
-                            lineHeight: 0.9,
-                            textShadow: '5px 5px 0 #000, -2px -2px 0 #FF1493',
-                            marginBottom: '4px',
-                        }}>X-TRAORDINARY</div>
-                        <div style={{
-                            fontFamily: 'var(--font-display)',
-                            fontSize: '24px',
-                            letterSpacing: '5px',
-                            color: '#FFFFFF',
-                            textShadow: '3px 3px 0 #000',
-                            lineHeight: 1,
-                        }}>GROW WITH HEART</div>
+                        <img
+                            src="/assets/branding/Logo_Being X-Traordinnary GWH.png"
+                            alt="Being X-Traordinary Grow With Heart"
+                            style={{
+                                width: '100%',
+                                maxWidth: '320px',
+                                height: 'auto',
+                                margin: '0 auto 16px',
+                                display: 'block',
+                                animation: 'float 6s ease-in-out infinite'
+                            }}
+                        />
                     </div>
 
                     {/* ── Inline PIN Input + Slots ── */}
@@ -246,8 +241,8 @@ export default function Login() {
                                 cursor: 'text',
                             }}
                         >
-                            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ display: 'flex', gap: 'clamp(6px, 1.5vw, 12px)', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+                                <div style={{ display: 'flex', gap: 'clamp(4px, 1.2vw, 10px)' }}>
                                     {[0, 1, 2, 3].map(i => (
                                         <PinSlot
                                             key={i}
@@ -262,7 +257,7 @@ export default function Login() {
                                 </div>
 
                                 {/* ── REFINED PREMIUM RETRO EYE TOGGLE ── */}
-                                <div style={{ position: 'relative', width: '64px', height: '64px' }} onClick={e => e.stopPropagation()}>
+                                <div style={{ position: 'relative', width: 'clamp(44px, 13vw, 64px)', height: 'clamp(44px, 13vw, 64px)' }} onClick={e => e.stopPropagation()}>
                                     <button
                                         type="button"
                                         onClick={() => setShowPin(!showPin)}
@@ -384,36 +379,36 @@ export default function Login() {
                             disabled={pin.length < 4 || isLoading}
                             style={{
                                 width: '100%',
-                                padding: '20px',
+                                padding: '12px 16px',
                                 background: pin.length === 4 ? '#FF0099' : '#333',
-                                border: '4px solid #000',
-                                boxShadow: pin.length === 4 ? '8px 8px 0 #000' : 'none',
+                                border: '3px solid #000',
+                                boxShadow: pin.length === 4 ? '5px 5px 0 #000' : 'none',
                                 color: '#FFF',
-                                fontSize: '24px',
+                                fontSize: '18px',
                                 fontWeight: '900',
                                 textTransform: 'uppercase',
                                 cursor: pin.length === 4 ? 'pointer' : 'not-allowed',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                gap: '16px',
+                                gap: '12px',
                                 transition: 'all 0.2s',
-                                transform: pin.length === 4 ? 'none' : 'translate(4px, 4px)',
-                                marginTop: '48px',
+                                transform: pin.length === 4 ? 'none' : 'translate(2px, 2px)',
+                                marginTop: '24px',
                             }}
-                            onMouseDown={e => { if (pin.length === 4) { (e.currentTarget as any).style.transform = 'translate(4px, 4px)'; (e.currentTarget as any).style.boxShadow = '4px 4px 0 #000'; } }}
-                            onMouseUp={e => { if (pin.length === 4) { (e.currentTarget as any).style.transform = 'none'; (e.currentTarget as any).style.boxShadow = '8px 8px 0 #000'; } }}
+                            onMouseDown={e => { if (pin.length === 4) { (e.currentTarget as any).style.transform = 'translate(2px, 2px)'; (e.currentTarget as any).style.boxShadow = '2px 2px 0 #000'; } }}
+                            onMouseUp={e => { if (pin.length === 4) { (e.currentTarget as any).style.transform = 'none'; (e.currentTarget as any).style.boxShadow = '5px 5px 0 #000'; } }}
                         >
                             {isLoading ? (
                                 <div style={{ display: 'flex', gap: '8px' }}>
-                                    <div className="dot" style={{ width: '8px', height: '8px', background: '#FFF', borderRadius: '50%', animation: 'blink 1s 0s infinite' }} />
-                                    <div className="dot" style={{ width: '8px', height: '8px', background: '#FFF', borderRadius: '50%', animation: 'blink 1s 0.2s infinite' }} />
-                                    <div className="dot" style={{ width: '8px', height: '8px', background: '#FFF', borderRadius: '50%', animation: 'blink 1s 0.4s infinite' }} />
+                                    <div className="dot" style={{ width: '6px', height: '6px', background: '#FFF', borderRadius: '50%', animation: 'blink 1s 0s infinite' }} />
+                                    <div className="dot" style={{ width: '6px', height: '6px', background: '#FFF', borderRadius: '50%', animation: 'blink 1s 0.2s infinite' }} />
+                                    <div className="dot" style={{ width: '6px', height: '6px', background: '#FFF', borderRadius: '50%', animation: 'blink 1s 0.4s infinite' }} />
                                 </div>
                             ) : (
                                 <>
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(2px 2px 0 rgba(0,0,0,0.5))' }}>
-                                        <path d="M5 12H19M19 12L13 6M19 12L13 6.99976M19 12L13 18" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(1px 1px 0 rgba(0,0,0,0.5))' }}>
+                                        <path d="M5 12H19M19 12L13 6M19 12L13 6.99976M19 12L13 18" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" style={{ animation: 'spin 4s linear infinite' }} />
                                     </svg>
                                     <span>MASUK SEKARANG</span>

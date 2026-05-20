@@ -5,6 +5,7 @@ export declare class SessionService implements OnModuleInit {
     private prisma;
     private readonly logger;
     onStateChange: (state: any) => void;
+    onReset: () => void;
     private state;
     constructor(prisma: PrismaService);
     onModuleInit(): Promise<void>;

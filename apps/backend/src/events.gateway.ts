@@ -31,6 +31,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection {
     this.sessionService.onStateChange = (state) => {
       this.server.emit('session_state', state);
     };
+
+    this.sessionService.onReset = () => {
+      this.server.emit('system_resetted');
+    };
   }
 
   handleConnection(client: Socket) {

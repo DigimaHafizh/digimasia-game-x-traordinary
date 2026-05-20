@@ -49,11 +49,17 @@ export default function Trivia() {
     }, [currentQuestion]);
 
     const handleSelect = async (optIdx: number) => {
-        // Bug Fix 1: Block if already submitted OR timer has run out
-        if (!user || !question || isSubmitted || timer === 0) return;
+        // Block if timer has run out
+        if (!user || !question || timer === 0) return;
+
+        // Prevent redundant clicks if already selected this exact option
+        if (selectedOption === optIdx) return;
 
         setSelectedOption(optIdx);
         setIsSubmitted(true);
+        // Clear previous results to ensure new state is fresh
+        setIsCorrect(null);
+        setPointsEarned(0);
 
         try {
             const res = await fetch(`${getBackendUrl()}/trivia-answer`, {
@@ -85,7 +91,7 @@ export default function Trivia() {
     };
 
     if (isLoading || !question) return (
-        <div style={{ minHeight: 'calc(100vh - 90px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ minHeight: 'calc(100dvh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="card" style={{ padding: '24px 40px', textAlign: 'center' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', letterSpacing: '2px' }}>MEMUAT SOAL...</div>
             </div>
@@ -101,7 +107,7 @@ export default function Trivia() {
 
     return (
         <div style={{
-            minHeight: 'calc(100vh - 90px)',
+            minHeight: 'calc(100dvh - 120px)',
             padding: '24px',
             maxWidth: '480px',
             margin: '0 auto',
@@ -113,13 +119,13 @@ export default function Trivia() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div
                     className={`timer-circle${timer <= 3 ? ' urgent' : ''}`}
-                    style={{ width: '56px', height: '56px' }}
+                    style={{ width: 'clamp(44px, 12vw, 56px)', height: 'clamp(44px, 12vw, 56px)' }}
                 >
-                    <div className="timer-num" style={{ fontSize: '24px' }}>{timer}</div>
+                    <div className="timer-num" style={{ fontSize: 'clamp(20px, 6vw, 24px)' }}>{timer}</div>
                     <div className="timer-label">SECS</div>
                 </div>
                 <div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'rgba(255,255,255,0.6)', letterSpacing: '1px' }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.9)', fontWeight: 800, letterSpacing: '1px' }}>
                         PERTANYAAN {currentQuestion} / 10
                     </div>
                     {isTimedOut && (
@@ -274,9 +280,9 @@ export default function Trivia() {
                             <button
                                 key={idx}
                                 className={optClass}
-                                // Bug Fix 1: disabled when submitted (already picked) or timer=0
+                                // Allow user to change answer as long as timer hasn't run out
                                 onClick={() => handleSelect(idx)}
-                                disabled={isSubmitted}
+                                disabled={false}
                             >
                                 <span className="opt-letter">{OPTION_LETTERS[idx]}</span>
                                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px' }}>{opt}</span>
@@ -295,10 +301,10 @@ export default function Trivia() {
                             animation: 'pop-in 0.3s ease-out',
                         }}>
                             <div style={{ fontFamily: 'var(--font-display)', fontSize: '16px', letterSpacing: '1px', color: 'var(--black)' }}>
-                                ✔ JAWABAN TERKUNCI!
+                                ✔ JAWABAN TERSIMPAN!
                             </div>
                             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', marginTop: '4px', letterSpacing: '1px' }}>
-                                TUNGGU TIMER HABIS UNTUK MELIHAT HASIL
+                                BISA UBAH HINGGA WAKTU HABIS
                             </div>
                         </div>
                     )}

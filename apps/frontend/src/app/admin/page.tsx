@@ -25,6 +25,7 @@ export default function AdminPage() {
     const { phase, setSessionState, totalWater, treeStage } = useGameStore();
     const [showWinnerReveal, setShowWinnerReveal] = useState(false);
     const [showQRModal, setShowQRModal] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [origin, setOrigin] = useState('');
 
     useEffect(() => { setOrigin(window.location.origin); }, []);
@@ -51,12 +52,15 @@ export default function AdminPage() {
     };
 
     const handleReset = async () => {
-        if (!confirm('RESET SYSTEM? Suara, jawaban, dan poin akan nol kembali. DATA USER TETAP AMAN.')) return;
+        setShowResetConfirm(true);
+    };
+
+    const executeReset = async () => {
+        setShowResetConfirm(false);
         try {
             await fetch(`${getBackendUrl()}/admin/reset`, { method: 'POST' });
-            alert('System reset successfully!');
-            window.location.reload();
-        } catch { alert('Gagal reset system'); }
+            useGameStore.getState().setToastMessage("SYSTEM RESET SUCCESSFULLY!");
+        } catch { useGameStore.getState().setToastMessage("GAGAL RESET SYSTEM!"); }
     };
 
     // ── Phase label for status bar ────────────
@@ -117,10 +121,10 @@ export default function AdminPage() {
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                     <button className="btn" style={{
-                        background: 'var(--blue-bright)',
-                        color: 'var(--white)',
+                        background: 'var(--lime)',
+                        color: 'var(--navy-dark)',
                         padding: '10px 20px',
                         fontSize: '13px',
                         boxShadow: '4px 4px 0 var(--black)'
@@ -129,13 +133,23 @@ export default function AdminPage() {
                     </button>
                     <div style={{ width: '2px', height: '32px', background: 'rgba(0,0,0,0.1)', margin: '0 4px' }} />
                     <button className="btn" style={{
-                        background: 'var(--pink-hot)',
-                        color: 'var(--white)',
+                        background: 'var(--yellow)',
+                        color: 'var(--navy-dark)',
                         padding: '10px 20px',
                         fontSize: '13px',
                         boxShadow: '4px 4px 0 var(--black)'
                     }} onClick={handleReset}>
                         ↺ RESET SYSTEM
+                    </button>
+                    <button className="btn" style={{
+                        background: 'var(--pink-hot)',
+                        color: 'var(--white)',
+                        padding: '10px 20px',
+                        fontSize: '13px',
+                        boxShadow: '4px 4px 0 var(--black)',
+                        fontWeight: '900',
+                    }} onClick={() => { useGameStore.getState().reset(); window.location.href = '/'; }}>
+                        🚪 KELUAR
                     </button>
                 </div>
             </div>
@@ -196,6 +210,9 @@ export default function AdminPage() {
                             <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/trivia', '_blank')}>
                                 ❓ Trivia Monitor ↗
                             </button>
+                            <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/tree', '_blank')}>
+                                🌳 Tree Monitor ↗
+                            </button>
                             <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/results', '_blank')}>
                                 🏆 Result Reveal ↗
                             </button>
@@ -236,15 +253,7 @@ export default function AdminPage() {
                                     <TriviaMonitor />
                                 )}
                                 {phase === 'WATERING' && (
-                                    <div>
-                                        <TreeMonitor />
-                                        <div style={{ marginTop: '16px' }}>
-                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', marginBottom: '10px' }}>
-                                                TOP CONTRIBUTORS
-                                            </div>
-                                            <LeaderboardWidget />
-                                        </div>
-                                    </div>
+                                    <TreeMonitor />
                                 )}
                                 {phase === 'LOGIN' && (
                                     <div className="card" style={{ padding: '24px', border: '3px solid var(--black)', background: 'rgba(255, 255, 255, 0.5)' }}>
@@ -281,15 +290,19 @@ export default function AdminPage() {
             {showQRModal && (
                 <div
                     style={{
-                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+                        position: 'fixed', inset: 0,
+                        backgroundColor: 'var(--navy-dark)',
+                        backgroundImage: 'radial-gradient(var(--blue-bright) 1px, transparent 1px)',
+                        backgroundSize: '24px 24px',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         zIndex: 1000, padding: '24px',
+                        animation: 'pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
                     }}
                     onClick={() => setShowQRModal(false)}
                 >
                     <div
                         className="card"
-                        style={{ maxWidth: '380px', width: '100%', textAlign: 'center', padding: '32px' }}
+                        style={{ maxWidth: '380px', width: '100%', textAlign: 'center', padding: '32px', boxShadow: '20px 20px 0 var(--black)' }}
                         onClick={e => e.stopPropagation()}
                     >
                         <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px', marginBottom: '4px' }}>
@@ -299,14 +312,62 @@ export default function AdminPage() {
                             SCAN UNTUK AKSES GAME
                         </div>
                         <div style={{ background: 'white', padding: '16px', borderRadius: '8px', border: 'var(--border)', display: 'inline-block', marginBottom: '16px' }}>
-                            <QRCode value={origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'} size={180} />
+                            <QRCode value={origin || 'https://digimasia.id'} size={180} />
                         </div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--blue-bright)', wordBreak: 'break-all', marginBottom: '20px' }}>
-                            {origin || 'https://digimasia-game-x-traordinary-fronte.vercel.app'}
+                            {origin || 'https://digimasia.id'}
                         </div>
-                        <button className="btn btn-danger btn-full" onClick={() => setShowQRModal(false)}>
-                            TUTUP
+                        <button className="btn btn-danger btn-full" style={{ boxShadow: '5px 5px 0 var(--black)' }} onClick={() => setShowQRModal(false)}>
+                            TUTUP JENDELA
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* ── RESET CONFIRM MODAL ── */}
+            {showResetConfirm && (
+                <div
+                    style={{
+                        position: 'fixed', inset: 0,
+                        backgroundColor: 'transparent',
+                        pointerEvents: 'auto',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        zIndex: 1000, padding: '24px',
+                        animation: 'pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }}
+                >
+                    <div
+                        className="card"
+                        style={{ maxWidth: '400px', width: '100%', textAlign: 'center', padding: '40px', background: 'var(--white)', border: '5px solid var(--black)', boxShadow: '15px 15px 0 var(--black)' }}
+                    >
+                        <div style={{
+                            width: '80px', height: '80px',
+                            background: '#FFD600',
+                            border: '4px solid var(--black)',
+                            borderRadius: '50%',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: '42px',
+                            margin: '0 auto 24px',
+                            boxShadow: '6px 6px 0 var(--black)',
+                            transform: 'rotate(-5deg)'
+                        }}>⚠️</div>
+
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '36px', letterSpacing: '2px', marginBottom: '12px', color: 'var(--black)', lineHeight: 1 }}>
+                            RESET SYSTEM?
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#333', letterSpacing: '1px', marginBottom: '32px', lineHeight: 1.6 }}>
+                            Seluruh data voting, jawaban, dan poin akan di-reset ke nol.<br />
+                            <span style={{ background: 'var(--yellow)', padding: '2px 6px', fontWeight: 900 }}>DATA USER TETAP AMAN.</span>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '16px' }}>
+                            <button className="btn" style={{ flex: 1, background: 'var(--navy-dark)', color: 'var(--white)', padding: '16px', fontSize: '14px' }} onClick={() => setShowResetConfirm(false)}>
+                                TIDAK, BATAL
+                            </button>
+                            <button className="btn" style={{ flex: 1, background: '#FF0099', color: 'white', padding: '16px', fontSize: '14px', boxShadow: '6px 6px 0 var(--black)' }} onClick={executeReset}>
+                                YA, RESET!
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

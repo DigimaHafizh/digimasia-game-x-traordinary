@@ -9,6 +9,7 @@ export class SessionService implements OnModuleInit {
 
     // Callback untuk broadcast (diisi oleh gateway)
     public onStateChange: (state: any) => void = () => { };
+    public onReset: () => void = () => { };
 
     private state = {
         phase: 'LOGIN' as GamePhase,
@@ -57,8 +58,8 @@ export class SessionService implements OnModuleInit {
         const session = await tx.session.findUnique({ where: { id: 'singleton' } });
         const newTotal = (session?.totalWater || 0) + amount;
 
-        // 2. Update DB dalam transaksi (Max 4 stages, 250L per stage)
-        const newStage = Math.min(4, Math.floor(newTotal / 250));
+        // 2. Update DB dalam transaksi (Max 10 stages, 100L per stage)
+        const newStage = Math.min(9, Math.floor(newTotal / 100));
         await tx.session.update({
             where: { id: 'singleton' },
             data: {
@@ -74,7 +75,7 @@ export class SessionService implements OnModuleInit {
     }
 
     private async internalUpdateWater(total: number) {
-        const newStage = Math.min(4, Math.floor(total / 250));
+        const newStage = Math.min(9, Math.floor(total / 100));
         if (this.state.treeStage !== newStage) {
             this.state.treeStage = newStage;
         }
@@ -92,19 +93,21 @@ export class SessionService implements OnModuleInit {
             totalWater: 0,
         };
         this.onStateChange(this.state);
+        this.onReset();
         await this.saveToDb();
 
         // Clean up DB
         await this.prisma.vote.deleteMany();
         await this.prisma.userAnswer.deleteMany();
 
-        // Reset user progress instead of deleting them
+        // Reset user progress instead of deleting them (Only for non-admins)
         await this.prisma.user.updateMany({
+            where: { isAdmin: false },
             data: {
+                isJoined: false,
                 collectedWater: 0,
                 contributedWater: 0,
                 score: 0,
-                isJoined: false
             }
         });
     }

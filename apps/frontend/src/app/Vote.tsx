@@ -12,6 +12,13 @@ interface Candidate {
     type: string;
 }
 
+const PLACEHOLDER_IMAGES = [
+    '/assets/candidates/media__1779164263170.jpg',
+    '/assets/candidates/media__1779164294994.jpg',
+    '/assets/candidates/media__1779164304832.jpg',
+    '/assets/candidates/media__1779164313964.jpg',
+    '/assets/candidates/media__1779164322572.jpg'
+];
 const getInitials = (name: string) =>
     name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
@@ -82,23 +89,18 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
 
     return (
         <div style={{
-            minHeight: 'calc(100vh - 90px)',
+            minHeight: 'calc(100dvh - 120px)',
             padding: '24px',
             maxWidth: '960px',
             margin: '0 auto',
         }}>
             {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                <div style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '42px',
-                    letterSpacing: '3px',
-                    color: 'var(--yellow)',
-                    textShadow: '3px 3px 0px var(--black)',
-                    lineHeight: 1,
-                }}>
-                    {type === 'team' ? 'TEAM OF THE YEAR' : 'DIGIMER OF THE YEAR'}
-                </div>
+                <img
+                    src={type === 'team' ? '/assets/branding/Logo_X-Traordinary Squad.png' : '/assets/branding/Logo_X-Traordinary Digimers.png'}
+                    alt={type === 'team' ? 'The X-Traordinary Squad' : 'The X-Traordinary Digimers'}
+                    style={{ height: 'auto', width: '100%', maxWidth: '350px', margin: '0 auto', display: 'block' }}
+                />
                 <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: '11px',
@@ -117,7 +119,7 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
                 display: 'flex',
                 flexWrap: 'wrap',
                 justifyContent: 'center',
-                gap: '20px',
+                gap: 'clamp(10px, 3vw, 20px)',
                 margin: '0 auto 40px auto',
                 maxWidth: '800px',
                 padding: '0 20px',
@@ -126,8 +128,9 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
                     const isSelected = selectedId === c.id;
                     const isVoted = votedId === c.id;
                     const isOwnTeam = type === 'team' && c.division === user?.division;
+                    const isSelf = type === 'digimer' && c.id === user?.id;
                     const avatarColor = AVATAR_COLORS[idx % AVATAR_COLORS.length];
-                    const isDisabled = Boolean(votedId) || isOwnTeam;
+                    const isDisabled = Boolean(votedId) || isOwnTeam || isSelf;
 
                     return (
                         <div
@@ -135,13 +138,13 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
                             className={`candidate animate-pop-in${isSelected ? ' selected' : ''}${isDisabled && !isVoted ? ' locked' : ''}`}
                             style={{
                                 position: 'relative',
-                                padding: '24px 16px 20px',
+                                padding: 'clamp(16px, 4vw, 24px) clamp(10px, 2vw, 16px) clamp(12px, 3vw, 20px)',
                                 border: isVoted ? '4px solid var(--navy-dark)' : isSelected ? '4px solid var(--blue-bright)' : '3px solid var(--black)',
                                 background: isVoted ? 'var(--lime)' : isSelected ? '#EEF6FF' : 'var(--white)',
                                 opacity: (votedId && c.id !== votedId) ? 0.55 : 1,
                                 filter: (votedId && c.id !== votedId) ? 'grayscale(0.7)' : 'none',
-                                width: '180px',
-                                minWidth: '160px',
+                                width: 'clamp(140px, 42vw, 180px)',
+                                minWidth: '130px',
                                 textAlign: 'center',
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -171,20 +174,26 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
                                     boxShadow: '2px 2px 0 var(--black)',
                                     order: -1,
                                 }}>
-                                    {isVoted ? '✔ TERKUNCI' : isOwnTeam ? '🚫 TIM SENDIRI' : '★ TERPILIH'}
+                                    {isVoted ? '✔ TERKUNCI' : isOwnTeam || isSelf ? (isOwnTeam ? '🚫 TIM SENDIRI' : '🚫 DIRI SENDIRI') : '★ TERPILIH'}
                                 </div>
                             )}
 
-                            {/* Avatar — Bigger, centered */}
-                            <div className="cand-avatar" style={{
+                            {/* Full-width Profile Photo */}
+                            <div style={{
+                                width: '100%',
+                                aspectRatio: '1',
+                                borderRadius: '12px',
+                                border: '3px solid var(--black)',
+                                overflow: 'hidden',
                                 background: avatarColor,
-                                width: '72px',
-                                height: '72px',
-                                fontSize: '26px',
-                                margin: '4px 0 0',
-                                flexShrink: 0,
+                                order: -2,
+                                boxShadow: '2px 2px 0 var(--black)'
                             }}>
-                                {getInitials(c.name)}
+                                <img
+                                    src={PLACEHOLDER_IMAGES[idx % PLACEHOLDER_IMAGES.length]}
+                                    alt={c.name}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
                             </div>
 
                             {/* Name + Division below */}
@@ -210,10 +219,7 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
                             background: selectedId ? 'var(--pink-hot)' : '#888',
                             color: 'var(--white)',
                             border: '3px solid var(--black)',
-                            boxShadow: selectedId ? '6px 6px 0 var(--black)' : '3px 3px 0 var(--black)',
                             opacity: selectedId ? 1 : 0.6,
-                            transform: selectedId ? 'none' : 'none',
-                            transition: 'all 0.15s',
                         }}
                         disabled={!selectedId || isSubmitting}
                         onClick={handleSubmit}

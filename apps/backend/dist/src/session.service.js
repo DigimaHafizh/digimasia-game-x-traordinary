@@ -17,6 +17,7 @@ let SessionService = SessionService_1 = class SessionService {
     prisma;
     logger = new common_1.Logger(SessionService_1.name);
     onStateChange = () => { };
+    onReset = () => { };
     state = {
         phase: 'LOGIN',
         currentQuestion: 0,
@@ -57,7 +58,7 @@ let SessionService = SessionService_1 = class SessionService {
     async incrementWaterInTransaction(tx, amount) {
         const session = await tx.session.findUnique({ where: { id: 'singleton' } });
         const newTotal = (session?.totalWater || 0) + amount;
-        const newStage = Math.min(4, Math.floor(newTotal / 250));
+        const newStage = Math.min(9, Math.floor(newTotal / 100));
         await tx.session.update({
             where: { id: 'singleton' },
             data: {
@@ -70,7 +71,7 @@ let SessionService = SessionService_1 = class SessionService {
         this.onStateChange(this.state);
     }
     async internalUpdateWater(total) {
-        const newStage = Math.min(4, Math.floor(total / 250));
+        const newStage = Math.min(9, Math.floor(total / 100));
         if (this.state.treeStage !== newStage) {
             this.state.treeStage = newStage;
         }
@@ -86,15 +87,17 @@ let SessionService = SessionService_1 = class SessionService {
             totalWater: 0,
         };
         this.onStateChange(this.state);
+        this.onReset();
         await this.saveToDb();
         await this.prisma.vote.deleteMany();
         await this.prisma.userAnswer.deleteMany();
         await this.prisma.user.updateMany({
+            where: { isAdmin: false },
             data: {
+                isJoined: false,
                 collectedWater: 0,
                 contributedWater: 0,
                 score: 0,
-                isJoined: false
             }
         });
     }

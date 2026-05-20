@@ -2,20 +2,15 @@
 
 import WinnerAnnouncer from '@/components/WinnerAnnouncer';
 import { useSocket } from '@/hooks/useSocket';
+import TVFrame from '@/components/TVFrame';
 
 export default function WinnerRevealPage() {
     useSocket();
     return (
-        <div style={{ minHeight: 'calc(100vh - 90px)', padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '48px', letterSpacing: '4px', color: 'var(--yellow)', textShadow: '4px 4px 0 var(--black)' }}>
-                    VOTING WINNERS
-                </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--white)', letterSpacing: '3px', marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <span className="live-dot" /> X-TRAORDINARY — GROW WITH HEART : THE FINAL CELEBRATION
-                </div>
+        <TVFrame bgImage="/assets/branding/BG2.png">
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+                <WinnerAnnouncer />
             </div>
-            <WinnerAnnouncer />
-        </div>
+        </TVFrame>
     );
 }

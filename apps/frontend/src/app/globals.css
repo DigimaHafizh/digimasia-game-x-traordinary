@@ -57,16 +57,17 @@ body {
 
 body {
   background-color: var(--blue-main);
-  background-image:
-    repeating-linear-gradient(45deg, rgba(41, 121, 255, 0.05) 0px, rgba(41, 121, 255, 0.05) 1px, transparent 1px, transparent 10px),
-    radial-gradient(var(--blue-bright) 2px, transparent 2px);
-  background-size: 100% 100%, 32px 32px;
+  background-image: url('/assets/branding/BG2.png');
+  background-size: cover;
+  background-position: center;
   background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--navy-dark);
   font-family: var(--font-body);
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
 }
 
@@ -97,7 +98,7 @@ h4 {
   background: var(--yellow);
   border-bottom: var(--border);
   overflow: hidden;
-  padding: 8px 0;
+  padding: clamp(4px, 1vw, 8px) 0;
   position: sticky;
   top: 0;
   z-index: 200;
@@ -113,7 +114,7 @@ h4 {
 .ticker-inner span {
   color: var(--navy-dark);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: clamp(10px, 2.5vw, 12px);
   font-weight: 700;
   letter-spacing: 2px;
   flex-shrink: 0;
@@ -133,30 +134,37 @@ h4 {
 .topbar {
   background: var(--pink-hot);
   border-bottom: var(--border);
-  padding: 10px 24px;
+  padding: 0 clamp(12px, 3vw, 24px) 0 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky;
-  top: 37px;
+  top: clamp(24px, 6vw, 37px);
   z-index: 150;
+  gap: 8px;
 }
 
 .topbar-logo {
   font-family: var(--font-display);
-  font-size: 26px;
-  letter-spacing: 2px;
+  font-size: clamp(16px, 5vw, 26px);
+  letter-spacing: 1px;
   color: var(--white);
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
 }
 
 .topbar-logo span {
   color: var(--yellow);
+  font-size: clamp(10px, 3.5vw, 16px);
 }
 
 .topbar-badges {
   display: flex;
-  gap: 10px;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(4px, 1vw, 10px);
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 /* ── STICKERS / DECORATIONS ── */
@@ -428,14 +436,16 @@ h4 {
   background: var(--white);
   color: var(--pink-hot);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: clamp(8px, 2vw, 10px);
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 6px;
   border-radius: 4px;
   letter-spacing: 1px;
   display: flex;
   align-items: center;
   gap: 4px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 /* ══ LIVE DOT ══ */
