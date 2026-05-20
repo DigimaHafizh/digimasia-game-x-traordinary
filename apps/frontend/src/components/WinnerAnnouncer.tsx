@@ -364,16 +364,14 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
         setFlashActive(true);
         setTimeout(() => setFlashActive(false), 700);
 
-        const defaults = { startVelocity: 45, spread: 360, ticks: 100, zIndex: 10000, particleCount: 150 };
+        // Lightweight bursts — GPU-friendly
+        confetti({ startVelocity: 40, spread: 360, ticks: 80, zIndex: 10000, particleCount: 60, origin: { x: 0.25, y: 0.55 } });
+        confetti({ startVelocity: 40, spread: 360, ticks: 80, zIndex: 10000, particleCount: 60, origin: { x: 0.75, y: 0.55 } });
 
-        // Two big bursts instead of a heavy loop to prevent lag
-        confetti({ ...defaults, origin: { x: 0.2, y: 0.5 } });
-        confetti({ ...defaults, origin: { x: 0.8, y: 0.5 } });
-
-        // One small follow-up burst
+        // Small follow-up after initial excitement fades
         setTimeout(() => {
-            confetti({ ...defaults, particleCount: 80, origin: { x: 0.5, y: 0.4 } });
-        }, 400);
+            confetti({ startVelocity: 30, spread: 180, ticks: 60, zIndex: 10000, particleCount: 30, origin: { x: 0.5, y: 0.45 } });
+        }, 500);
     };
 
     const handleWinnerReveal = (type: 'team' | 'digimer') => {
@@ -428,8 +426,8 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                     50% { transform: translateY(-10px) rotate(5deg); }
                 }
                 @keyframes sparkleGlow {
-                    0%, 100% { box-shadow: 0 0 20px var(--glow-color, orange), 8px 8px 0 var(--black); }
-                    50% { box-shadow: 0 0 50px var(--glow-color, orange), 8px 8px 0 var(--black); }
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.04); }
                 }
                 @keyframes screenFlash {
                     0% { opacity: 1; }

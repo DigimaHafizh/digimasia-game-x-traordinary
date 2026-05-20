@@ -46,7 +46,7 @@ export default function Trivia() {
         }
     };
 
-    // Stop BGM and play fanfare when Trivia ends (phase → TRANSITION)
+    // Stop BGM and play fanfare IMMEDIATELY when Trivia ends
     const hasPlayedCompleteRef = useRef(false);
     useLayoutEffect(() => {
         if ((phase === 'TRANSITION' || (currentQuestion >= 10 && timer === 0)) && !hasPlayedCompleteRef.current) {
@@ -55,6 +55,15 @@ export default function Trivia() {
             playComplete();
         }
     }, [phase, timer, currentQuestion, stopBGM, playComplete]);
+
+    // Play correct-answer SFX exactly when feedback UI appears (same render frame)
+    const prevIsCorrect = useRef<boolean | null>(null);
+    useLayoutEffect(() => {
+        if (isCorrect === true && prevIsCorrect.current !== true) {
+            playStageUp();
+        }
+        prevIsCorrect.current = isCorrect;
+    }, [isCorrect, playStageUp]);
 
     // Fetch question whenever currentQuestion changes
     useEffect(() => {
@@ -126,9 +135,7 @@ export default function Trivia() {
             if (res.ok && data.correct !== undefined) {
                 setIsCorrect(data.correct);
                 if (data.points) setPointsEarned(data.points);
-                if (data.correct) {
-                    playStageUp(); // Play immediately without layout cycle wait
-                }
+                // SFX is handled by useLayoutEffect watching isCorrect — no need to call here
             }
 
             if (!res.ok && data.error) {

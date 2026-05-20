@@ -220,28 +220,30 @@ export default function Tree() {
             boxSizing: 'border-box'
         }}>
 
-            {/* Stage-up Toast */}
+            {/* Stage-up Toast — centered at top so it doesn't clip */}
             {stageToast && (
                 <div style={{
                     position: 'fixed',
-                    top: '50%',
+                    top: '20%',
                     left: '50%',
-                    transform: 'translate(-50%, -50%)',
+                    transform: 'translateX(-50%)',
                     zIndex: 10000,
                     background: 'var(--yellow)',
                     border: '5px solid var(--black)',
-                    boxShadow: '10px 10px 0 var(--black)',
-                    borderRadius: '24px',
-                    padding: '24px 40px',
+                    boxShadow: '8px 8px 0 var(--black)',
+                    borderRadius: '20px',
+                    padding: '16px 32px',
                     fontFamily: 'var(--font-display)',
-                    fontSize: '24px',
+                    fontSize: '20px',
                     letterSpacing: '2px',
                     color: 'var(--black)',
                     animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both',
                     whiteSpace: 'nowrap',
+                    maxWidth: '80vw',
                     textAlign: 'center',
+                    pointerEvents: 'none',
                 }}>
-                    <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', marginBottom: '4px', opacity: 0.8 }}>LEVEL UP!</div>
+                    <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', marginBottom: '4px', opacity: 0.7 }}>⬆️ LEVEL UP!</div>
                     {stageToast}
                 </div>
             )}
@@ -310,7 +312,7 @@ export default function Tree() {
                 {/* Tree image — hero zone */}
                 <div style={{
                     position: 'relative',
-                    height: 'clamp(180px, 40vw, 240px)',
+                    height: 'clamp(140px, 32vw, 200px)',
                     width: '100%',
                     background: 'var(--blue-bright)',
                     backgroundImage: "url('/assets/branding/BG1.png')",
@@ -318,8 +320,8 @@ export default function Tree() {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                 }}>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <TreeVisual stage={treeStage} size="75%" isLevelingUp={!!stageToast} />
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                        <TreeVisual stage={treeStage} size="60%" isLevelingUp={!!stageToast} />
                     </div>
 
                     {/* Stage badge top-left */}

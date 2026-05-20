@@ -16,15 +16,16 @@ export default function Final() {
     return (
         <div style={{
             height: '100dvh',
-            padding: '10px',
+            padding: '8px',
             maxWidth: '480px',
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '8px',
             alignItems: 'center',
             justifyContent: 'center',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            boxSizing: 'border-box',
         }}>
             {/* Main Congratulations Card */}
             <div className="card" style={{
@@ -57,7 +58,7 @@ export default function Final() {
                     ))}
                 </div>
 
-                <div style={{ padding: '32px 20px', textAlign: 'center' }}>
+                <div style={{ padding: '14px 16px', textAlign: 'center' }}>
                     <div style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: '10px',
@@ -98,13 +99,12 @@ export default function Final() {
                         POHON BERHASIL TUMBUH MAKSIMAL 🌳✨
                     </div>
 
-                    {/* Tree Visual with Ambient Glow */}
+                    {/* Tree Visual */}
                     <div style={{
                         position: 'relative',
-                        width: 'clamp(200px, 60vw, 280px)',
-                        height: 'clamp(140px, 35vh, 200px)',
-                        marginTop: 'auto',
-                        margin: '0 auto 28px',
+                        width: 'clamp(120px, 40vw, 180px)',
+                        height: 'clamp(80px, 20vh, 130px)',
+                        margin: '4px auto 12px',
                         display: 'flex',
                         alignItems: 'flex-end',
                         justifyContent: 'center',
@@ -156,10 +156,10 @@ export default function Final() {
 
                     <div style={{
                         fontFamily: 'var(--font-mono)',
-                        fontSize: '10px',
+                        fontSize: '9px',
                         color: 'rgba(255,255,255,0.4)',
                         letterSpacing: '1px',
-                        marginTop: '32px',
+                        marginTop: '8px',
                     }}>
                         TERIMA KASIH ATAS PARTISIPASI KAMU!
                     </div>
