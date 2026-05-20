@@ -39,11 +39,13 @@ export const useSocket = () => {
             } else {
                 // Users get logged out and redirected via re-render + hard redirect
                 console.log('User logout triggered by system reset');
-                store.reset();
 
-                // Hard redirect to be safe
+                // Clear state and storage explicitly
+                store.reset();
                 if (typeof window !== 'undefined') {
-                    window.location.replace('/');
+                    localStorage.removeItem('x-celerate-storage'); // Force clear persistence
+                    // Hard redirect with cache buster
+                    window.location.replace('/?t=' + Date.now());
                 }
             }
         });

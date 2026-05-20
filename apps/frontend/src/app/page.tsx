@@ -103,6 +103,31 @@ function WaitingCard({ user }: { user: any }) {
             margin: '16px auto 0',
           }} />
         </div>
+
+        {/* Manual Reset Fallback */}
+        <div style={{ marginTop: '32px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+          <button
+            onClick={() => {
+              if (confirm('Apakah Anda ingin keluar dan masuk dengan PIN lain?')) {
+                useGameStore.getState().reset();
+                window.location.reload();
+              }
+            }}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.4)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10px',
+              letterSpacing: '1px',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              textTransform: 'uppercase'
+            }}
+          >
+            Bukan {user?.name?.split(' ')[0]}? Klik untuk Keluar
+          </button>
+        </div>
       </div>
     </div>
   );
