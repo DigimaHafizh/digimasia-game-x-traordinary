@@ -31,23 +31,30 @@ export default function AdminPage() {
     useEffect(() => { setOrigin(window.location.origin); }, []);
     useSocket();
 
-    // ── Handlers ──────────────────────────────
+    // ── Handlers ──
     const handlePhaseChange = async (newPhase: string) => {
         setShowWinnerReveal(false);
+        const previousPhase = phase;
+
+        // Optimistic UI update to eliminate delay
+        setSessionState({ phase: newPhase as any });
+
         try {
             await fetch(`${getBackendUrl()}/admin/phase`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phase: newPhase }),
             });
-            setSessionState({ phase: newPhase as any });
-        } catch { alert('Gagal update fase'); }
+        } catch {
+            alert('Gagal update fase, memulihkan state...');
+            setSessionState({ phase: previousPhase as any });
+        }
     };
 
     const handleStartTrivia = async () => {
         try {
             await fetch(`${getBackendUrl()}/admin/start-trivia`, { method: 'POST' });
-            setSessionState({ phase: 'TRIVIA' });
+            // Backend will broadcast session_state which updates currentQuestion to 1
         } catch { alert('Gagal start trivia'); }
     };
 
@@ -202,7 +209,7 @@ export default function AdminPage() {
                                         key={p.targetPhase}
                                         className={`step-item${isDone ? ' done' : isActive ? ' active animate-pulse' : ' todo'}`}
                                         style={{ border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}
-                                        onClick={() => p.targetPhase === 'TRIVIA' ? handleStartTrivia() : handlePhaseChange(p.targetPhase)}
+                                        onClick={() => handlePhaseChange(p.targetPhase)}
                                     >
                                         <div className={`step-num${isDone ? ' done-n' : isActive ? ' active-n' : ' todo-n'}`}>
                                             {isDone ? '✓' : idx + 1}
@@ -269,7 +276,25 @@ export default function AdminPage() {
                                     <NomineeMonitor category={phase === 'VOTING_TEAM' ? 'team' : 'digimer'} />
                                 )}
                                 {(phase === 'TRIVIA' || phase === 'TRANSITION') && (
-                                    <TriviaMonitor />
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                        {phase === 'TRIVIA' && useGameStore.getState().currentQuestion === 0 && (
+                                            <div style={{ textAlign: 'center', padding: '24px' }}>
+                                                <button className="btn" style={{
+                                                    background: 'var(--lime)',
+                                                    color: 'var(--black)',
+                                                    padding: '16px 32px',
+                                                    fontSize: '24px',
+                                                    fontFamily: 'var(--font-display)',
+                                                    letterSpacing: '2px',
+                                                    boxShadow: '8px 8px 0 var(--black)',
+                                                    border: '4px solid var(--black)'
+                                                }} onClick={handleStartTrivia}>
+                                                    ▶ MULAI TRIVIA QUIZ SEKARANG
+                                                </button>
+                                            </div>
+                                        )}
+                                        <TriviaMonitor />
+                                    </div>
                                 )}
                                 {phase === 'WATERING' && (
                                     <TreeMonitor />

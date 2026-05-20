@@ -77,6 +77,19 @@ export default function TriviaMonitor() {
         </div>
     );
 
+    if (currentQuestion === 0) {
+        return (
+            <div className="card card-lime" style={{ textAlign: 'center', padding: '60px', border: '5px solid var(--black)', boxShadow: '10px 10px 0 var(--black)', borderRadius: '20px', margin: '40px auto', maxWidth: '800px' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '56px', color: 'var(--black)', textShadow: '3px 3px 0 var(--white)' }}>
+                    GET READY!
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '16px', color: '#333', marginTop: '16px', letterSpacing: '4px', fontWeight: 800 }}>
+                    KUIS TRIVIA SEGERA DIMULAI
+                </div>
+            </div>
+        );
+    }
+
     if (!stats) return null;
 
     const isFinished = timer === 0 && currentQuestion >= 10 || phase === 'TRANSITION';

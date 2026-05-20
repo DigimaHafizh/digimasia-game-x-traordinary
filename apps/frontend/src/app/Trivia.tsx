@@ -118,6 +118,20 @@ export default function Trivia() {
         }
     };
 
+    if (currentQuestion === 0) return (
+        <div style={{ minHeight: 'calc(100dvh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+            <div className="card card-lime animate-pop-in" style={{ padding: '40px', textAlign: 'center', border: '5px solid var(--black)', boxShadow: '8px 8px 0 var(--black)' }}>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>🧠</div>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '32px', color: 'var(--black)', letterSpacing: '2px', lineHeight: 1.1 }}>
+                    TRIVIA DIMULAI SEBENTAR LAGI
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#333', marginTop: '16px', letterSpacing: '1px', fontWeight: 800 }}>
+                    Tunggu instruksi Admin!
+                </div>
+            </div>
+        </div>
+    );
+
     if (isLoading || !question) return (
         <div style={{ minHeight: 'calc(100dvh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="card" style={{ padding: '24px 40px', textAlign: 'center' }}>
