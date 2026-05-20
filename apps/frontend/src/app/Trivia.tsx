@@ -140,6 +140,7 @@ export default function Trivia() {
 
     const isTimedOut = timer === 0;
     const showFeedback = isSubmitted && isCorrect !== null;
+    const displayTimer = (isLoading || !question) ? 10 : timer; // Freeze timer at 10 while loading
 
     // Play stage-up sound when correct feedback is shown
     useEffect(() => {
@@ -171,15 +172,16 @@ export default function Trivia() {
 
     return (
         <div style={{
-            minHeight: 'calc(100dvh - 200px)', // Adjusted to account for ticker, header, and footer
-            padding: '16px',
+            height: 'calc(100dvh - 140px)', // Tight fit for mobile
+            padding: '12px 16px',
             maxWidth: '480px',
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '8px',
             position: 'relative',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            overflow: 'hidden' // Prevent any accidental scrolling
         }}>
             {/* Audio Toggle - Lowered to avoid header overlap */}
             <button
@@ -200,10 +202,10 @@ export default function Trivia() {
             {/* Header: Timer + Question counter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '12px' }}>
                 <div
-                    className={`timer-circle${timer <= 3 ? ' urgent' : ''}`}
+                    className={`timer-circle${displayTimer <= 3 ? ' urgent' : ''}`}
                     style={{ width: 'clamp(40px, 10vw, 50px)', height: 'clamp(40px, 10vw, 50px)' }}
                 >
-                    <div className="timer-num" style={{ fontSize: 'clamp(18px, 5vw, 22px)' }}>{timer}</div>
+                    <div className="timer-num" style={{ fontSize: 'clamp(18px, 5vw, 22px)' }}>{displayTimer}</div>
                     <div className="timer-label" style={{ fontSize: '8px' }}>SECS</div>
                 </div>
                 <div>
@@ -230,7 +232,7 @@ export default function Trivia() {
             </div>
 
             {/* Question Card - Compact padding */}
-            <div className="card card-navy" style={{ padding: '16px', minHeight: '100px', display: 'flex', alignItems: 'center' }}>
+            <div className="card card-navy" style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                 {isLoading || !question ? (
                     <div style={{
                         width: '100%',
@@ -366,7 +368,7 @@ export default function Trivia() {
                 </div>
             ) : (
                 /* Active question — options are selectable while timer > 0 */
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexShrink: 1 }}>
                     {(isLoading || !question ? [0, 1, 2, 3] : question.options).map((opt, idx) => {
                         const isThisSelected = selectedOption === idx;
                         let optClass = 'trivia-opt';
