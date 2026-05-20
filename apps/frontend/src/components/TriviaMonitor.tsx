@@ -26,15 +26,18 @@ export default function TriviaMonitor() {
     const { playComplete } = useTreeAudio(true); // default enabled for admin SFX
     const hasPlayedCompleteRef = useRef(false);
 
+    // Effect 1: Handle SFX when trivia is finished
     useEffect(() => {
-        if (phase !== 'TRIVIA' && phase !== 'TRANSITION') return;
-        if (currentQuestion === 0) return;
-
-        // Trigger SFX when trivia is finished
         if ((phase === 'TRANSITION' || (currentQuestion >= 10 && timer === 0)) && !hasPlayedCompleteRef.current) {
             hasPlayedCompleteRef.current = true;
             playComplete();
         }
+    }, [phase, timer, currentQuestion, playComplete]);
+
+    // Effect 2: Polling Trivia Stats
+    useEffect(() => {
+        if (phase !== 'TRIVIA' && phase !== 'TRANSITION') return;
+        if (currentQuestion === 0) return;
 
         const controller = new AbortController();
 
@@ -54,7 +57,7 @@ export default function TriviaMonitor() {
             clearInterval(interval);
             controller.abort();
         };
-    }, [currentQuestion, phase, timer, playComplete]);
+    }, [currentQuestion, phase]);
 
     const handleNext = async () => {
         try {
