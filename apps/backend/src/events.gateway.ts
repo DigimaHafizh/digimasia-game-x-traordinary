@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { SessionService } from './session.service';
+import { PrismaService } from './prisma.service';
 
 @WebSocketGateway({
   cors: {
@@ -22,7 +23,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection {
 
   private readonly logger = new Logger(EventsGateway.name);
 
-  constructor(private sessionService: SessionService) { }
+  constructor(
+    private sessionService: SessionService,
+    private prisma: PrismaService
+  ) { }
 
   afterInit(server: Server) {
     this.logger.log('WebSocket Gateway Initialized');
@@ -43,8 +47,19 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection {
   }
 
   @SubscribeMessage('join')
-  handleJoin(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+  async handleJoin(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     this.logger.log(`User ${data.name} joined via socket`);
+
+    // VALIDATION: Check if user is still officially in the game (handles mobile sleep/reconnect after reset)
+    if (data.id) {
+      const userInDb = await this.prisma.user.findUnique({ where: { id: data.id } });
+      if (userInDb && !userInDb.isJoined && !userInDb.isAdmin) {
+        this.logger.log(`User ${data.name} reconnecting but was reset. Forcing logout.`);
+        client.emit('system_resetted');
+        return { event: 'rejected', reason: 'system_reset' };
+      }
+    }
+
     (client as any).user = data;
     return { event: 'joined', data: 'success' };
   }
