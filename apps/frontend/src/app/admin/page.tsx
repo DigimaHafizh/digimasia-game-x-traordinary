@@ -133,6 +133,25 @@ export default function AdminPage() {
                     </button>
                     <div style={{ width: '2px', height: '32px', background: 'rgba(0,0,0,0.1)', margin: '0 4px' }} />
                     <button className="btn" style={{
+                        background: 'var(--blue-bright)',
+                        color: 'var(--white)',
+                        padding: '10px 20px',
+                        fontSize: '13px',
+                        boxShadow: '4px 4px 0 var(--black)'
+                    }} onClick={async () => {
+                        try {
+                            await fetch(`${getBackendUrl()}/admin/phase`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ phase: phase }),
+                            });
+                            useGameStore.getState().setToastMessage("SYNC BROADCAST SENT!");
+                        } catch { alert('Gagal broadcast sync'); }
+                    }}>
+                        📡 SYNC ALL
+                    </button>
+                    <div style={{ width: '2px', height: '32px', background: 'rgba(0,0,0,0.1)', margin: '0 4px' }} />
+                    <button className="btn" style={{
                         background: 'var(--yellow)',
                         color: 'var(--navy-dark)',
                         padding: '10px 20px',

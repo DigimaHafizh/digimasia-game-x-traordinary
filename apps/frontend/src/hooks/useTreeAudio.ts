@@ -66,14 +66,23 @@ function scheduleMelody(
 export function useTreeAudio(enabled = true) {
     const isMutedRef = useRef(!enabled);
     const audioCtxRef = useRef<AudioContext | null>(null);
+    const masterGainRef = useRef<GainNode | null>(null);
+    const bgmRef = useRef<HTMLAudioElement | null>(null);
     const bgmSchedulerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const bgmStartTimeRef = useRef<number>(0);
     const isBGMPlayingRef = useRef(false);
+    const activeOscillators = useRef<Set<OscillatorNode>>(new Set());
 
-    // ── Get or create shared AudioContext ─────────────────
+    // ── Get or create shared AudioContext & Master Gain ──
     const getAudioCtx = useCallback(() => {
         if (!audioCtxRef.current) {
-            audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+            audioCtxRef.current = new AudioContextClass();
+            masterGainRef.current = audioCtxRef.current.createGain();
+            masterGainRef.current.connect(audioCtxRef.current.destination);
+
+            // Initial volume
+            masterGainRef.current.gain.value = isMutedRef.current ? 0 : 1;
         }
         if (audioCtxRef.current.state === 'suspended') {
             audioCtxRef.current.resume();
@@ -81,36 +90,76 @@ export function useTreeAudio(enabled = true) {
         return audioCtxRef.current;
     }, []);
 
-    // ── Compute total melody duration ─────────────────────
-    const MELODY_DURATION = MELODY.reduce((sum, [, dur]) => sum + dur, 0);
-    const BASS_DURATION = BASS_LINE.reduce((sum, [, dur]) => sum + dur, 0);
+    // ── Stop All Running Oscillators ──
+    const stopAllOscillators = useCallback(() => {
+        activeOscillators.current.forEach(osc => {
+            try { osc.stop(); osc.disconnect(); } catch (_) { }
+        });
+        activeOscillators.current.clear();
+    }, []);
 
-    // ── Schedule one loop of the BGM ──────────────────────
+    // ── BGM: Tree (Synthesized Loop) ──
+    const MELODY_DURATION = MELODY.reduce((sum, [, dur]) => sum + dur, 0);
+
     const scheduleBGMLoop = useCallback(() => {
-        if (isMutedRef.current || !audioCtxRef.current) return;
+        if (isMutedRef.current || !audioCtxRef.current || !isBGMPlayingRef.current) return;
         const ctx = audioCtxRef.current;
+        const master = masterGainRef.current;
+        if (!master) return;
+
         const now = ctx.currentTime;
         const startAt = Math.max(now, bgmStartTimeRef.current);
 
         // Schedule melody (lead)
-        scheduleMelody(ctx, MELODY, startAt, 0.08, 'square');
+        let time = startAt;
+        for (const [freq, dur] of MELODY) {
+            if (freq !== 0) {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(master);
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, time);
+                gain.gain.setValueAtTime(0.08, time);
+                gain.gain.setValueAtTime(0, time + dur - 0.01);
+                osc.start(time);
+                osc.stop(time + dur);
+                activeOscillators.current.add(osc);
+                osc.onended = () => activeOscillators.current.delete(osc);
+            }
+            time += dur;
+        }
 
-        // Schedule bass line (repeated to match melody length)
+        // Schedule bass line
         let bassTime = startAt;
         while (bassTime < startAt + MELODY_DURATION) {
-            bassTime = scheduleMelody(ctx, BASS_LINE, bassTime, 0.04, 'triangle');
+            for (const [freq, dur] of BASS_LINE) {
+                if (freq !== 0) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(master);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, bassTime);
+                    gain.gain.setValueAtTime(0.04, bassTime);
+                    gain.gain.setValueAtTime(0, bassTime + dur - 0.01);
+                    osc.start(bassTime);
+                    osc.stop(bassTime + dur);
+                    activeOscillators.current.add(osc);
+                    osc.onended = () => activeOscillators.current.delete(osc);
+                }
+                bassTime += dur;
+            }
         }
 
         bgmStartTimeRef.current = startAt + MELODY_DURATION;
 
-        // Schedule next loop 100ms before end to avoid gaps
         bgmSchedulerRef.current = setTimeout(
             scheduleBGMLoop,
             Math.max(0, (MELODY_DURATION - 0.1) * 1000)
         );
     }, [MELODY_DURATION]);
 
-    // ── BGM control ───────────────────────────────────────
     const playBGM = useCallback(() => {
         if (isMutedRef.current || isBGMPlayingRef.current) return;
         isBGMPlayingRef.current = true;
@@ -121,28 +170,47 @@ export function useTreeAudio(enabled = true) {
         } catch (_) { }
     }, [getAudioCtx, scheduleBGMLoop]);
 
+    // ── BGM: Trivia (MP3 File) ──
+    const playTriviaBGM = useCallback(() => {
+        if (isMutedRef.current) return;
+        if (bgmRef.current) { bgmRef.current.pause(); bgmRef.current.src = ""; }
+
+        const audio = new Audio('/assets/audio/bgm-retro-trivia.mp3');
+        audio.loop = true;
+        audio.volume = 0.5;
+        bgmRef.current = audio;
+        audio.play().catch(() => { });
+    }, []);
+
     const stopBGM = useCallback(() => {
         isBGMPlayingRef.current = false;
         if (bgmSchedulerRef.current) {
             clearTimeout(bgmSchedulerRef.current);
             bgmSchedulerRef.current = null;
         }
-    }, []);
+        stopAllOscillators();
+        if (bgmRef.current) {
+            bgmRef.current.pause();
+            bgmRef.current.src = "";
+            bgmRef.current = null;
+        }
+    }, [stopAllOscillators]);
 
-    // Cleanup on unmount
     useEffect(() => {
         return () => { stopBGM(); };
     }, [stopBGM]);
 
-    // ── SFX: Water drop (synthesized blip) ───────────────
+    // ── SFX ──
     const playWaterDrop = useCallback(() => {
         if (isMutedRef.current || typeof window === 'undefined') return;
         try {
             const ctx = getAudioCtx();
+            const master = masterGainRef.current;
+            if (!master) return;
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.connect(gain);
-            gain.connect(ctx.destination);
+            gain.connect(master);
             osc.type = 'square';
             osc.frequency.setValueAtTime(600, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.08);
@@ -153,15 +221,16 @@ export function useTreeAudio(enabled = true) {
         } catch (_) { }
     }, [getAudioCtx]);
 
-    // ── SFX: Menu Select (Trivia answer click) ─────────── 
     const playMenuSelect = useCallback(() => {
         if (isMutedRef.current || typeof window === 'undefined') return;
         try {
             const ctx = getAudioCtx();
+            const master = masterGainRef.current;
+            if (!master) return;
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.connect(gain);
-            gain.connect(ctx.destination);
+            gain.connect(master);
             osc.type = 'square';
             osc.frequency.setValueAtTime(880, ctx.currentTime);
             gain.gain.setValueAtTime(0.08, ctx.currentTime);
@@ -171,7 +240,6 @@ export function useTreeAudio(enabled = true) {
         } catch (_) { }
     }, [getAudioCtx]);
 
-    // ── SFX: Stage up ─────────────────────────────────────
     const playStageUp = useCallback(() => {
         if (isMutedRef.current) return;
         try {
@@ -181,7 +249,6 @@ export function useTreeAudio(enabled = true) {
         } catch (_) { }
     }, []);
 
-    // ── SFX: Game complete ────────────────────────────────
     const playComplete = useCallback(() => {
         if (isMutedRef.current) return;
         try {
@@ -191,16 +258,15 @@ export function useTreeAudio(enabled = true) {
         } catch (_) { }
     }, []);
 
-    // ── Mute toggle ───────────────────────────────────────
     const setMuted = useCallback((muted: boolean) => {
         isMutedRef.current = muted;
+        if (masterGainRef.current) {
+            masterGainRef.current.gain.setTargetAtTime(muted ? 0 : 1, getAudioCtx().currentTime, 0.05);
+        }
         if (muted) {
             stopBGM();
-        } else {
-            isBGMPlayingRef.current = false; // allow restart
-            playBGM();
         }
-    }, [playBGM, stopBGM]);
+    }, [getAudioCtx, stopBGM]);
 
-    return { playBGM, stopBGM, playWaterDrop, playMenuSelect, playStageUp, playComplete, setMuted };
+    return { playBGM, playTriviaBGM, stopBGM, playWaterDrop, playMenuSelect, playStageUp, playComplete, setMuted };
 }

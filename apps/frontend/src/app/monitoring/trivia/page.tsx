@@ -13,14 +13,15 @@ export default function TriviaMonitoringPage() {
 
     // ── Audio Setup ──
     const [bgmEnabled, setBgmEnabled] = useState(false);
-    const { playBGM, playStageUp, playComplete, setMuted } = useTreeAudio(bgmEnabled);
+    const { playTriviaBGM, playStageUp, playComplete, setMuted } = useTreeAudio(bgmEnabled);
     const hasStartedBGM = useRef(false);
 
     const toggleGlobalMute = () => {
-        setBgmEnabled(!bgmEnabled);
-        setMuted(bgmEnabled);
-        if (!bgmEnabled && !hasStartedBGM.current) {
-            playBGM();
+        const nextEnabled = !bgmEnabled;
+        setBgmEnabled(nextEnabled);
+        setMuted(!nextEnabled);
+        if (nextEnabled && !hasStartedBGM.current) {
+            playTriviaBGM();
             hasStartedBGM.current = true;
         }
     };

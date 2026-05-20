@@ -25,7 +25,7 @@ export default function Trivia() {
 
     // ── Audio Setup ──
     const [bgmEnabled, setBgmEnabled] = useState(false);
-    const { playBGM, stopBGM, playMenuSelect, playStageUp, setMuted } = useTreeAudio(bgmEnabled);
+    const { playTriviaBGM, stopBGM, playMenuSelect, playStageUp, setMuted } = useTreeAudio(bgmEnabled);
     const hasStartedBGM = useRef(false);
 
     const toggleGlobalMute = () => {
@@ -35,7 +35,7 @@ export default function Trivia() {
 
     const startBGMOnce = () => {
         if (!hasStartedBGM.current && bgmEnabled) {
-            playBGM();
+            playTriviaBGM();
             hasStartedBGM.current = true;
         }
     };
