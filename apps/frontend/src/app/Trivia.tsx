@@ -118,6 +118,16 @@ export default function Trivia() {
         }
     };
 
+    const isTimedOut = timer === 0;
+    const showFeedback = isSubmitted && isCorrect !== null;
+
+    // Play stage-up sound when correct feedback is shown
+    useEffect(() => {
+        if (showFeedback && isCorrect) {
+            playStageUp();
+        }
+    }, [showFeedback, isCorrect, playStageUp]);
+
     if (currentQuestion === 0) return (
         <div style={{ minHeight: 'calc(100dvh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
             <div className="card card-lime animate-pop-in" style={{ padding: '40px', textAlign: 'center', border: '5px solid var(--black)', boxShadow: '8px 8px 0 var(--black)' }}>
@@ -139,18 +149,6 @@ export default function Trivia() {
             </div>
         </div>
     );
-
-    // Bug Fix 2: isTimedOut is everything needed to lock UI (timer = 0)
-    const isTimedOut = timer === 0;
-    // Show result feedback when: user submitted AND (timer is up OR there's a result from server)
-    const showFeedback = isSubmitted && isCorrect !== null;
-
-    // Play stage-up sound when correct feedback is shown
-    useEffect(() => {
-        if (showFeedback && isCorrect) {
-            playStageUp();
-        }
-    }, [showFeedback, isCorrect, playStageUp]);
 
     // Show "no answer" message when time ran out and user didn't answer
     const showNoAnswer = isTimedOut && !isSubmitted;
