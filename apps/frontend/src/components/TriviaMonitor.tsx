@@ -261,11 +261,11 @@ export default function TriviaMonitor() {
                     {/* Option Bars Grid */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                         {[0, 1, 2, 3].map((optIdx) => {
-                            const count = stats?.stats?.find(s => s.option === optIdx)?.count || 0;
-                            const totalAnswers = stats?.totalAnswers || 0;
+                            const count = isStatsStale ? 0 : (stats?.stats?.find(s => s.option === optIdx)?.count || 0);
+                            const totalAnswers = isStatsStale ? 0 : (stats?.totalAnswers || 0);
                             const percent = totalAnswers ? Math.round((count / totalAnswers) * 100) : 0;
-                            const optionText = stats?.options?.[optIdx] || `Option ${OPT_LETTERS[optIdx]}`;
-                            const isCorrect = timer === 0 && stats?.correctAnswer === optIdx;
+                            const optionText = isStatsStale ? '...' : (stats?.options?.[optIdx] || `Pilihan ${OPT_LETTERS[optIdx]}`);
+                            const isCorrect = !isStatsStale && timer === 0 && stats?.correctAnswer === optIdx;
 
                             return (
                                 <div key={optIdx} className="card" style={{
@@ -280,6 +280,7 @@ export default function TriviaMonitor() {
                                     alignItems: 'center',
                                     gap: '16px',
                                     transition: 'all 0.4s ease',
+                                    opacity: isStatsStale ? 0.7 : 1,
                                 }}>
                                     {/* Background Progress Fill */}
                                     <div style={{
@@ -298,13 +299,21 @@ export default function TriviaMonitor() {
                                             <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: isCorrect ? 'var(--black)' : OPT_COLORS[optIdx], WebkitTextStroke: '1px #000' }}>
                                                 {OPT_LETTERS[optIdx]}
                                             </div>
-                                            <div style={{ fontFamily: 'var(--font-body)', fontSize: '15px', fontWeight: 600, color: '#000' }}>
+                                            <div style={{
+                                                fontFamily: 'var(--font-body)',
+                                                fontSize: '15px',
+                                                fontWeight: 600,
+                                                color: isStatsStale ? '#999' : '#000',
+                                                fontStyle: isStatsStale ? 'italic' : 'normal'
+                                            }}>
                                                 {optionText}
                                             </div>
                                         </div>
-                                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: '#000', background: '#FFF', padding: '4px 8px', border: '2px solid #000', borderRadius: '4px' }}>
-                                            {count} ({percent}%)
-                                        </div>
+                                        {!isStatsStale && (
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: '#000', background: '#FFF', padding: '4px 8px', border: '2px solid #000', borderRadius: '4px' }}>
+                                                {count} ({percent}%)
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             );
