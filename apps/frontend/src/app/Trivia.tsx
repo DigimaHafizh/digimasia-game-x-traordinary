@@ -140,7 +140,8 @@ export default function Trivia() {
 
     const isTimedOut = timer === 0;
     const showFeedback = isSubmitted && isCorrect !== null;
-    const displayTimer = (isLoading || !question) ? 10 : timer; // Freeze timer at 10 while loading
+    // Strict fairness: display 10 until the NEW question data is actually loaded in state
+    const displayTimer = (isLoading || !question || question.index !== currentQuestion) ? 10 : timer;
 
     // Play stage-up sound when correct feedback is shown
     useEffect(() => {
@@ -172,7 +173,7 @@ export default function Trivia() {
 
     return (
         <div style={{
-            height: 'calc(100dvh - 140px)', // Tight fit for mobile
+            minHeight: 'calc(100dvh - 120px)', // Restore flexible height
             padding: '12px 16px',
             maxWidth: '480px',
             margin: '0 auto',
@@ -181,7 +182,7 @@ export default function Trivia() {
             gap: '8px',
             position: 'relative',
             justifyContent: 'center',
-            overflow: 'hidden' // Prevent any accidental scrolling
+            // Removed overflow: hidden to allow footer to breathe
         }}>
             {/* Audio Toggle - Lowered to avoid header overlap */}
             <button
