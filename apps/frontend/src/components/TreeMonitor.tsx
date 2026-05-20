@@ -2,6 +2,8 @@
 
 import { useGameStore } from '@/store/useGameStore';
 import TreeVisual, { TREE_STAGE_LABELS } from './TreeVisual';
+import { useState, useEffect, useRef } from 'react';
+import { useTreeAudio } from '@/hooks/useTreeAudio';
 
 const TOTAL_WATER_GOAL = 1000;
 const WATER_PER_STAGE = 100;
@@ -11,6 +13,21 @@ export default function TreeMonitor() {
     const progress = Math.min(100, (totalWater / TOTAL_WATER_GOAL) * 100);
     const stageProgress = ((totalWater % WATER_PER_STAGE) / WATER_PER_STAGE) * 100;
     const isMaxStage = treeStage >= 9;
+
+    const [isLevelingUp, setIsLevelingUp] = useState(false);
+    const prevStageRef = useRef(treeStage);
+    const { playStageUp } = useTreeAudio(true);
+
+    useEffect(() => {
+        if (treeStage > prevStageRef.current) {
+            setIsLevelingUp(true);
+            playStageUp();
+            const t = setTimeout(() => setIsLevelingUp(false), 3000);
+            prevStageRef.current = treeStage;
+            return () => clearTimeout(t);
+        }
+        prevStageRef.current = treeStage;
+    }, [treeStage, playStageUp]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -43,7 +60,7 @@ export default function TreeMonitor() {
                     overflow: 'hidden',
                     position: 'relative',
                 }}>
-                    <TreeVisual stage={treeStage} size="100%" />
+                    <TreeVisual stage={treeStage} size="100%" isLevelingUp={isLevelingUp} />
                     {/* Stage badge overlay */}
                     <div style={{
                         position: 'absolute', top: '12px', left: '12px',

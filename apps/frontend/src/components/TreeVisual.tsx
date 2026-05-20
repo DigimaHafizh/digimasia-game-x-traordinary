@@ -7,6 +7,7 @@ interface TreeVisualProps {
     stage: number;
     size?: number | string;
     isAnimated?: boolean;
+    isLevelingUp?: boolean;
 }
 
 // Maps stage 0-9 to the corresponding PNG asset
@@ -29,9 +30,18 @@ export const TREE_STAGE_LABELS = [
     'POHON BESAR', 'POHON TUMBUH SUBUR', 'GRAND TREE 🏆',
 ];
 
-export default function TreeVisual({ stage, size = '100%', isAnimated = true }: TreeVisualProps) {
+export default function TreeVisual({ stage, size = '100%', isAnimated = true, isLevelingUp = false }: TreeVisualProps) {
     const currentStage = Math.min(Math.max(stage, 0), 9);
     const src = TREE_IMAGES[currentStage];
+
+    // Determine animation based on isLevelingUp override vs normal loop
+    let anim = 'none';
+    if (isLevelingUp) {
+        anim = 'marioGrowth 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both';
+    } else if (isAnimated) {
+        // floating gently
+        anim = 'floating 3.5s ease-in-out infinite';
+    }
 
     return (
         <div style={{
@@ -44,7 +54,7 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true }: 
             overflow: 'hidden',
         }}>
             <img
-                key={currentStage}
+                key={`tree-${currentStage}-${isLevelingUp}`} // Force re-render on level up for animation trigger
                 src={src}
                 alt={`Tree Stage ${currentStage + 1}`}
                 style={{
@@ -52,15 +62,25 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true }: 
                     height: '100%',
                     objectFit: 'contain',
                     objectPosition: 'bottom',
-                    animation: isAnimated ? 'treeEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both' : 'none',
+                    animation: anim,
                     filter: currentStage === 9 ? 'drop-shadow(0 0 20px rgba(255,215,0,0.5))' : 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))',
                     transition: 'filter 0.8s ease',
+                    transformOrigin: 'bottom center', // crucial for growth animation from the ground
                 }}
             />
             <style>{`
-                @keyframes treeEntrance {
-                    0% { transform: scale(0.7) translateY(20px); opacity: 0; }
-                    100% { transform: scale(1) translateY(0); opacity: 1; }
+                @keyframes floating {
+                    0% { transform: translateY(0); }
+                    50% { transform: translateY(-8px); }
+                    100% { transform: translateY(0); }
+                }
+                
+                @keyframes marioGrowth {
+                    0% { transform: scale(1) translateY(0); }
+                    25% { transform: scale(0.9, 0.8) translateY(10px); }
+                    60% { transform: scale(1.2, 1.3) translateY(-15px); }
+                    80% { transform: scale(0.95, 0.95) translateY(5px); }
+                    100% { transform: scale(1) translateY(0); }
                 }
             `}</style>
         </div>

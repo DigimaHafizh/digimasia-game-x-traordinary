@@ -162,7 +162,7 @@ export default function Tree() {
                 {/* Tree preview */}
                 <div className="card" style={{ width: '100%', padding: '0', overflow: 'hidden', border: '4px solid var(--black)', boxShadow: '6px 6px 0 var(--black)' }}>
                     <div style={{ height: '200px', background: "url('/assets/branding/BG1.png') center/cover no-repeat", position: 'relative' }}>
-                        <TreeVisual stage={treeStage} size="100%" />
+                        <TreeVisual stage={treeStage} size="100%" isLevelingUp={!!stageToast} />
                         <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'var(--black)', color: 'var(--yellow)', fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, padding: '3px 10px', borderRadius: '20px' }}>
                             STAGE {treeStage + 1} / 10
                         </div>
@@ -312,7 +312,7 @@ export default function Tree() {
                     backgroundPosition: 'center',
                 }}>
                     <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: '20px' }}>
-                        <TreeVisual stage={treeStage} size="85%" />
+                        <TreeVisual stage={treeStage} size="85%" isLevelingUp={!!stageToast} />
                     </div>
 
                     {/* Stage badge top-left */}

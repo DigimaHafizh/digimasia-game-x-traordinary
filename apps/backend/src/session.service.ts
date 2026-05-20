@@ -47,6 +47,9 @@ export class SessionService implements OnModuleInit {
         // Reset trivia question counter when entering TRIVIA so GET READY shows
         if (phase === 'TRIVIA') {
             this.state.currentQuestion = 0;
+        } else if (phase === 'WATERING') {
+            this.state.totalWater = 0;
+            this.state.treeStage = 0;
         }
         this.onStateChange(this.state);
         await this.saveToDb();

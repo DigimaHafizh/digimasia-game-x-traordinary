@@ -22,6 +22,12 @@ const OPT_COLORS = ['var(--pink-hot)', 'var(--orange)', 'var(--blue-bright)', 'v
 export default function TriviaMonitor() {
     const { currentQuestion, phase, timer } = useGameStore();
     const [stats, setStats] = useState<TriviaStats | null>(null);
+    const [isStatsLoaded, setIsStatsLoaded] = useState(false);
+
+    // Reset loading state when question changes
+    useEffect(() => {
+        setIsStatsLoaded(false);
+    }, [currentQuestion]);
 
     const { playComplete } = useTreeAudio(true); // default enabled for admin SFX
     const hasPlayedCompleteRef = useRef(false);
@@ -46,6 +52,7 @@ export default function TriviaMonitor() {
                 const res = await fetch(`${getBackendUrl()}/admin/trivia-stats?index=${currentQuestion}`, { signal: controller.signal });
                 const data = await res.json();
                 setStats(data);
+                setIsStatsLoaded(true);
             } catch (err: any) {
                 if (err.name !== 'AbortError') console.error('Failed to fetch trivia stats');
             }
@@ -123,7 +130,8 @@ export default function TriviaMonitor() {
     }
 
     // Check if we have the CORRECT stats for the CURRENT question
-    const isStatsStale = !stats || stats.questionIndex !== currentQuestion;
+    const isStatsStale = !stats || stats.questionIndex !== currentQuestion || !isStatsLoaded;
+    const displayTimer = isStatsLoaded ? timer : 10;
 
     const isFinished = (timer === 0 && currentQuestion >= 10) || phase === 'TRANSITION';
 
@@ -230,16 +238,16 @@ export default function TriviaMonitor() {
                             width: '72px',
                             height: '72px',
                             borderRadius: '50%',
-                            background: timer <= 5 ? '#e53935' : 'var(--orange)',
+                            background: displayTimer <= 5 && displayTimer > 0 ? '#e53935' : 'var(--orange)',
                             border: '4px solid #000',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0,
-                            animation: timer <= 3 ? 'pulse 0.5s infinite' : 'none',
+                            animation: displayTimer <= 3 && displayTimer > 0 ? 'pulse 0.5s infinite' : 'none',
                         }}>
-                            <div style={{ fontFamily: 'var(--font-display)', fontSize: '32px', color: '#FFF', lineHeight: 1 }}>{timer}</div>
+                            <div style={{ fontFamily: 'var(--font-display)', fontSize: '32px', color: '#FFF', lineHeight: 1 }}>{displayTimer}</div>
                             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#FFF', letterSpacing: '1px' }}>SECS</div>
                         </div>
 

@@ -201,7 +201,7 @@ export function useTreeAudio(enabled = true) {
     const playStageUp = useCallback(() => {
         if (isMutedRef.current) return;
         try {
-            const sfx = new Audio('/assets/audio/sfx-stage-up.mp3');
+            const sfx = new Audio('/assets/audio/sfx-level-up-pohon.ogg');
             sfx.volume = 0.7;
             sfx.play().catch(() => { });
         } catch (_) { }
