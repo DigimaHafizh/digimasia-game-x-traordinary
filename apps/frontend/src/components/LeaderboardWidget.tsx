@@ -30,7 +30,7 @@ export default function LeaderboardWidget() {
         };
 
         fetchLeaderboard();
-        const interval = setInterval(fetchLeaderboard, 5000);
+        const interval = setInterval(fetchLeaderboard, 2000); // Faster polling
         return () => clearInterval(interval);
     }, []);
 

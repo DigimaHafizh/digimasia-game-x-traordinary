@@ -52,12 +52,12 @@ export class TriviaService {
                 if (this.timerInstance) clearInterval(this.timerInstance);
                 this.logger.log(`Question ${state.currentQuestion} timer expired. Waiting for Admin.`);
 
-                // If it's the last question, automatically transition to Leaderboard after 5 seconds
+                // If it's the last question, automatically transition to Leaderboard after 1.5 seconds
                 if (state.currentQuestion >= 10) {
-                    this.logger.log('Last question finished. Auto-transitioning to Leaderboard in 5 seconds.');
+                    this.logger.log('Last question finished. Auto-transitioning to Leaderboard in 1.5 seconds.');
                     setTimeout(async () => {
                         await this.session.updatePhase('TRANSITION');
-                    }, 5000);
+                    }, 1500);
                 }
             }
         }, 1000);
