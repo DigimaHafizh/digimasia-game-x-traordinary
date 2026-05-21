@@ -56,11 +56,11 @@ export default function Trivia() {
         }
     }, [phase, timer, currentQuestion, stopBGM, playComplete]);
 
-    // Play correct-answer SFX exactly when feedback UI appears (same render frame)
+    // Play correct-answer SFX shortly after UI state changes for perfect visual sync
     const prevIsCorrect = useRef<boolean | null>(null);
     useLayoutEffect(() => {
         if (isCorrect === true && prevIsCorrect.current !== true) {
-            playStageUp();
+            setTimeout(() => playStageUp(), 30);
         }
         prevIsCorrect.current = isCorrect;
     }, [isCorrect, playStageUp]);
@@ -215,7 +215,7 @@ export default function Trivia() {
                     <div className="timer-label" style={{ fontSize: '8px' }}>SECS</div>
                 </div>
                 <div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.9)', fontWeight: 800, letterSpacing: '1px' }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(12px, 3.5vw, 15px)', color: 'rgba(255,255,255,0.9)', fontWeight: 800, letterSpacing: '1px' }}>
                         PERTANYAAN {currentQuestion} / 10
                     </div>
                     {isTimedOut && (
@@ -299,7 +299,7 @@ export default function Trivia() {
                             background: isCorrect ? 'var(--lime)' : '#e53935',
                             textAlign: 'center',
                             padding: '16px',
-                            animation: 'fadeIn 0.5s ease-out',
+                            animation: 'pop-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both',
                         }}>
                             <div style={{
                                 fontFamily: 'var(--font-display)',

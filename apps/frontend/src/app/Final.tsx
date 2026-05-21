@@ -15,7 +15,7 @@ export default function Final() {
 
     return (
         <div style={{
-            height: '100dvh',
+            height: 'calc(100dvh - 140px)',
             padding: '8px',
             maxWidth: '480px',
             margin: '0 auto',

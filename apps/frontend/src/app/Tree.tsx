@@ -207,7 +207,7 @@ export default function Tree() {
 
     return (
         <div style={{
-            height: '100dvh',
+            height: 'calc(100dvh - 140px)', // Account for Topbar, Ticker, and Footer globally
             padding: '12px 16px 20px',
             maxWidth: '480px',
             margin: '0 auto',
@@ -220,31 +220,34 @@ export default function Tree() {
             boxSizing: 'border-box'
         }}>
 
-            {/* Stage-up Toast — centered at top so it doesn't clip */}
+            {/* Stage-up Toast — Wrapped in relative container so translate isn't overridden by pop-in */}
             {stageToast && (
                 <div style={{
                     position: 'fixed',
-                    top: '20%',
+                    top: '10%',
                     left: '50%',
                     transform: 'translateX(-50%)',
                     zIndex: 10000,
-                    background: 'var(--yellow)',
-                    border: '5px solid var(--black)',
-                    boxShadow: '8px 8px 0 var(--black)',
-                    borderRadius: '20px',
-                    padding: '16px 32px',
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '20px',
-                    letterSpacing: '2px',
-                    color: 'var(--black)',
-                    animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '80vw',
-                    textAlign: 'center',
                     pointerEvents: 'none',
                 }}>
-                    <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', marginBottom: '4px', opacity: 0.7 }}>⬆️ LEVEL UP!</div>
-                    {stageToast}
+                    <div style={{
+                        background: 'var(--yellow)',
+                        border: '5px solid var(--black)',
+                        boxShadow: '6px 6px 0 var(--black)',
+                        borderRadius: '20px',
+                        padding: '12px 24px',
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '20px',
+                        letterSpacing: '2px',
+                        color: 'var(--black)',
+                        animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                        whiteSpace: 'nowrap',
+                        maxWidth: '85vw',
+                        textAlign: 'center',
+                    }}>
+                        <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', marginBottom: '4px', opacity: 0.7 }}>⬆️ LEVEL UP!</div>
+                        {stageToast}
+                    </div>
                 </div>
             )}
 
@@ -312,16 +315,21 @@ export default function Tree() {
                 {/* Tree image — hero zone */}
                 <div style={{
                     position: 'relative',
-                    height: 'clamp(140px, 32vw, 200px)',
+                    height: 'clamp(120px, 30vh, 180px)',
                     width: '100%',
                     background: 'var(--blue-bright)',
                     backgroundImage: "url('/assets/branding/BG1.png')",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
+                    backgroundBlendMode: 'overlay',
                 }}>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                        <TreeVisual stage={treeStage} size="60%" isLevelingUp={!!stageToast} />
+                    <div style={{
+                        position: 'absolute', inset: 0,
+                        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+                        overflow: 'hidden', paddingBottom: '10px'
+                    }}>
+                        <TreeVisual stage={treeStage} size="55%" isLevelingUp={!!stageToast} />
                     </div>
 
                     {/* Stage badge top-left */}
@@ -421,7 +429,7 @@ export default function Tree() {
 
             {/* ── PUMP + RESERVOIR SECTION ──── */}
             {!isMaxStage && (
-                <div className="card" style={{ padding: '20px', position: 'relative', overflow: 'hidden' }}>
+                <div className="card" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ display: 'flex', gap: '16px', alignItems: 'stretch' }}>
 
                         {/* LEFT: Animated Pump SVG */}
@@ -501,13 +509,14 @@ export default function Tree() {
 
                             {/* Reservoir tank visual */}
                             <div style={{
-                                height: '80px',
-                                background: '#e5e7eb',
+                                flex: 1,
+                                height: '60px',
+                                background: 'white',
+                                borderRadius: '12px',
                                 border: '3px solid var(--black)',
-                                boxShadow: '3px 3px 0 var(--black)',
-                                borderRadius: '8px',
-                                overflow: 'hidden',
+                                boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.1)',
                                 position: 'relative',
+                                overflow: 'hidden'
                             }}>
                                 {/* Water fill */}
                                 <div style={{

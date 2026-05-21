@@ -19,11 +19,12 @@ export class AppService {
   }
 
   async getLeaderboard() {
+    const currentState = this.session.getState();
+    const isTriviaPhase = currentState.phase === 'TRIVIA' || currentState.phase === 'TRANSITION';
+
     const topUsers = await this.prisma.user.findMany({
       where: { isJoined: true, isAdmin: false },
-      orderBy: {
-        contributedWater: 'desc',
-      },
+      orderBy: isTriviaPhase ? { score: 'desc' } : { contributedWater: 'desc' },
       take: 10,
       select: {
         name: true,
@@ -36,7 +37,8 @@ export class AppService {
     return topUsers.map(u => ({
       name: u.name,
       division: u.division,
-      amount: u.contributedWater,
+      // Pass score during Trivia phase so the UI reports the live scores
+      amount: isTriviaPhase ? u.score : u.contributedWater,
       score: u.score
     }));
   }
