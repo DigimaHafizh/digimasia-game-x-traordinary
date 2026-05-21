@@ -155,26 +155,23 @@ export default function Tree() {
     // ── PRE-GAME LOBBY SCREEN ───────────────────────────────────────────
     if (!gameStarted) return (
         <div style={{
-            minHeight: 'calc(100dvh - 120px)',
+            height: 'calc(100dvh - 140px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px',
+            background: "var(--blue-bright)",
+            backgroundImage: "url('/assets/branding/BG1.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundBlendMode: 'overlay',
         }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
-                {/* Tree preview */}
-                <div className="card" style={{ width: '100%', padding: '0', overflow: 'hidden', border: '4px solid var(--black)', boxShadow: '6px 6px 0 var(--black)' }}>
-                    <div style={{
-                        height: '200px',
-                        background: "url('/assets/branding/BG1.png') center/cover no-repeat, var(--blue-bright)",
-                        backgroundBlendMode: 'overlay',
-                        position: 'relative'
-                    }}>
-                        <TreeVisual stage={treeStage} size="100%" isLevelingUp={!!stageToast} />
-                        <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'var(--black)', color: 'var(--yellow)', fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, padding: '3px 10px', borderRadius: '20px' }}>
-                            STAGE {treeStage + 1} / 10
-                        </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+                <div className="card" style={{ width: '100%', padding: '32px 20px', border: '5px solid var(--black)', boxShadow: '8px 8px 0 var(--black)' }}>
+                    <div style={{ fontSize: '72px', marginBottom: '16px', lineHeight: 1 }}>🌱</div>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 8vw, 36px)', color: 'var(--black)', letterSpacing: '2px', lineHeight: 1.1 }}>
+                        BERSIAP MENYIRAM!
                     </div>
-                    <div style={{ padding: '12px 16px', background: 'var(--white)', borderTop: '3px solid var(--black)' }}>
-                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '18px', color: 'var(--black)' }}>{TREE_STAGE_LABELS[Math.min(treeStage, 9)]}</div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#888', marginTop: '4px' }}>{Math.round(Math.min(100, (totalWater / TOTAL_WATER_GOAL) * 100))}% TOTAL PROGRESS BERSAMA</div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#555', marginTop: '16px', letterSpacing: '1px', lineHeight: 1.5 }}>
+                        <strong>{collectedWater}L</strong> AIR TERSEDIA<br />
+                        <strong>{contributedWater}L</strong> SUDAH KAMU SUMBANGKAN
                     </div>
                 </div>
 
@@ -183,23 +180,19 @@ export default function Tree() {
                     onClick={handleGameReady}
                     style={{
                         background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-                        border: '4px solid var(--black)', boxShadow: '8px 8px 0 var(--black)',
-                        borderRadius: '18px', padding: '20px 40px', width: '100%',
-                        cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+                        border: '4px solid var(--black)', boxShadow: '6px 6px 0 var(--black)',
+                        borderRadius: '16px', padding: '20px', width: '100%',
+                        cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
                         touchAction: 'manipulation', userSelect: 'none', WebkitUserSelect: 'none',
                     }}
                 >
                     <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 7vw, 32px)', letterSpacing: '2px', color: 'var(--white)', textShadow: '2px 2px 0 rgba(0,0,0,0.3)' }}>
-                        💧 MULAI MEMOMPA!
+                        💧 MULAI TAPPING!
                     </div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.8)', letterSpacing: '2px' }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.9)', letterSpacing: '2px' }}>
                         TAP UNTUK MASUK & AKTIFKAN SUARA
                     </div>
                 </button>
-
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.6)', letterSpacing: '1px' }}>
-                    {collectedWater}L AIR TERSEDIA · {contributedWater}L SUDAH KONTRIBUSI
-                </div>
             </div>
         </div>
     );
@@ -329,7 +322,7 @@ export default function Tree() {
                         display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
                         overflow: 'hidden', paddingBottom: '10px'
                     }}>
-                        <TreeVisual stage={treeStage} size="55%" isLevelingUp={!!stageToast} />
+                        <TreeVisual stage={treeStage} size="70%" isLevelingUp={!!stageToast} />
                     </div>
 
                     {/* Stage badge top-left */}
