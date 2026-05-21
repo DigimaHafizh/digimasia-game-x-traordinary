@@ -157,15 +157,16 @@ export default function Tree() {
         <div style={{
             height: 'calc(100dvh - 140px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px',
-            background: "var(--blue-bright)",
+            backgroundColor: 'var(--blue-bright)',
             backgroundImage: "url('/assets/branding/BG1.png')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            backgroundBlendMode: 'overlay',
         }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
                 <div className="card" style={{ width: '100%', padding: '32px 20px', border: '5px solid var(--black)', boxShadow: '8px 8px 0 var(--black)' }}>
-                    <div style={{ fontSize: '72px', marginBottom: '16px', lineHeight: 1 }}>🌱</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', height: '140px', marginBottom: '16px' }}>
+                        <TreeVisual stage={9} size="100%" />
+                    </div>
                     <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 8vw, 36px)', color: 'var(--black)', letterSpacing: '2px', lineHeight: 1.1 }}>
                         BERSIAP MENYIRAM!
                     </div>
@@ -310,12 +311,11 @@ export default function Tree() {
                     position: 'relative',
                     height: 'clamp(120px, 30vh, 180px)',
                     width: '100%',
-                    background: 'var(--blue-bright)',
+                    backgroundColor: 'var(--blue-bright)',
                     backgroundImage: "url('/assets/branding/BG1.png')",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
-                    backgroundBlendMode: 'overlay',
                 }}>
                     <div style={{
                         position: 'absolute', inset: 0,
@@ -585,12 +585,12 @@ export default function Tree() {
                 <button
                     onClick={handleTap}
                     disabled={isOutOfWater}
+                    className={`pump-btn ${isPumping ? 'is-pumping' : ''}`}
                     style={{
                         background: isPumping
                             ? 'linear-gradient(135deg, #0ea5e9, #2563eb)'
                             : 'linear-gradient(135deg, #22c55e, #16a34a)',
                         border: '4px solid var(--black)',
-                        boxShadow: isPumping ? '2px 2px 0 var(--black)' : '6px 6px 0 var(--black)',
                         borderRadius: '18px',
                         padding: '20px',
                         width: '100%',
@@ -599,8 +599,7 @@ export default function Tree() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         gap: '4px',
-                        transform: isPumping ? 'translate(4px, 4px)' : 'translate(0,0)',
-                        transition: 'all 0.12s ease',
+                        transition: 'all 0.05s ease',
                         userSelect: 'none',
                         WebkitUserSelect: 'none',
                         touchAction: 'manipulation',
@@ -628,6 +627,14 @@ export default function Tree() {
 
             {/* Global CSS for animations */}
             <style>{`
+                .pump-btn {
+                    box-shadow: 6px 6px 0 var(--black);
+                    transform: translate(0, 0);
+                }
+                .pump-btn:active, .pump-btn.is-pumping {
+                    box-shadow: 2px 2px 0 var(--black) !important;
+                    transform: translate(4px, 4px) !important;
+                }
                 @keyframes dropletFly {
                     0% { transform: translateY(0) scale(1); opacity: 1; }
                     60% { transform: translateY(-90px) translateX(30px) scale(1.2); opacity: 0.9; }
