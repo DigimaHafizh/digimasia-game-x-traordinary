@@ -36,12 +36,14 @@ const getImageForId = (id: string | undefined, name: string, imageUrl?: string) 
 };
 
 // ── Dramatic Nominee List (before winner) ─────────────
-const NomineeList = memo(function NomineeList({ data, accentColor, textColor, maxVotes, showVotes }: {
+const NomineeList = memo(function NomineeList({ data, accentColor, textColor, maxVotes, showVotes, winnerId, type }: {
     data: WinnerStats[];
     accentColor: string;
     textColor: string;
     maxVotes: number;
     showVotes: boolean;
+    winnerId?: string;
+    type: 'team' | 'digimer';
 }) {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -115,6 +117,102 @@ const NomineeList = memo(function NomineeList({ data, accentColor, textColor, ma
                     )}
                 </div>
             ))}
+        </div>
+    );
+});
+
+// ── Card-Grid Nominee List (Post-Reveal, like Vote.tsx) ─
+const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textColor, winnerId, type }: {
+    data: WinnerStats[];
+    accentColor: string;
+    textColor: string;
+    winnerId?: string;
+    type: 'team' | 'digimer';
+}) {
+    const logoSrc = type === 'team'
+        ? '/assets/branding/Logo_X-Traordinary Squad.png'
+        : '/assets/branding/Logo_X-Traordinary Digimers.png';
+
+    return (
+        <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            width: '100%', gap: '24px',
+            animation: 'winnerReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        }}>
+            {/* Branding Image Header */}
+            <img
+                src={logoSrc}
+                alt="Awards Logo"
+                style={{ height: 'auto', width: '100%', maxWidth: '320px', display: 'block' }}
+            />
+
+            {/* Candidate Cards Grid */}
+            <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                gap: 'clamp(10px, 2vw, 18px)',
+                width: '100%',
+            }}>
+                {data.map((item, idx) => {
+                    const isWinner = item.id === winnerId;
+                    return (
+                        <div
+                            key={item.id}
+                            style={{
+                                position: 'relative',
+                                padding: 'clamp(14px, 2vw, 20px) clamp(8px, 1.5vw, 14px)',
+                                border: isWinner ? `4px solid ${accentColor}` : '3px solid var(--black)',
+                                background: isWinner ? accentColor : 'var(--white)',
+                                opacity: !isWinner ? 0.55 : 1,
+                                filter: !isWinner ? 'grayscale(0.6)' : 'none',
+                                width: 'clamp(120px, 20vw, 170px)',
+                                textAlign: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '10px',
+                                animationDelay: `${idx * 0.06}s`,
+                                borderRadius: '16px',
+                                boxShadow: isWinner ? `6px 6px 0 var(--black), 0 0 30px ${accentColor}` : '4px 4px 0 var(--black)',
+                                transition: 'box-shadow 0.15s, border 0.15s',
+                                animation: `popInRight 0.5s ${idx * 0.06}s both`,
+                            }}
+                        >
+                            {isWinner && (
+                                <div style={{ fontSize: 'clamp(20px, 4vh, 36px)', marginBottom: '-8px', zIndex: 1, animation: 'crownFloat 2.5s ease-in-out infinite' }}>👑</div>
+                            )}
+                            {/* Photo */}
+                            <div style={{
+                                width: '100%', aspectRatio: '1',
+                                borderRadius: '10px',
+                                border: '3px solid var(--black)',
+                                overflow: 'hidden',
+                                background: accentColor,
+                                boxShadow: '2px 2px 0 var(--black)',
+                            }}>
+                                <img src={getImageForId(item.id, item.name, item.imageUrl)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </div>
+                            {/* Name + Division */}
+                            <div>
+                                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(13px, 2vw, 18px)', color: isWinner ? textColor : 'var(--black)', letterSpacing: '1px', lineHeight: 1.2 }}>{item.name}</div>
+                                {item.division && (
+                                    <div style={{
+                                        background: isWinner ? 'rgba(0,0,0,0.2)' : 'var(--navy-dark)',
+                                        color: 'white', fontFamily: 'var(--font-mono)',
+                                        fontSize: '9px', fontWeight: 700,
+                                        padding: '3px 10px', borderRadius: '20px',
+                                        border: '2px solid var(--black)',
+                                        letterSpacing: '1px', marginTop: '6px',
+                                        display: 'inline-block',
+                                        boxShadow: '1px 1px 0 var(--black)',
+                                    }}>{item.division.toUpperCase()}</div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 });
@@ -214,7 +312,7 @@ const WinnerCard = memo(function WinnerCard({ winner, accentColor, textColor, vo
 });
 
 // ── Award Panel ────────────────────────────────────────
-const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'var(--black)', stats, winner, revealed, setRevealed, showVotes, setShowVotes, winnerRevealed, onRevealWinner, countdownValue }: {
+const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'var(--black)', stats, winner, revealed, setRevealed, showVotes, setShowVotes, winnerRevealed, onRevealWinner, countdownValue, type }: {
     title: string;
     accentColor: string;
     textColor?: string;
@@ -227,6 +325,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
     winnerRevealed: boolean;
     countdownValue?: number | null;
     onRevealWinner: () => void;
+    type: 'team' | 'digimer';
 }) {
     const maxVotes = useMemo(() => Math.max(...stats.map(d => d.count), 1), [stats]);
 
@@ -359,17 +458,15 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                         </div>
                     )
                 ) : (
-                    // Winner & Nominees revealed state
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, gap: '20px' }}>
-                        {winner && (
-                            <WinnerCard
-                                winner={winner}
-                                accentColor={accentColor}
-                                textColor={textColor}
-                                votes={winner.count}
-                                maxVotes={maxVotes}
-                            />
-                        )}
+                    // Winner & Nominees revealed state — card grid layout
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', flex: 1, gap: '20px' }}>
+                        <CardNomineeList
+                            data={stats}
+                            accentColor={accentColor}
+                            textColor={textColor}
+                            winnerId={winner?.id}
+                            type={type}
+                        />
                     </div>
                 )}
             </div>
@@ -590,6 +687,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                         winnerRevealed={finalWinnerDigimer}
                         countdownValue={countdownState?.type === 'digimer' ? countdownState.count : null}
                         onRevealWinner={() => handleWinnerReveal('digimer')}
+                        type="digimer"
                     />
                     <AwardPanel
                         title="🏅 BEST TEAM OF THE YEAR"
@@ -604,6 +702,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                         winnerRevealed={finalWinnerTeam}
                         countdownValue={countdownState?.type === 'team' ? countdownState.count : null}
                         onRevealWinner={() => handleWinnerReveal('team')}
+                        type="team"
                     />
                 </div>
             ) : activeFocus === 'digimer' ? (
@@ -626,6 +725,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                             winnerRevealed={finalWinnerDigimer}
                             countdownValue={countdownState?.type === 'digimer' ? countdownState.count : null}
                             onRevealWinner={() => handleWinnerReveal('digimer')}
+                            type="digimer"
                         />
                     </div>
                 </div>
@@ -649,6 +749,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                             winnerRevealed={finalWinnerTeam}
                             countdownValue={countdownState?.type === 'team' ? countdownState.count : null}
                             onRevealWinner={() => handleWinnerReveal('team')}
+                            type="team"
                         />
                     </div>
                 </div>
