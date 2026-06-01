@@ -378,45 +378,66 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
     return (
         <div style={wrapperStyle}>
             {!isFocused ? (
-                // Beautiful New Pre-Reveal Card List Mode
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'space-between' }}>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-                        <img src={logoSrc} alt={title} style={{ maxWidth: '260px', width: '100%' }} />
-                        <div style={{
-                            background: accentColor, color: textColor,
-                            padding: '6px 20px', borderRadius: '16px',
-                            fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '13px',
-                            border: '3px solid var(--black)', boxShadow: '3px 3px 0 var(--black)'
-                        }}>
-                            {stats.length} FINALISTS
+                winnerRevealed && winner ? (
+                    // Persistent Winner Display in 'All' View
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center', gap: '24px' }}>
+                        <img src={logoSrc} alt={title} style={{ maxWidth: '240px', width: '100%' }} />
+                        <div style={{ position: 'relative' }}>
+                            <div style={{ fontSize: 'clamp(28px, 4vh, 48px)', position: 'absolute', top: '-30px', left: '50%', transform: 'translateX(-50%)', animation: 'crownFloat 2.5s infinite', zIndex: 1 }}>👑</div>
+                            <div style={{
+                                width: 'clamp(120px, 20vh, 180px)', height: 'clamp(120px, 20vh, 180px)',
+                                borderRadius: '24px', border: `6px solid var(--black)`,
+                                overflow: 'hidden', boxShadow: `6px 6px 0 ${accentColor}`
+                            }}>
+                                <img src={getImageForId(winner.id, winner.name, winner.imageUrl)} alt={winner.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </div>
                         </div>
+                        <div style={{
+                            background: accentColor, color: textColor, padding: '8px 24px', borderRadius: '50px',
+                            border: '4px solid var(--black)', boxShadow: '4px 4px 0 var(--black)',
+                            fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 3vh, 28px)', letterSpacing: '1px'
+                        }}>{winner.name}</div>
                     </div>
+                ) : (
+                    // Beautiful New Pre-Reveal Card List Mode
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'space-between' }}>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.8 }}>
-                        <div style={{ fontSize: '64px', marginBottom: '8px', animation: 'crownFloat 4s ease-in-out infinite' }}>🔒</div>
-                        <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 3vw, 28px)', letterSpacing: '2px', color: 'var(--black)' }}>CLASSIFIED</div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', fontWeight: 700, marginTop: '4px', textAlign: 'center' }}>RESULTS ARE LOCKED UNTIL REVEAL</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                            <img src={logoSrc} alt={title} style={{ maxWidth: '260px', width: '100%' }} />
+                            <div style={{
+                                background: accentColor, color: textColor,
+                                padding: '6px 20px', borderRadius: '16px',
+                                fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '13px',
+                                border: '3px solid var(--black)', boxShadow: '3px 3px 0 var(--black)'
+                            }}>
+                                {stats.length} FINALISTS
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.8 }}>
+                            <div style={{ fontSize: '64px', marginBottom: '8px', animation: 'crownFloat 4s ease-in-out infinite' }}>🔒</div>
+                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 3vw, 28px)', letterSpacing: '2px', color: 'var(--black)' }}>CLASSIFIED</div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', fontWeight: 700, marginTop: '4px', textAlign: 'center' }}>RESULTS ARE LOCKED UNTIL REVEAL</div>
+                        </div>
+
+                        <button
+                            style={{
+                                background: 'var(--yellow)', border: '4px solid var(--black)',
+                                boxShadow: `4px 4px 0 var(--black)`,
+                                padding: '16px 32px', borderRadius: '16px', fontFamily: 'var(--font-display)',
+                                fontSize: 'clamp(14px, 1.5vw, 18px)', letterSpacing: '2px',
+                                cursor: 'pointer', transition: 'all 0.1s', color: 'var(--black)',
+                            }}
+                            onMouseDown={e => { (e.target as HTMLElement).style.transform = 'translate(4px,4px)'; (e.target as HTMLElement).style.boxShadow = '0px 0px 0 var(--black)'; }}
+                            onMouseUp={e => { (e.target as HTMLElement).style.transform = ''; (e.target as HTMLElement).style.boxShadow = `4px 4px 0 var(--black)`; }}
+                            onClick={onRevealWinner}
+                        >
+                            🏆 REVEAL WINNER!
+                        </button>
+
                     </div>
-
-                    <button
-                        style={{
-                            background: 'var(--yellow)', border: '4px solid var(--black)',
-                            boxShadow: `4px 4px 0 var(--black)`,
-                            padding: '16px 32px', borderRadius: '16px', fontFamily: 'var(--font-display)',
-                            fontSize: 'clamp(14px, 1.5vw, 18px)', letterSpacing: '2px',
-                            cursor: 'pointer', transition: 'all 0.1s', color: 'var(--black)',
-                        }}
-                        onMouseDown={e => { (e.target as HTMLElement).style.transform = 'translate(4px,4px)'; (e.target as HTMLElement).style.boxShadow = '0px 0px 0 var(--black)'; }}
-                        onMouseUp={e => { (e.target as HTMLElement).style.transform = ''; (e.target as HTMLElement).style.boxShadow = `4px 4px 0 var(--black)`; }}
-                        onClick={onRevealWinner}
-                    >
-                        🏆 REVEAL WINNER!
-                    </button>
-
-                </div>
-            ) : (
-                // Focused state — Full Screen Reveal/Countdown Mode
+                )
+            ) : (  // Focused state — Full Screen Reveal/Countdown Mode
                 <div style={{ padding: '0', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
                     {!winnerRevealed ? (
                         countdownValue !== undefined && countdownValue !== null && countdownValue > 0 ? (
@@ -625,38 +646,40 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                 }} />
             )}
 
-            {/* Title Row */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(22px, 3vw, 40px)',
-                        letterSpacing: '3px',
-                        color: 'var(--yellow)',
-                        textShadow: '3px 3px 0 var(--black)',
-                        lineHeight: 1,
-                    }}>{activeFocus === 'digimer' ? '🌟 DIGIMER OF THE YEAR' : activeFocus === 'team' ? '🏅 BEST TEAM OF THE YEAR' : '🏆 AWARDS CEREMONY'}</div>
-                    <div style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 'clamp(9px, 1vw, 12px)',
-                        color: 'var(--white)',
-                        letterSpacing: '3px',
-                        marginTop: '4px',
-                        textShadow: '1px 1px 0 var(--black)',
-                    }}>{activeFocus === 'all' ? 'X-TRAORDINARY — GROW WITH HEART : THE FINAL CELEBRATION' : 'THE X-TRAORDINARY DIGIMERS : PILIH DIGIMER TERBAIK'}</div>
+            {/* Title Row — Only Show in ALL view to maximize space in reveal */}
+            {activeFocus === 'all' && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div style={{
+                            fontFamily: 'var(--font-display)',
+                            fontSize: 'clamp(22px, 3vw, 40px)',
+                            letterSpacing: '3px',
+                            color: 'var(--yellow)',
+                            textShadow: '3px 3px 0 var(--black)',
+                            lineHeight: 1,
+                        }}>🏆 AWARDS CEREMONY</div>
+                        <div style={{
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: 'clamp(9px, 1vw, 12px)',
+                            color: 'var(--white)',
+                            letterSpacing: '3px',
+                            marginTop: '4px',
+                            textShadow: '1px 1px 0 var(--black)',
+                        }}>X-TRAORDINARY — GROW WITH HEART : THE FINAL CELEBRATION</div>
+                    </div>
+                    {onClose && (
+                        <button
+                            onClick={onClose}
+                            style={{
+                                background: '#ff4d4d', border: '3px solid var(--black)',
+                                boxShadow: '4px 4px 0 var(--black)', padding: '6px 16px',
+                                borderRadius: '10px', fontFamily: 'var(--font-display)',
+                                fontSize: '14px', cursor: 'pointer', color: 'white',
+                            }}
+                        >✕ CLOSE</button>
+                    )}
                 </div>
-                {onClose && (
-                    <button
-                        onClick={onClose}
-                        style={{
-                            background: '#ff4d4d', border: '3px solid var(--black)',
-                            boxShadow: '4px 4px 0 var(--black)', padding: '6px 16px',
-                            borderRadius: '10px', fontFamily: 'var(--font-display)',
-                            fontSize: '14px', cursor: 'pointer', color: 'white',
-                        }}
-                    >✕ CLOSE</button>
-                )}
-            </div>
+            )}
 
             {/* Focus/Grid Award Layout Controller */}
             {activeFocus === 'all' ? (
@@ -703,11 +726,13 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                 </div>
             ) : activeFocus === 'digimer' ? (
                 // Display only Digimer focused
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', animation: 'fadeIn 0.3s ease', minHeight: 0 }}>
-                    <button onClick={() => setActiveFocus('all')} style={{ alignSelf: 'flex-start', background: 'var(--yellow)', border: '4px solid var(--black)', padding: '10px 24px', borderRadius: '12px', fontFamily: 'var(--font-display)', fontSize: '16px', cursor: 'pointer', color: 'var(--black)', boxShadow: '4px 4px 0 var(--black)', transition: 'transform 0.1s', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        ⬅ BACK TO AWARDS LIST
-                    </button>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', flex: 1, minHeight: 0 }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', animation: 'fadeIn 0.3s ease', minHeight: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                        <button onClick={() => setActiveFocus('all')} style={{ background: 'var(--yellow)', border: '4px solid var(--black)', padding: '10px 24px', borderRadius: '12px', fontFamily: 'var(--font-display)', fontSize: '16px', cursor: 'pointer', color: 'var(--black)', boxShadow: '4px 4px 0 var(--black)', transition: 'transform 0.1s', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 10 }}>
+                            ⬅ BACK TO AWARDS LIST
+                        </button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
                         <AwardPanel
                             title="🌟 DIGIMER OF THE YEAR"
                             accentColor="var(--blue-bright)"
@@ -728,11 +753,13 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                 </div>
             ) : (
                 // Display only Team focused
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', animation: 'fadeIn 0.3s ease', minHeight: 0 }}>
-                    <button onClick={() => setActiveFocus('all')} style={{ alignSelf: 'flex-start', background: 'var(--blue-bright)', border: '4px solid var(--black)', padding: '10px 24px', borderRadius: '12px', fontFamily: 'var(--font-display)', fontSize: '16px', cursor: 'pointer', color: 'white', boxShadow: '4px 4px 0 var(--black)', transition: 'transform 0.1s', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        ⬅ BACK TO AWARDS LIST
-                    </button>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', flex: 1, minHeight: 0 }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', animation: 'fadeIn 0.3s ease', minHeight: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                        <button onClick={() => setActiveFocus('all')} style={{ background: 'var(--blue-bright)', border: '4px solid var(--black)', padding: '10px 24px', borderRadius: '12px', fontFamily: 'var(--font-display)', fontSize: '16px', cursor: 'pointer', color: 'white', boxShadow: '4px 4px 0 var(--black)', transition: 'transform 0.1s', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 10 }}>
+                            ⬅ BACK TO AWARDS LIST
+                        </button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
                         <AwardPanel
                             title="🏅 BEST TEAM OF THE YEAR"
                             accentColor="var(--yellow)"
