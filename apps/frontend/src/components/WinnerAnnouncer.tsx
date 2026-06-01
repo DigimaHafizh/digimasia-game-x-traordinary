@@ -136,24 +136,24 @@ const WinnerCard = memo(function WinnerCard({ winner, accentColor, textColor, vo
             willChange: 'transform, opacity',
         }}>
             {/* Crown */}
-            <div style={{ fontSize: 'clamp(40px, 5vw, 64px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-12px', zIndex: 1, willChange: 'transform' }}>
+            <div style={{ fontSize: 'clamp(60px, 12vw, 120px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-20px', zIndex: 1, willChange: 'transform' }}>
                 👑
             </div>
 
             {/* Big Avatar */}
             <div style={{
-                width: 'clamp(70px, 9vw, 110px)',
-                height: 'clamp(70px, 9vw, 110px)',
-                borderRadius: '16px',
+                width: 'clamp(140px, 25vw, 280px)',
+                height: 'clamp(140px, 25vw, 280px)',
+                borderRadius: '24px',
                 background: accentColor,
-                border: '5px solid var(--black)',
-                boxShadow: `0 0 40px ${accentColor}, 6px 6px 0 var(--black)`,
+                border: '8px solid var(--black)',
+                boxShadow: `0 0 50px ${accentColor}, 10px 10px 0 var(--black)`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(28px, 4vw, 52px)',
+                fontSize: 'clamp(40px, 8vw, 80px)',
                 color: textColor,
                 animation: 'sparkleGlow 2.5s ease-in-out infinite',
-                marginBottom: '16px',
+                marginBottom: '20px',
                 overflow: 'hidden',
                 willChange: 'box-shadow',
             }}>
@@ -163,16 +163,16 @@ const WinnerCard = memo(function WinnerCard({ winner, accentColor, textColor, vo
             {/* Name */}
             <div style={{
                 background: accentColor,
-                border: '4px solid var(--black)',
-                boxShadow: '6px 6px 0 var(--black)',
-                padding: '8px 24px',
+                border: '6px solid var(--black)',
+                boxShadow: '8px 8px 0 var(--black)',
+                padding: '12px 36px',
                 borderRadius: '50px',
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(18px, 2.5vw, 28px)',
+                fontSize: 'clamp(24px, 5vw, 56px)',
                 letterSpacing: '2px',
                 color: textColor,
                 textAlign: 'center',
-                marginBottom: '8px',
+                marginBottom: '12px',
             }}>{winner.name}</div>
 
             {/* Division */}
@@ -274,33 +274,23 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                         }}>
                             {/* Decorative rotating retro rings */}
                             <div style={{
-                                position: 'absolute', width: '280px', height: '280px',
-                                border: `12px dashed ${accentColor}`, borderRadius: '50%',
+                                position: 'absolute', width: 'clamp(280px, 50vw, 600px)', height: 'clamp(280px, 50vw, 600px)',
+                                border: `16px dashed ${accentColor}`, borderRadius: '50%',
                                 animation: 'spinSlow 10s linear infinite', opacity: 0.3, zIndex: 1
                             }} />
                             <div style={{
-                                position: 'absolute', width: '220px', height: '220px',
-                                border: '6px dotted var(--black)', borderRadius: '50%',
+                                position: 'absolute', width: 'clamp(220px, 40vw, 480px)', height: 'clamp(220px, 40vw, 480px)',
+                                border: '10px dotted var(--black)', borderRadius: '50%',
                                 animation: 'spinReverse 6s linear infinite', opacity: 0.5, zIndex: 1
                             }} />
                             <div style={{
-                                position: 'absolute', width: '160px', height: '160px',
-                                border: `4px solid ${accentColor}`, borderRadius: '50%',
+                                position: 'absolute', width: 'clamp(160px, 30vw, 340px)', height: 'clamp(160px, 30vw, 340px)',
+                                border: `6px solid ${accentColor}`, borderRadius: '50%',
                                 animation: 'spinSlow 4s linear infinite', opacity: 0.8, zIndex: 1
                             }} />
                             <div style={{
-                                fontFamily: 'var(--font-mono)', fontSize: '18px',
-                                letterSpacing: '8px', marginBottom: '10px', zIndex: 2,
-                                background: accentColor, padding: '4px 16px', color: textColor,
-                                border: '3px solid var(--black)', borderRadius: '8px',
-                                boxShadow: '4px 4px 0 var(--black)',
-                                animation: 'sparkleGlow 0.3s ease-in-out infinite alternate'
-                            }}>
-                                [ DECRYPTING ]
-                            </div>
-                            <div style={{
-                                fontFamily: 'var(--font-display)', fontSize: '160px',
-                                color: accentColor, textShadow: '8px 8px 0 var(--black)',
+                                fontFamily: 'var(--font-display)', fontSize: 'clamp(160px, 32vw, 380px)',
+                                color: accentColor, textShadow: '12px 12px 0 var(--black)',
                                 zIndex: 2, position: 'relative', lineHeight: 1,
                                 animation: 'sparkleGlow 0.5s ease-in-out infinite alternate'
                             }}>
