@@ -151,20 +151,28 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                 style={{ height: 'auto', width: '100%', maxWidth: 'clamp(200px, 35vw, 360px)', display: 'block' }}
             />
 
-            {/* WINNER — Big Spotlight Card */}
+            {/* WINNER — Big Spotlight Card Structure */}
             {winner && (
                 <div style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+                    background: 'white',
+                    border: `6px solid var(--black)`,
+                    borderRadius: '32px',
+                    boxShadow: `12px 12px 0 var(--black), 0 0 50px ${accentColor}`,
+                    padding: 'clamp(20px, 4vw, 40px)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px',
+                    position: 'relative',
                     animation: 'popInRight 0.6s both',
+                    maxWidth: '100%',
                 }}>
                     {/* Crown */}
-                    <div style={{ fontSize: 'clamp(28px, 5vh, 52px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-10px', zIndex: 1 }}>👑</div>
+                    <div style={{ fontSize: 'clamp(32px, 6vh, 64px)', position: 'absolute', top: 'clamp(-30px, -5vh, -40px)', animation: 'crownFloat 2.5s ease-in-out infinite', zIndex: 1 }}>👑</div>
 
                     {/* Big Photo */}
                     <div style={{
-                        width: 'clamp(140px, 28vh, 220px)', height: 'clamp(140px, 28vh, 220px)',
-                        borderRadius: '20px', border: `6px solid ${accentColor}`,
-                        overflow: 'hidden', boxShadow: `0 0 40px ${accentColor}, 8px 8px 0 var(--black)`,
+                        width: 'clamp(160px, 32vh, 260px)', height: 'clamp(160px, 32vh, 260px)',
+                        borderRadius: '24px', border: `6px solid var(--black)`,
+                        overflow: 'hidden', boxShadow: '6px 6px 0 var(--black)',
+                        background: accentColor,
                         animation: 'sparkleGlow 2.5s ease-in-out infinite',
                     }}>
                         <img src={getImageForId(winner.id, winner.name, winner.imageUrl)} alt={winner.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -173,10 +181,10 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                     {/* Name Badge */}
                     <div style={{
                         background: accentColor,
-                        border: '4px solid var(--black)', boxShadow: '5px 5px 0 var(--black)',
-                        padding: '6px 24px', borderRadius: '50px',
-                        fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 3.5vh, 36px)',
-                        letterSpacing: '2px', color: textColor,
+                        border: '4px solid var(--black)', boxShadow: '6px 6px 0 var(--black)',
+                        padding: '10px 32px', borderRadius: '50px',
+                        fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 4.5vh, 48px)',
+                        letterSpacing: '1px', color: textColor, marginTop: '8px'
                     }}>{winner.name}</div>
 
                     {/* Division */}
@@ -346,146 +354,118 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
 }) {
     const maxVotes = useMemo(() => Math.max(...stats.map(d => d.count), 1), [stats]);
 
-    const wrapperStyle = {
+    const logoSrc = type === 'team'
+        ? '/assets/branding/Logo_X-Traordinary Squad.png'
+        : '/assets/branding/Logo_X-Traordinary Digimers.png';
+
+    const wrapperStyle = isFocused ? {
         display: 'flex', flexDirection: 'column' as const, flex: 1, overflow: 'hidden'
+    } : {
+        background: 'white',
+        border: '6px solid var(--black)',
+        borderRadius: '32px',
+        boxShadow: `12px 12px 0 ${accentColor}`,
+        display: 'flex',
+        flexDirection: 'column' as const,
+        alignItems: 'center',
+        padding: '30px 20px',
+        gap: '24px',
+        flex: 1,
+        position: 'relative' as const,
+        overflow: 'hidden',
     };
 
     return (
         <div style={wrapperStyle}>
-            {/* Header strip — only in non-focused 'all' view */}
-            {!isFocused && (
-                <div style={{
-                    background: accentColor,
-                    borderBottom: '5px solid var(--black)',
-                    padding: '12px 20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                }}>
-                    <div style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(14px, 1.8vw, 22px)',
-                        letterSpacing: '2px',
-                        color: textColor,
-                    }}>{title}</div>
-                    <div style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 'clamp(9px, 0.9vw, 11px)',
-                        color: textColor === 'white' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
-                        letterSpacing: '1px',
-                    }}>{stats.length} FINALISTS</div>
+            {!isFocused ? (
+                // Beautiful New Pre-Reveal Card List Mode
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'space-between' }}>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                        <img src={logoSrc} alt={title} style={{ maxWidth: '260px', width: '100%' }} />
+                        <div style={{
+                            background: accentColor, color: textColor,
+                            padding: '6px 20px', borderRadius: '16px',
+                            fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '13px',
+                            border: '3px solid var(--black)', boxShadow: '3px 3px 0 var(--black)'
+                        }}>
+                            {stats.length} FINALISTS
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.8 }}>
+                        <div style={{ fontSize: '64px', marginBottom: '8px', animation: 'crownFloat 4s ease-in-out infinite' }}>🔒</div>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 3vw, 28px)', letterSpacing: '2px', color: 'var(--black)' }}>CLASSIFIED</div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', fontWeight: 700, marginTop: '4px', textAlign: 'center' }}>RESULTS ARE LOCKED UNTIL REVEAL</div>
+                    </div>
+
+                    <button
+                        style={{
+                            background: 'var(--yellow)', border: '4px solid var(--black)',
+                            boxShadow: `4px 4px 0 var(--black)`,
+                            padding: '16px 32px', borderRadius: '16px', fontFamily: 'var(--font-display)',
+                            fontSize: 'clamp(14px, 1.5vw, 18px)', letterSpacing: '2px',
+                            cursor: 'pointer', transition: 'all 0.1s', color: 'var(--black)',
+                        }}
+                        onMouseDown={e => { (e.target as HTMLElement).style.transform = 'translate(4px,4px)'; (e.target as HTMLElement).style.boxShadow = '0px 0px 0 var(--black)'; }}
+                        onMouseUp={e => { (e.target as HTMLElement).style.transform = ''; (e.target as HTMLElement).style.boxShadow = `4px 4px 0 var(--black)`; }}
+                        onClick={onRevealWinner}
+                    >
+                        🏆 REVEAL WINNER!
+                    </button>
+
+                </div>
+            ) : (
+                // Focused state — Full Screen Reveal/Countdown Mode
+                <div style={{ padding: '0', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+                    {!winnerRevealed ? (
+                        countdownValue !== undefined && countdownValue !== null && countdownValue > 0 ? (
+                            <div style={{
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                flex: 1, padding: '40px 20px', position: 'relative', overflow: 'hidden',
+                                background: 'transparent',
+                            }}>
+                                {/* Decorative rotating retro rings */}
+                                <div style={{
+                                    position: 'absolute', width: 'clamp(280px, 50vw, 600px)', height: 'clamp(280px, 50vw, 600px)',
+                                    border: `16px dashed ${accentColor}`, borderRadius: '50%',
+                                    animation: 'spinSlow 10s linear infinite', opacity: 0.3, zIndex: 1
+                                }} />
+                                <div style={{
+                                    position: 'absolute', width: 'clamp(220px, 40vw, 480px)', height: 'clamp(220px, 40vw, 480px)',
+                                    border: '10px dotted var(--black)', borderRadius: '50%',
+                                    animation: 'spinReverse 6s linear infinite', opacity: 0.5, zIndex: 1
+                                }} />
+                                <div style={{
+                                    position: 'absolute', width: 'clamp(160px, 30vw, 340px)', height: 'clamp(160px, 30vw, 340px)',
+                                    border: `6px solid ${accentColor}`, borderRadius: '50%',
+                                    animation: 'spinSlow 4s linear infinite', opacity: 0.8, zIndex: 1
+                                }} />
+                                <div style={{
+                                    fontFamily: 'var(--font-display)', fontSize: 'clamp(160px, 32vw, 380px)',
+                                    color: 'white', textShadow: `0 0 40px ${accentColor}, 8px 8px 0 rgba(0,0,0,0.8)`,
+                                    zIndex: 2, position: 'relative', lineHeight: 1,
+                                    animation: 'sparkleGlow 0.5s ease-in-out infinite alternate'
+                                }}>
+                                    {countdownValue}
+                                </div>
+                            </div>
+                        ) : null
+                    ) : (
+                        // Winner & Nominees revealed state — card grid layout
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', flex: 1, gap: '20px', padding: '12px 0' }}>
+                            <CardNomineeList
+                                data={stats}
+                                accentColor={accentColor}
+                                textColor={textColor!}
+                                winnerId={winner?.id}
+                                type={type}
+                                maxVotes={maxVotes}
+                            />
+                        </div>
+                    )}
                 </div>
             )}
-
-            {/* Body */}
-            <div style={{ padding: '0', flex: 1, overflowY: 'auto' }}>
-                {!winnerRevealed ? (
-                    countdownValue !== undefined && countdownValue !== null && countdownValue > 0 ? (
-                        <div style={{
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                            flex: 1, padding: '40px 20px', position: 'relative', overflow: 'hidden',
-                            background: isFocused ? 'transparent' : 'var(--white)', // Keep background if in 'all' view, transparent in focused
-                        }}>
-                            {/* Decorative rotating retro rings */}
-                            <div style={{
-                                position: 'absolute', width: 'clamp(280px, 50vw, 600px)', height: 'clamp(280px, 50vw, 600px)',
-                                border: `16px dashed ${accentColor}`, borderRadius: '50%',
-                                animation: 'spinSlow 10s linear infinite', opacity: 0.3, zIndex: 1
-                            }} />
-                            <div style={{
-                                position: 'absolute', width: 'clamp(220px, 40vw, 480px)', height: 'clamp(220px, 40vw, 480px)',
-                                border: '10px dotted var(--black)', borderRadius: '50%',
-                                animation: 'spinReverse 6s linear infinite', opacity: 0.5, zIndex: 1
-                            }} />
-                            <div style={{
-                                position: 'absolute', width: 'clamp(160px, 30vw, 340px)', height: 'clamp(160px, 30vw, 340px)',
-                                border: `6px solid ${accentColor}`, borderRadius: '50%',
-                                animation: 'spinSlow 4s linear infinite', opacity: 0.8, zIndex: 1
-                            }} />
-                            <div style={{
-                                fontFamily: 'var(--font-display)', fontSize: 'clamp(160px, 32vw, 380px)',
-                                color: 'white', textShadow: `0 0 40px ${accentColor}, 8px 8px 0 rgba(0,0,0,0.8)`,
-                                zIndex: 2, position: 'relative', lineHeight: 1,
-                                animation: 'sparkleGlow 0.5s ease-in-out infinite alternate'
-                            }}>
-                                {countdownValue}
-                            </div>
-                        </div>
-                    ) : (
-                        // Hidden state with Neo-brutalist lock design
-                        <div style={{
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                            flex: 1, padding: '40px 20px', position: 'relative', overflow: 'hidden'
-                        }}>
-                            {/* Subtle background pattern to indicate 'classified' area */}
-                            <div style={{
-                                position: 'absolute', inset: 0, opacity: 0.05, pointerEvents: 'none',
-                                backgroundImage: 'radial-gradient(var(--navy-dark) 2px, transparent 2px)',
-                                backgroundSize: '20px 20px'
-                            }} />
-
-                            {/* Dramatic Boxed Icon */}
-                            <div style={{
-                                position: 'relative', width: '100px', height: '100px',
-                                background: 'white', border: '5px solid var(--black)',
-                                borderRadius: '24px', boxShadow: '8px 8px 0 var(--black)',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: '48px', marginBottom: '24px', zIndex: 1,
-                                animation: 'crownFloat 4s ease-in-out infinite',
-                                willChange: 'transform'
-                            }}>
-                                🔒
-                            </div>
-
-                            {/* Lock Status Text */}
-                            <div style={{
-                                fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 3vw, 32px)',
-                                color: 'var(--black)', letterSpacing: '2px',
-                                marginBottom: '6px', zIndex: 1
-                            }}>
-                                CLASSIFIED
-                            </div>
-                            <div style={{
-                                fontFamily: 'var(--font-mono)', fontSize: 'clamp(9px, 1vw, 11px)',
-                                color: '#888', letterSpacing: '2px', fontWeight: 600,
-                                marginBottom: '40px', zIndex: 1, textAlign: 'center'
-                            }}>
-                                RESULTS ARE LOCKED UNTIL REVEAL
-                            </div>
-
-                            {/* Action Button */}
-                            <button
-                                style={{
-                                    background: accentColor, border: '5px solid var(--black)',
-                                    boxShadow: `0 0 20px ${accentColor}, 8px 8px 0 var(--black)`, // glowing shadow
-                                    padding: '16px 32px', borderRadius: '16px', fontFamily: 'var(--font-display)',
-                                    fontSize: 'clamp(14px, 1.5vw, 18px)', letterSpacing: '2px',
-                                    cursor: 'pointer', transition: 'all 0.1s',
-                                    color: textColor, position: 'relative', zIndex: 1,
-                                }}
-                                onMouseDown={e => { (e.target as HTMLElement).style.transform = 'translate(4px,4px)'; (e.target as HTMLElement).style.boxShadow = '4px 4px 0 var(--black)'; }}
-                                onMouseUp={e => { (e.target as HTMLElement).style.transform = ''; (e.target as HTMLElement).style.boxShadow = `0 0 20px ${accentColor}, 8px 8px 0 var(--black)`; }}
-                                onClick={onRevealWinner}
-                                disabled={countdownValue !== undefined && countdownValue !== null}
-                            >
-                                🏆 REVEAL WINNER!
-                            </button>
-                        </div>
-                    )
-                ) : (
-                    // Winner & Nominees revealed state — card grid layout
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', flex: 1, gap: '20px', padding: '12px 0' }}>
-                        <CardNomineeList
-                            data={stats}
-                            accentColor={accentColor}
-                            textColor={textColor}
-                            winnerId={winner?.id}
-                            type={type}
-                            maxVotes={maxVotes}
-                        />
-                    </div>
-                )}
-            </div>
         </div>
     );
 });
