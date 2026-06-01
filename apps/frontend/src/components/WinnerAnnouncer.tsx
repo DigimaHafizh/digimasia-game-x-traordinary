@@ -396,9 +396,10 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
 
     const handleWinnerReveal = (type: 'team' | 'digimer') => {
         if (countdownState) return; // Prevent multiple clicks
+        audio.playTensionDrone();
         audio.playTick();
         setActiveFocus(type);
-        setCountdownState({ type, count: 3 });
+        setCountdownState({ type, count: 10 });
     };
 
     useEffect(() => {
@@ -414,6 +415,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                 return () => clearTimeout(tm);
             } else {
                 // Countdown reached 0
+                audio.stopTensionDrone();
                 triggerCelebration();
                 audio.playComplete();
                 if (countdownState.type === 'digimer') {

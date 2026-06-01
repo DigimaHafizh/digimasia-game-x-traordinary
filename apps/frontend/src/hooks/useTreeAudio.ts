@@ -219,6 +219,40 @@ export function useTreeAudio(enabled = true) {
         } catch (_) { }
     }, [getAudioCtx]);
 
+    const tensionDroneRef = useRef<OscillatorNode | null>(null);
+
+    const playTensionDrone = useCallback(() => {
+        if (isMutedRef.current || typeof window === 'undefined') return;
+        try {
+            const ctx = getAudioCtx();
+            const master = masterGainRef.current;
+            if (!master) return;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(master);
+            // Deep dramatic drone
+            osc.type = 'sawtooth';
+            // Start at a very low bass frequency and slowly pitch up slightly
+            osc.frequency.setValueAtTime(45, ctx.currentTime);
+            osc.frequency.linearRampToValueAtTime(65, ctx.currentTime + 10);
+
+            // Build volume and tension over 10 seconds
+            gain.gain.setValueAtTime(0, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.5, ctx.currentTime + 10);
+
+            osc.start(ctx.currentTime);
+            tensionDroneRef.current = osc;
+        } catch (_) { }
+    }, [getAudioCtx]);
+
+    const stopTensionDrone = useCallback(() => {
+        if (tensionDroneRef.current) {
+            try { tensionDroneRef.current.stop(); tensionDroneRef.current.disconnect(); } catch (_) { }
+            tensionDroneRef.current = null;
+        }
+    }, []);
+
     const playStageUp = useCallback(() => {
         if (isMutedRef.current) return;
         try {
@@ -253,6 +287,10 @@ export function useTreeAudio(enabled = true) {
                 bgmRef.current.pause();
             }
 
+            if (tensionDroneRef.current) {
+                try { tensionDroneRef.current.stop(); } catch (_) { }
+                tensionDroneRef.current = null;
+            }
             if (masterGainRef.current) {
                 masterGainRef.current.gain.setTargetAtTime(0, ctx.currentTime, 0.02);
             }
@@ -277,5 +315,5 @@ export function useTreeAudio(enabled = true) {
         }
     }, [getAudioCtx, scheduleBGMLoop, stopAllOscillators]);
 
-    return { playBGM, playTriviaBGM, stopBGM, playWaterDrop, playMenuSelect, playTick, playStageUp, playComplete, setMuted };
+    return { playBGM, playTriviaBGM, stopBGM, playWaterDrop, playMenuSelect, playTick, playTensionDrone, stopTensionDrone, playStageUp, playComplete, setMuted };
 }
