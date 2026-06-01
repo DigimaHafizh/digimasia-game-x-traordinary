@@ -15,7 +15,7 @@ export default function TVFrame({ children, bgImage = '/assets/branding/BG1.png'
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '2vh 3vw', // Responsive padding around TV
+            padding: '12px 1vw', // Reduced padding so TV spans entire screen
             boxSizing: 'border-box',
         }}>
             {/* TV Keyframes */}
@@ -41,8 +41,8 @@ export default function TVFrame({ children, bgImage = '/assets/branding/BG1.png'
                 position: 'relative',
                 width: '100%',
                 maxHeight: '100%',
-                aspectRatio: '16 / 10', // Taller TV aspect ratio to avoid scroll
-                maxWidth: '1400px',
+                aspectRatio: '16 / 9', // Wider 16:9 ratio to fill monitors
+                maxWidth: '1920px',
                 background: '#30b0b8', // Cyan TV body
                 border: '8px solid var(--black)',
                 borderRadius: '48px',

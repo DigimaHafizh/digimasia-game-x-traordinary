@@ -141,7 +141,7 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
     return (
         <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            width: '100%', gap: '16px',
+            width: '100%', gap: '8px',
             animation: 'winnerReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both',
         }}>
             {/* Branding Image Header */}
@@ -149,7 +149,7 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                 <img
                     src={logoSrc}
                     alt="Awards Logo"
-                    style={{ height: 'auto', width: '100%', maxWidth: 'clamp(280px, 45vw, 420px)', display: 'block' }}
+                    style={{ height: 'auto', width: '100%', maxWidth: 'clamp(320px, 50vw, 500px)', display: 'block' }}
                 />
             </div>
 
@@ -162,11 +162,11 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                     maxWidth: '100%',
                 }}>
                     {/* Crown */}
-                    <div style={{ fontSize: 'clamp(36px, 6vh, 64px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-16px', zIndex: 1 }}>👑</div>
+                    <div style={{ fontSize: 'clamp(40px, 6vh, 64px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-24px', zIndex: 1 }}>👑</div>
 
                     {/* Big Photo */}
                     <div style={{
-                        width: 'clamp(150px, 30vh, 220px)', height: 'clamp(150px, 30vh, 220px)',
+                        width: 'clamp(200px, 38vh, 320px)', height: 'clamp(200px, 38vh, 320px)',
                         borderRadius: '24px', border: `6px solid var(--black)`,
                         overflow: 'hidden', boxShadow: `6px 6px 0 ${accentColor}`,
                         background: accentColor,
@@ -358,7 +358,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
     const wrapperStyle = isFocused ? {
         display: 'flex', flexDirection: 'column' as const, flex: 1, overflow: 'hidden'
     } : {
-        background: `url('/assets/branding/BG2.png') center / cover no-repeat, white`,
+        background: 'white',
         border: '6px solid var(--black)',
         borderRadius: '32px',
         boxShadow: `12px 12px 0 ${accentColor}`,
@@ -378,11 +378,11 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                 winnerRevealed && winner ? (
                     // Persistent Winner Display in 'All' View
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center', gap: '8px' }}>
-                        <img src={logoSrc} alt={title} style={{ maxWidth: '240px', width: '100%' }} />
-                        <div style={{ position: 'relative', marginTop: '16px' }}>
-                            <div style={{ fontSize: 'clamp(28px, 4vh, 48px)', position: 'absolute', top: '-20px', left: '50%', transform: 'translateX(-50%)', animation: 'crownFloat 2.5s infinite', zIndex: 1 }}>👑</div>
+                        <img src={logoSrc} alt={title} style={{ maxWidth: '280px', width: '100%' }} />
+                        <div style={{ position: 'relative', marginTop: '4px' }}>
+                            <div style={{ fontSize: 'clamp(32px, 4vh, 52px)', position: 'absolute', top: '-18px', left: '50%', transform: 'translateX(-50%)', animation: 'crownFloat 2.5s infinite', zIndex: 1 }}>👑</div>
                             <div style={{
-                                width: 'clamp(140px, 24vh, 220px)', height: 'clamp(140px, 24vh, 220px)',
+                                width: 'clamp(180px, 28vh, 280px)', height: 'clamp(180px, 28vh, 280px)',
                                 borderRadius: '24px', border: `6px solid var(--black)`,
                                 overflow: 'hidden', boxShadow: `6px 6px 0 ${accentColor}`
                             }}>
@@ -435,7 +435,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                     </div>
                 )
             ) : (  // Focused state — Full Screen Reveal/Countdown Mode
-                <div style={{ padding: '0', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: '0', flex: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
                     {!winnerRevealed ? (
                         countdownValue !== undefined && countdownValue !== null && countdownValue > 0 ? (
                             <div style={{
