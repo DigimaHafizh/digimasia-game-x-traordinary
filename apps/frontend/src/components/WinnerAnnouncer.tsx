@@ -141,37 +141,34 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
     return (
         <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            width: '100%', gap: '20px',
+            width: '100%', gap: '16px',
             animation: 'winnerReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both',
         }}>
             {/* Branding Image Header */}
-            <img
-                src={logoSrc}
-                alt="Awards Logo"
-                style={{ height: 'auto', width: '100%', maxWidth: 'clamp(200px, 35vw, 360px)', display: 'block' }}
-            />
+            <div style={{ padding: '0 20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <img
+                    src={logoSrc}
+                    alt="Awards Logo"
+                    style={{ height: 'auto', width: '100%', maxWidth: 'clamp(280px, 45vw, 420px)', display: 'block' }}
+                />
+            </div>
 
-            {/* WINNER — Big Spotlight Card Structure */}
+            {/* WINNER — Big Spotlight Card (No White Box, just floating elements) */}
             {winner && (
                 <div style={{
-                    background: 'white',
-                    border: `6px solid var(--black)`,
-                    borderRadius: '32px',
-                    boxShadow: `12px 12px 0 var(--black), 0 0 50px ${accentColor}`,
-                    padding: 'clamp(20px, 4vw, 40px)',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
                     position: 'relative',
                     animation: 'popInRight 0.6s both',
                     maxWidth: '100%',
                 }}>
                     {/* Crown */}
-                    <div style={{ fontSize: 'clamp(32px, 6vh, 64px)', position: 'absolute', top: 'clamp(-30px, -5vh, -40px)', animation: 'crownFloat 2.5s ease-in-out infinite', zIndex: 1 }}>👑</div>
+                    <div style={{ fontSize: 'clamp(36px, 6vh, 64px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-16px', zIndex: 1 }}>👑</div>
 
                     {/* Big Photo */}
                     <div style={{
-                        width: 'clamp(160px, 32vh, 260px)', height: 'clamp(160px, 32vh, 260px)',
+                        width: 'clamp(150px, 30vh, 220px)', height: 'clamp(150px, 30vh, 220px)',
                         borderRadius: '24px', border: `6px solid var(--black)`,
-                        overflow: 'hidden', boxShadow: '6px 6px 0 var(--black)',
+                        overflow: 'hidden', boxShadow: `6px 6px 0 ${accentColor}`,
                         background: accentColor,
                         animation: 'sparkleGlow 2.5s ease-in-out infinite',
                     }}>
@@ -182,9 +179,9 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                     <div style={{
                         background: accentColor,
                         border: '4px solid var(--black)', boxShadow: '6px 6px 0 var(--black)',
-                        padding: '10px 32px', borderRadius: '50px',
-                        fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 4.5vh, 48px)',
-                        letterSpacing: '1px', color: textColor, marginTop: '8px'
+                        padding: '8px 32px', borderRadius: '50px',
+                        fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 4vh, 40px)',
+                        letterSpacing: '1px', color: textColor, marginTop: '2px',
                     }}>{winner.name}</div>
 
                     {/* Division */}
@@ -201,8 +198,8 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                     <div style={{
                         display: 'flex', alignItems: 'center', gap: '8px',
                         background: 'white', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)',
-                        padding: '6px 18px', borderRadius: '12px',
-                        fontFamily: 'var(--font-mono)', fontSize: 'clamp(11px, 1.5vw, 16px)', fontWeight: 800, color: 'var(--navy-dark)',
+                        padding: '6px 20px', borderRadius: '14px',
+                        fontFamily: 'var(--font-mono)', fontSize: 'clamp(12px, 1.5vw, 16px)', fontWeight: 800, color: 'var(--navy-dark)',
                     }}>
                         <span>🗳️</span>
                         <span>{winner.count} VOTES</span>
@@ -727,7 +724,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
             ) : activeFocus === 'digimer' ? (
                 // Display only Digimer focused
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', animation: 'fadeIn 0.3s ease', minHeight: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '12px', marginTop: '12px' }}>
                         <button onClick={() => setActiveFocus('all')} style={{ background: 'var(--yellow)', border: '4px solid var(--black)', padding: '10px 24px', borderRadius: '12px', fontFamily: 'var(--font-display)', fontSize: '16px', cursor: 'pointer', color: 'var(--black)', boxShadow: '4px 4px 0 var(--black)', transition: 'transform 0.1s', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 10 }}>
                             ⬅ BACK TO AWARDS LIST
                         </button>
@@ -754,7 +751,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
             ) : (
                 // Display only Team focused
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', animation: 'fadeIn 0.3s ease', minHeight: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '12px', marginTop: '12px' }}>
                         <button onClick={() => setActiveFocus('all')} style={{ background: 'var(--blue-bright)', border: '4px solid var(--black)', padding: '10px 24px', borderRadius: '12px', fontFamily: 'var(--font-display)', fontSize: '16px', cursor: 'pointer', color: 'white', boxShadow: '4px 4px 0 var(--black)', transition: 'transform 0.1s', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 10 }}>
                             ⬅ BACK TO AWARDS LIST
                         </button>
