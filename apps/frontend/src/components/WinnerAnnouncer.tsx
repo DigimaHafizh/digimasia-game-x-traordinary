@@ -122,97 +122,113 @@ const NomineeList = memo(function NomineeList({ data, accentColor, textColor, ma
 });
 
 // ── Card-Grid Nominee List (Post-Reveal, like Vote.tsx) ─
-const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textColor, winnerId, type }: {
+const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textColor, winnerId, type, maxVotes }: {
     data: WinnerStats[];
     accentColor: string;
     textColor: string;
     winnerId?: string;
     type: 'team' | 'digimer';
+    maxVotes: number;
 }) {
     const logoSrc = type === 'team'
         ? '/assets/branding/Logo_X-Traordinary Squad.png'
         : '/assets/branding/Logo_X-Traordinary Digimers.png';
 
+    const winner = data.find(d => d.id === winnerId);
+    const others = data.filter(d => d.id !== winnerId);
+    const totalVotes = data.reduce((sum, d) => sum + d.count, 0);
+
     return (
         <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            width: '100%', gap: '24px',
+            width: '100%', gap: '20px',
             animation: 'winnerReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both',
         }}>
             {/* Branding Image Header */}
             <img
                 src={logoSrc}
                 alt="Awards Logo"
-                style={{ height: 'auto', width: '100%', maxWidth: '320px', display: 'block' }}
+                style={{ height: 'auto', width: '100%', maxWidth: 'clamp(200px, 35vw, 360px)', display: 'block' }}
             />
 
-            {/* Candidate Cards Grid */}
-            <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                gap: 'clamp(10px, 2vw, 18px)',
-                width: '100%',
-            }}>
-                {data.map((item, idx) => {
-                    const isWinner = item.id === winnerId;
-                    return (
-                        <div
-                            key={item.id}
-                            style={{
-                                position: 'relative',
-                                padding: 'clamp(14px, 2vw, 20px) clamp(8px, 1.5vw, 14px)',
-                                border: isWinner ? `4px solid ${accentColor}` : '3px solid var(--black)',
-                                background: isWinner ? accentColor : 'var(--white)',
-                                opacity: !isWinner ? 0.55 : 1,
-                                filter: !isWinner ? 'grayscale(0.6)' : 'none',
-                                width: 'clamp(120px, 20vw, 170px)',
-                                textAlign: 'center',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '10px',
-                                animationDelay: `${idx * 0.06}s`,
-                                borderRadius: '16px',
-                                boxShadow: isWinner ? `6px 6px 0 var(--black), 0 0 30px ${accentColor}` : '4px 4px 0 var(--black)',
-                                transition: 'box-shadow 0.15s, border 0.15s',
-                                animation: `popInRight 0.5s ${idx * 0.06}s both`,
-                            }}
-                        >
-                            {isWinner && (
-                                <div style={{ fontSize: 'clamp(20px, 4vh, 36px)', marginBottom: '-8px', zIndex: 1, animation: 'crownFloat 2.5s ease-in-out infinite' }}>👑</div>
-                            )}
-                            {/* Photo */}
+            {/* WINNER — Big Spotlight Card */}
+            {winner && (
+                <div style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+                    animation: 'popInRight 0.6s both',
+                }}>
+                    {/* Crown */}
+                    <div style={{ fontSize: 'clamp(28px, 5vh, 52px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-10px', zIndex: 1 }}>👑</div>
+
+                    {/* Big Photo */}
+                    <div style={{
+                        width: 'clamp(140px, 28vh, 220px)', height: 'clamp(140px, 28vh, 220px)',
+                        borderRadius: '20px', border: `6px solid ${accentColor}`,
+                        overflow: 'hidden', boxShadow: `0 0 40px ${accentColor}, 8px 8px 0 var(--black)`,
+                        animation: 'sparkleGlow 2.5s ease-in-out infinite',
+                    }}>
+                        <img src={getImageForId(winner.id, winner.name, winner.imageUrl)} alt={winner.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+
+                    {/* Name Badge */}
+                    <div style={{
+                        background: accentColor,
+                        border: '4px solid var(--black)', boxShadow: '5px 5px 0 var(--black)',
+                        padding: '6px 24px', borderRadius: '50px',
+                        fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 3.5vh, 36px)',
+                        letterSpacing: '2px', color: textColor,
+                    }}>{winner.name}</div>
+
+                    {/* Division */}
+                    {winner.division && (
+                        <div style={{
+                            background: 'var(--black)', color: accentColor,
+                            padding: '3px 14px', borderRadius: '8px',
+                            fontFamily: 'var(--font-mono)', fontSize: 'clamp(9px, 1.2vw, 13px)',
+                            letterSpacing: '2px', fontWeight: 800,
+                        }}>{winner.division.toUpperCase()}</div>
+                    )}
+
+                    {/* Vote Badge */}
+                    <div style={{
+                        display: 'flex', alignItems: 'center', gap: '8px',
+                        background: 'white', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)',
+                        padding: '6px 18px', borderRadius: '12px',
+                        fontFamily: 'var(--font-mono)', fontSize: 'clamp(11px, 1.5vw, 16px)', fontWeight: 800, color: 'var(--navy-dark)',
+                    }}>
+                        <span>🗳️</span>
+                        <span>{winner.count} VOTES</span>
+                        <span style={{ color: '#999', fontSize: '0.85em' }}>({totalVotes > 0 ? Math.round((winner.count / totalVotes) * 100) : 0}%)</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Others — Smaller dimmed cards */}
+            {others.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(8px, 1.5vw, 14px)', width: '100%' }}>
+                    {others.map((item, idx) => (
+                        <div key={item.id} style={{
+                            padding: '10px 8px',
+                            border: '3px solid rgba(0,0,0,0.4)',
+                            background: 'rgba(255,255,255,0.15)',
+                            opacity: 0.55, filter: 'grayscale(0.5)',
+                            width: 'clamp(90px, 14vw, 130px)',
+                            textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
+                            borderRadius: '12px', boxShadow: '3px 3px 0 rgba(0,0,0,0.5)',
+                            animation: `popInRight 0.5s ${0.2 + idx * 0.08}s both`,
+                        }}>
                             <div style={{
-                                width: '100%', aspectRatio: '1',
-                                borderRadius: '10px',
-                                border: '3px solid var(--black)',
-                                overflow: 'hidden',
-                                background: accentColor,
-                                boxShadow: '2px 2px 0 var(--black)',
+                                width: '100%', aspectRatio: '1', borderRadius: '8px',
+                                border: '2px solid rgba(0,0,0,0.4)', overflow: 'hidden', background: '#ccc',
                             }}>
                                 <img src={getImageForId(item.id, item.name, item.imageUrl)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
-                            {/* Name + Division */}
-                            <div>
-                                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(13px, 2vw, 18px)', color: isWinner ? textColor : 'var(--black)', letterSpacing: '1px', lineHeight: 1.2 }}>{item.name}</div>
-                                {item.division && (
-                                    <div style={{
-                                        background: isWinner ? 'rgba(0,0,0,0.2)' : 'var(--navy-dark)',
-                                        color: 'white', fontFamily: 'var(--font-mono)',
-                                        fontSize: '9px', fontWeight: 700,
-                                        padding: '3px 10px', borderRadius: '20px',
-                                        border: '2px solid var(--black)',
-                                        letterSpacing: '1px', marginTop: '6px',
-                                        display: 'inline-block',
-                                        boxShadow: '1px 1px 0 var(--black)',
-                                    }}>{item.division.toUpperCase()}</div>
-                                )}
-                            </div>
+                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(10px, 1.4vw, 14px)', color: 'white', letterSpacing: '1px', lineHeight: 1.2 }}>{item.name}</div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>{item.count} votes</div>
                         </div>
-                    );
-                })}
-            </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 });
@@ -330,21 +346,13 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
 }) {
     const maxVotes = useMemo(() => Math.max(...stats.map(d => d.count), 1), [stats]);
 
-    const wrapperStyle = isFocused ? {
+    const wrapperStyle = {
         display: 'flex', flexDirection: 'column' as const, flex: 1, overflow: 'hidden'
-    } : {
-        background: 'white',
-        border: '5px solid var(--black)',
-        borderRadius: '20px',
-        boxShadow: '8px 8px 0 var(--black)',
-        display: 'flex',
-        flexDirection: 'column' as const,
-        overflow: 'hidden',
     };
 
     return (
         <div style={wrapperStyle}>
-            {/* Header strip */}
+            {/* Header strip — only in non-focused 'all' view */}
             {!isFocused && (
                 <div style={{
                     background: accentColor,
@@ -370,7 +378,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
             )}
 
             {/* Body */}
-            <div style={{ padding: isFocused ? '0' : '16px 20px', flex: 1, overflowY: 'auto' }}>
+            <div style={{ padding: '0', flex: 1, overflowY: 'auto' }}>
                 {!winnerRevealed ? (
                     countdownValue !== undefined && countdownValue !== null && countdownValue > 0 ? (
                         <div style={{
@@ -396,7 +404,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                             }} />
                             <div style={{
                                 fontFamily: 'var(--font-display)', fontSize: 'clamp(160px, 32vw, 380px)',
-                                color: accentColor, textShadow: '12px 12px 0 var(--black)',
+                                color: 'white', textShadow: `0 0 40px ${accentColor}, 8px 8px 0 rgba(0,0,0,0.8)`,
                                 zIndex: 2, position: 'relative', lineHeight: 1,
                                 animation: 'sparkleGlow 0.5s ease-in-out infinite alternate'
                             }}>
@@ -466,13 +474,14 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                     )
                 ) : (
                     // Winner & Nominees revealed state — card grid layout
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', flex: 1, gap: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', flex: 1, gap: '20px', padding: '12px 0' }}>
                         <CardNomineeList
                             data={stats}
                             accentColor={accentColor}
                             textColor={textColor}
                             winnerId={winner?.id}
                             type={type}
+                            maxVotes={maxVotes}
                         />
                     </div>
                 )}
