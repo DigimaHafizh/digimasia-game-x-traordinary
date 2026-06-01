@@ -360,7 +360,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                     )
                 ) : (
                     // Winner & Nominees revealed state
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, gap: '20px' }}>
                         {winner && (
                             <WinnerCard
                                 winner={winner}
@@ -370,7 +370,6 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
                                 maxVotes={maxVotes}
                             />
                         )}
-                        <NomineeList data={stats} accentColor={accentColor} textColor={textColor} maxVotes={maxVotes} showVotes={true} />
                     </div>
                 )}
             </div>
@@ -543,7 +542,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                         color: 'var(--yellow)',
                         textShadow: '3px 3px 0 var(--black)',
                         lineHeight: 1,
-                    }}>🏆 AWARDS CEREMONY</div>
+                    }}>{activeFocus === 'digimer' ? '🌟 DIGIMER OF THE YEAR' : activeFocus === 'team' ? '🏅 BEST TEAM OF THE YEAR' : '🏆 AWARDS CEREMONY'}</div>
                     <div style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: 'clamp(9px, 1vw, 12px)',
@@ -551,7 +550,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                         letterSpacing: '3px',
                         marginTop: '4px',
                         textShadow: '1px 1px 0 var(--black)',
-                    }}>X-TRAORDINARY — GROW WITH HEART : THE FINAL CELEBRATION</div>
+                    }}>{activeFocus === 'all' ? 'X-TRAORDINARY — GROW WITH HEART : THE FINAL CELEBRATION' : 'THE X-TRAORDINARY DIGIMERS : PILIH DIGIMER TERBAIK'}</div>
                 </div>
                 {onClose && (
                     <button
