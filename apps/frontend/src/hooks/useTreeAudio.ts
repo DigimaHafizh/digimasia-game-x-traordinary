@@ -224,7 +224,7 @@ export function useTreeAudio(enabled = true) {
     const playTensionDrone = useCallback(() => {
         if (isMutedRef.current || typeof window === 'undefined') return;
         try {
-            const audio = new Audio('/assets/audio/paulyudin-dramatic-482366.mp3');
+            const audio = new Audio('/assets/audio/jakob_welik-level-one-8-bit-pixel-warriors-chapter-one-415685.mp3');
             audio.volume = 0.8;
             tensionDroneRef.current = audio;
             audio.play().catch(() => { });
@@ -253,7 +253,7 @@ export function useTreeAudio(enabled = true) {
     const playComplete = useCallback(() => {
         if (isMutedRef.current) return;
         try {
-            const sfx = new Audio('/assets/audio/sfx-complete.mp3');
+            const sfx = new Audio('/assets/audio/sfx-reveal-4.mp3');
             sfx.volume = 0.8;
             sfx.play().catch(() => { });
         } catch (_) { }
