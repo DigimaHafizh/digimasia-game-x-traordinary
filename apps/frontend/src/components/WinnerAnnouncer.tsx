@@ -598,6 +598,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                             showVotes={showDigimerVotes}
                             setShowVotes={setShowDigimerVotes}
                             winnerRevealed={finalWinnerDigimer}
+                            countdownValue={countdownState?.type === 'digimer' ? countdownState.count : null}
                             onRevealWinner={() => handleWinnerReveal('digimer')}
                         />
                     </div>
@@ -620,6 +621,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                             showVotes={showTeamVotes}
                             setShowVotes={setShowTeamVotes}
                             winnerRevealed={finalWinnerTeam}
+                            countdownValue={countdownState?.type === 'team' ? countdownState.count : null}
                             onRevealWinner={() => handleWinnerReveal('team')}
                         />
                     </div>
