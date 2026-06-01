@@ -358,7 +358,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
     const wrapperStyle = isFocused ? {
         display: 'flex', flexDirection: 'column' as const, flex: 1, overflow: 'hidden'
     } : {
-        background: 'white',
+        background: `url('/assets/branding/BG2.png') center / cover no-repeat, white`,
         border: '6px solid var(--black)',
         borderRadius: '32px',
         boxShadow: `12px 12px 0 ${accentColor}`,
@@ -377,12 +377,12 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
             {!isFocused ? (
                 winnerRevealed && winner ? (
                     // Persistent Winner Display in 'All' View
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center', gap: '24px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center', gap: '8px' }}>
                         <img src={logoSrc} alt={title} style={{ maxWidth: '240px', width: '100%' }} />
-                        <div style={{ position: 'relative' }}>
-                            <div style={{ fontSize: 'clamp(28px, 4vh, 48px)', position: 'absolute', top: '-30px', left: '50%', transform: 'translateX(-50%)', animation: 'crownFloat 2.5s infinite', zIndex: 1 }}>👑</div>
+                        <div style={{ position: 'relative', marginTop: '16px' }}>
+                            <div style={{ fontSize: 'clamp(28px, 4vh, 48px)', position: 'absolute', top: '-20px', left: '50%', transform: 'translateX(-50%)', animation: 'crownFloat 2.5s infinite', zIndex: 1 }}>👑</div>
                             <div style={{
-                                width: 'clamp(120px, 20vh, 180px)', height: 'clamp(120px, 20vh, 180px)',
+                                width: 'clamp(140px, 24vh, 220px)', height: 'clamp(140px, 24vh, 220px)',
                                 borderRadius: '24px', border: `6px solid var(--black)`,
                                 overflow: 'hidden', boxShadow: `6px 6px 0 ${accentColor}`
                             }}>
