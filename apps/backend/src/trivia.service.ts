@@ -32,7 +32,7 @@ export class TriviaService {
         // Update state to next question
         Object.assign((this.session as any).state, {
             currentQuestion: nextQ,
-            timer: 10
+            timer: 25
         });
         this.session.onStateChange(this.session.getState());
 
