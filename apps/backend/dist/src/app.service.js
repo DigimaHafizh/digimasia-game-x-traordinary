@@ -30,11 +30,11 @@ let AppService = class AppService {
         return this.session.getState();
     }
     async getLeaderboard() {
+        const currentState = this.session.getState();
+        const isTriviaPhase = currentState.phase === 'TRIVIA' || currentState.phase === 'TRANSITION';
         const topUsers = await this.prisma.user.findMany({
             where: { isJoined: true, isAdmin: false },
-            orderBy: {
-                contributedWater: 'desc',
-            },
+            orderBy: isTriviaPhase ? { score: 'desc' } : { contributedWater: 'desc' },
             take: 10,
             select: {
                 name: true,
@@ -46,7 +46,7 @@ let AppService = class AppService {
         return topUsers.map(u => ({
             name: u.name,
             division: u.division,
-            amount: u.contributedWater,
+            amount: isTriviaPhase ? u.score : u.contributedWater,
             score: u.score
         }));
     }

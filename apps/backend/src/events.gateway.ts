@@ -78,6 +78,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection {
 
   @SubscribeMessage('water_tap')
   async handleWaterTap() {
-    await this.sessionService.incrementWater(10);
+    await this.sessionService.incrementWater(2);
   }
 }

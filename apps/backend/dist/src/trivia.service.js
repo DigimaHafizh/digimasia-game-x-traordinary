@@ -59,10 +59,10 @@ let TriviaService = TriviaService_1 = class TriviaService {
                     clearInterval(this.timerInstance);
                 this.logger.log(`Question ${state.currentQuestion} timer expired. Waiting for Admin.`);
                 if (state.currentQuestion >= 10) {
-                    this.logger.log('Last question finished. Auto-transitioning to Leaderboard in 5 seconds.');
+                    this.logger.log('Last question finished. Auto-transitioning to Leaderboard in 1.5 seconds.');
                     setTimeout(async () => {
                         await this.session.updatePhase('TRANSITION');
-                    }, 5000);
+                    }, 1500);
                 }
             }
         }, 1000);
@@ -97,22 +97,18 @@ let TriviaService = TriviaService_1 = class TriviaService {
                     where: { id: userId },
                     data: {
                         collectedWater: { increment: pointsEarned },
-                        contributedWater: { increment: pointsEarned },
                         score: { increment: pointsEarned },
                     }
                 });
-                await this.session.incrementWaterInTransaction(tx, pointsEarned);
             }
             else if (!isCorrect && wasCorrect) {
                 await tx.user.update({
                     where: { id: userId },
                     data: {
                         collectedWater: { decrement: 10 },
-                        contributedWater: { decrement: 10 },
                         score: { decrement: 10 },
                     }
                 });
-                await this.session.incrementWaterInTransaction(tx, -10);
             }
             return { correct: isCorrect, points: pointsEarned };
         });
