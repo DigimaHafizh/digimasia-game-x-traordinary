@@ -233,7 +233,7 @@ export default function Home() {
       );
 
     case 'WATERING':
-      if (treeStage >= 9 || totalWater >= 1000) return <Final />;
+      if (treeStage >= 9 || totalWater >= 5000) return <Final />;
       return <Tree />;
 
     case 'FINAL':

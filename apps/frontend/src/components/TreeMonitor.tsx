@@ -5,8 +5,8 @@ import TreeVisual, { TREE_STAGE_LABELS } from './TreeVisual';
 import { useState, useEffect, useRef } from 'react';
 import { useTreeAudio } from '@/hooks/useTreeAudio';
 
-const TOTAL_WATER_GOAL = 1000;
-const WATER_PER_STAGE = 100;
+const TOTAL_WATER_GOAL = 5000;
+const WATER_PER_STAGE = 500;
 
 export default function TreeMonitor() {
     const { totalWater, treeStage } = useGameStore();

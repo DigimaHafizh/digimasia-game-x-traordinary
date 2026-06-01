@@ -192,7 +192,7 @@ export default function TreeMonitorExternal() {
                             {totalWater} L
                         </div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 1vw, 14px)', color: 'var(--navy-dark)', fontWeight: 800, marginTop: '8px' }}>
-                            TARGET: 1000 L
+                            TARGET: 5000 L
                         </div>
                     </div>
                 )}
