@@ -5,7 +5,8 @@
         "dockerfilePath": "Dockerfile"
     },
     "deploy": {
-        "startCommand": "node dist/main",
+        "startCommand": "node dist/src/main",
+        "preDeployCommand": "npx prisma migrate deploy",
         "healthcheckPath": "/",
         "healthcheckTimeout": 30,
         "restartPolicyType": "ON_FAILURE",
