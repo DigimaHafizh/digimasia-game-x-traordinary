@@ -93,11 +93,76 @@ async function main() {
 
     console.log('Seeding trivia questions...');
     const questions = [
-        { index: 1, text: 'Apa warna logo Digimasia?', options: JSON.stringify(['Merah', 'Biru', 'Hijau', 'Kuning']), answer: 1 },
-        { index: 2, text: 'Tahun berapa Digimasia didirikan?', options: JSON.stringify(['2010', '2015', '2018', '2020']), answer: 2 },
-        { index: 3, text: 'Apa core value utama kita?', options: JSON.stringify(['Speed', 'Quality', 'Integrity', 'All of above']), answer: 3 },
-        { index: 4, text: 'Apa tagline event X-Celerate?', options: JSON.stringify(['Move Fast', 'Grow the Tree', 'Shoot for Star', 'Break the Limit']), answer: 1 },
-        { index: 5, text: 'Berapa jumlah divisi di kantor kita?', options: JSON.stringify(['4', '6', '8', '10']), answer: 2 },
+        // Q1 - Company founding year
+        {
+            index: 1,
+            text: 'Digima ASIA berdiri pada tahun berapa? (Jangan jawab ngawur ya, hidup karir kamu di sini!)',
+            options: JSON.stringify(['2012', '2014', '2016', '2020']),
+            answer: 2,
+        },
+        // Q2 - Core business
+        {
+            index: 2,
+            text: 'Apa "jualan utama" Digima ASIA yang bikin kita beda dari perusahaan lain?',
+            options: JSON.stringify(['Jual kopi & snack kantor', 'Digital Learning & Certification', 'Buka warung nasi padang', 'Jasa bikin meme']),
+            answer: 1,
+        },
+        // Q3 - HQ Location
+        {
+            index: 3,
+            text: 'Di mana markas besar Digima ASIA berada? (Clue: bukan di bulan)',
+            options: JSON.stringify(['Jakarta Selatan', 'Bandung', 'Gading Serpong, Tangerang', 'Bali (enak banget kalo iya)']),
+            answer: 2,
+        },
+        // Q4 - Strategic partner
+        {
+            index: 4,
+            text: 'Digima ASIA punya kolaborasi strategis dengan perusahaan mana yang merupakan bagian dari Salim Group?',
+            options: JSON.stringify(['Indofood', 'Intikom', 'Indomobil', 'Indomaret']),
+            answer: 1,
+        },
+        // Q5 - Vision/Tagline
+        {
+            index: 5,
+            text: 'Apa tagline resmi Digima ASIA yang selalu kita banggakan?',
+            options: JSON.stringify(['"We Make It Simple"', '"Integrated Digital Learning & Certification Ecosystem"', '"Just Do It"', '"Connecting People"']),
+            answer: 1,
+        },
+        // Q6 - CEO
+        {
+            index: 6,
+            text: 'Siapakah Global Chief Executive (a.k.a. Bos Besar) Digima ASIA?',
+            options: JSON.stringify(['Karib Chiang', 'Dyah Prajnaparamita', 'Daniel V. Lie', 'Muhammad Hafizh Abdillah (ngimpi)']),
+            answer: 2,
+        },
+        // Q7 - Core values (funny)
+        {
+            index: 7,
+            text: 'Manakah yang BUKAN merupakan core value Digima ASIA?',
+            options: JSON.stringify(['Collaboration', 'Integrity', 'Procrastination', 'Reliability']),
+            answer: 2,
+        },
+        // Q8 - Event name
+        {
+            index: 8,
+            text: 'Event perusahaan tahunan kita yang kamu lagi ikuti sekarang namanya apa?',
+            options: JSON.stringify(['Digima Got Talent', 'X-Celerate the Tree', 'Digima\'s Got Talent', 'Annual Boring Meeting']),
+            answer: 1,
+        },
+        // Q9 - Mission
+        {
+            index: 9,
+            text: 'Misi utama Digima ASIA adalah menjadi pelopor di bidang apa?',
+            options: JSON.stringify(['Kuliner Nusantara', 'Digital Innovation & Strategic Execution', 'E-sports & Gaming', 'Ekspor Singkong ke Eropa']),
+            answer: 1,
+        },
+        // Q10 - Fun fact about anniversary
+        {
+            index: 10,
+            text: 'DIGIMAVERSARY ke-10 ini artinya Digima ASIA sudah berumur berapa tahun?',
+            options: JSON.stringify(['8 tahun', '9 tahun', '10 tahun', 'Tua banget sih']),
+            answer: 2,
+        },
     ];
 
     for (const q of questions) {
