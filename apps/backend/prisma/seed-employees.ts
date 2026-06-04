@@ -93,76 +93,66 @@ async function main() {
 
     console.log('Seeding trivia questions...');
     const questions = [
-        // Q1 - Company founding year
         {
             index: 1,
-            text: 'Digima ASIA berdiri pada tahun berapa? (Jangan jawab ngawur ya, hidup karir kamu di sini!)',
-            options: JSON.stringify(['2012', '2014', '2016', '2020']),
-            answer: 2,
+            text: "Di tahun berapakah digima ASIA resmi didirikan dan mulai berkarya di industri digital learning & animasi tanah air?",
+            options: JSON.stringify(["2012", "2014", "2016", "2018"]),
+            answer: 2
         },
-        // Q2 - Core business
         {
             index: 2,
-            text: 'Apa "jualan utama" Digima ASIA yang bikin kita beda dari perusahaan lain?',
-            options: JSON.stringify(['Jual kopi & snack kantor', 'Digital Learning & Certification', 'Buka warung nasi padang', 'Jasa bikin meme']),
-            answer: 1,
+            text: "Divisi manakah di digima ASIA yang paling sering berkoordinasi secara intens untuk memastikan integrasi antara aset visual animasi dan sistem berjalan mulus tanpa bug?",
+            options: JSON.stringify(["Tim Organization Support & Tim Customer Support", "Tim Software Engineer & Tim Content Design", "Tim Interaction Design & Tim Customer Support", "Tim Project Management & Tim Sales"]),
+            answer: 1
         },
-        // Q3 - HQ Location
         {
             index: 3,
-            text: 'Di mana markas besar Digima ASIA berada? (Clue: bukan di bulan)',
-            options: JSON.stringify(['Jakarta Selatan', 'Bandung', 'Gading Serpong, Tangerang', 'Bali (enak banget kalo iya)']),
-            answer: 2,
+            text: "Saat menghadapi proyek e-learning berskala besar, format standardisasi internasional apa yang paling sering diutak-atik tim developer digima ASIA agar konten bisa berjalan di LMS?",
+            options: JSON.stringify(["MP4 Video Only", "SCORM Package", "PDF Documents", "Powerpoint Slides"]),
+            answer: 1
         },
-        // Q4 - Strategic partner
         {
             index: 4,
-            text: 'Digima ASIA punya kolaborasi strategis dengan perusahaan mana yang merupakan bagian dari Salim Group?',
-            options: JSON.stringify(['Indofood', 'Intikom', 'Indomobil', 'Indomaret']),
-            answer: 1,
+            text: "Siapakah sosok pimpinan atau jajaran manajemen awal yang menjadi motor penggerak utama di balik arah strategis dan kesuksesan bisnis digima ASIA?",
+            options: JSON.stringify(["Vania Sari Muchardie", "Daniel Virginia Lie", "Karib Chiang", "Dyah Prajnaparamita"]),
+            answer: 1
         },
-        // Q5 - Vision/Tagline
         {
             index: 5,
-            text: 'Apa tagline resmi Digima ASIA yang selalu kita banggakan?',
-            options: JSON.stringify(['"We Make It Simple"', '"Integrated Digital Learning & Certification Ecosystem"', '"Just Do It"', '"Connecting People"']),
-            answer: 1,
+            text: "Apa pilar layanan utama yang ditawarkan oleh digima ASIA kepada klien korporat dalam mentransformasi materi training konvensional?",
+            options: JSON.stringify(["Penjualan Perangkat Keras Komputer", "Digital Learning Content, Animation, & Custom E-Learning Development", "Jasa Pembuatan Baliho Fisik", "Konsultan Pajak Korporasi"]),
+            answer: 1
         },
-        // Q6 - CEO
         {
             index: 6,
-            text: 'Siapakah Global Chief Executive (a.k.a. Bos Besar) Digima ASIA?',
-            options: JSON.stringify(['Karib Chiang', 'Dyah Prajnaparamita', 'Daniel V. Lie', 'Muhammad Hafizh Abdillah (ngimpi)']),
-            answer: 2,
+            text: "Di IntikomHub, area manakah yang paling sering dijadikan tempat 'pelarian' digimer untuk mencari inspirasi segar atau sekadar meluruskan punggung yang pegal akibat kelamaan duduk?",
+            options: JSON.stringify(["Pantry", "Basement Pojok", "Rooftop", "Delta"]),
+            answer: 1
         },
-        // Q7 - Core values (funny)
         {
             index: 7,
-            text: 'Manakah yang BUKAN merupakan core value Digima ASIA?',
-            options: JSON.stringify(['Collaboration', 'Integrity', 'Procrastination', 'Reliability']),
-            answer: 2,
+            text: "Jenis software desain/animasi apa yang menjadi senjata tempur utama dan wajib terinstal di komputer setiap anggota tim Content Design digima ASIA?",
+            options: JSON.stringify(["Figma", "Adobe Creative Cloud", "Corel Draw", "Microsoft Paint"]),
+            answer: 1
         },
-        // Q8 - Event name
         {
             index: 8,
-            text: 'Event perusahaan tahunan kita yang kamu lagi ikuti sekarang namanya apa?',
-            options: JSON.stringify(['Digima Got Talent', 'X-Celerate the Tree', 'Digima\'s Got Talent', 'Annual Boring Meeting']),
-            answer: 1,
+            text: "Buku panduan atau standar operasional (SOP) internal digima ASIA yang mengatur tata tertib, hak, dan kewajiban karyawan dikelola secara rapi oleh tim apa?",
+            options: JSON.stringify(["Tim Project Management", "Tim Organization Support", "Tim Interaction Design", "Tim Customer Support"]),
+            answer: 1
         },
-        // Q9 - Mission
         {
             index: 9,
-            text: 'Misi utama Digima ASIA adalah menjadi pelopor di bidang apa?',
-            options: JSON.stringify(['Kuliner Nusantara', 'Digital Innovation & Strategic Execution', 'E-sports & Gaming', 'Ekspor Singkong ke Eropa']),
-            answer: 1,
+            text: "digimer dengan status kepegawaian PKWT mendapatkan benefit dapat memilih hadiah ulang tahun berupa?",
+            options: JSON.stringify(["Voucher Makan Bakmi Koga", "Makan siang gratis senilai 300.000", "1 Hari Libur", "Sepatu baru"]),
+            answer: 2
         },
-        // Q10 - Fun fact about anniversary
         {
             index: 10,
-            text: 'DIGIMAVERSARY ke-10 ini artinya Digima ASIA sudah berumur berapa tahun?',
-            options: JSON.stringify(['8 tahun', '9 tahun', '10 tahun', 'Tua banget sih']),
-            answer: 2,
-        },
+            text: "Apa sapaan internal atau sebutan akrab yang biasanya digunakan sesama karyawan digima ASIA untuk menyapa rekan kerja agar suasana terasa hangat dan kekeluargaan?",
+            options: JSON.stringify(["'Mas' / 'Mba' / 'Kak'", "'Yang Mulia'", "'Baginda'", "'Paduka'"]),
+            answer: 0
+        }
     ];
 
     for (const q of questions) {
