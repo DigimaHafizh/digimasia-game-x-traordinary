@@ -20,6 +20,9 @@ export default function Trivia() {
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [pointsEarned, setPointsEarned] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
+    // Stores the backend answer result until the timer expires (prevents premature SFX/UI feedback)
+    const pendingCorrectRef = useRef<boolean | null>(null);
+    const pendingPointsRef = useRef<number>(0);
 
     const { user, currentQuestion, timer, phase } = useGameStore();
 
@@ -57,20 +60,28 @@ export default function Trivia() {
         }
     }, [phase, timer, currentQuestion, stopBGM, playComplete]);
 
-    // Play correct-answer SFX ONLY when timer reaches 0 for perfect visual sync
+    // === DEFINITIVE FIX: Deferred feedback on timer expiry ===
+    // When timer hits 0, resolve the pending answer result to state and play SFX
     const hasPlayedCorrectSFX = useRef(false);
     useEffect(() => {
-        // Reset sound flag for each new question
+        // Reset sound flag and pending result for each new question
         hasPlayedCorrectSFX.current = false;
+        pendingCorrectRef.current = null;
+        pendingPointsRef.current = 0;
     }, [currentQuestion]);
 
-    // Safer hook: explicitly watch timer changes and evaluate it directly.
     useEffect(() => {
-        if (timer === 0 && isCorrect === true && !hasPlayedCorrectSFX.current) {
+        if (timer === 0 && pendingCorrectRef.current !== null && !hasPlayedCorrectSFX.current) {
             hasPlayedCorrectSFX.current = true;
-            setTimeout(() => playStageUp(), 30);
+            // Now it's safe to update state for UI feedback
+            setIsCorrect(pendingCorrectRef.current);
+            setPointsEarned(pendingPointsRef.current);
+            // Play SFX only if correct
+            if (pendingCorrectRef.current === true) {
+                setTimeout(() => playStageUp(), 30);
+            }
         }
-    }, [timer, isCorrect, playStageUp]);
+    }, [timer, playStageUp]);
 
     // Fetch question whenever currentQuestion changes
     useEffect(() => {
@@ -140,9 +151,10 @@ export default function Trivia() {
 
             const data = await res.json();
             if (res.ok && data.correct !== undefined) {
-                setIsCorrect(data.correct);
-                if (data.points) setPointsEarned(data.points);
-                // SFX is handled by useLayoutEffect watching isCorrect — no need to call here
+                // Store result in pending refs — do NOT update state yet.
+                // State (and SFX) will only be resolved when timer === 0.
+                pendingCorrectRef.current = data.correct;
+                pendingPointsRef.current = data.points ?? 0;
             }
 
             if (!res.ok && data.error) {
