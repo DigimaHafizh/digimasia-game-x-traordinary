@@ -308,7 +308,7 @@ export default function Trivia() {
                     {/* Feedback card */}
                     {showFeedback && (
                         <div className="card" style={{
-                            background: isCorrect ? 'var(--lime)' : '#e53935',
+                            background: isCorrect ? 'var(--lime)' : 'var(--pink-hot)',
                             textAlign: 'center',
                             padding: '16px',
                             animation: 'pop-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both',

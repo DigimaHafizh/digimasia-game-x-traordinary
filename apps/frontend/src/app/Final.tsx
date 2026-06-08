@@ -127,7 +127,7 @@ export default function Final() {
 
                     {/* Total Water Achievement */}
                     <div style={{
-                        background: 'var(--white)',
+                        background: 'var(--yellow)',
                         border: '3px solid var(--black)',
                         boxShadow: '4px 4px 0 var(--black)',
                         borderRadius: '16px',
