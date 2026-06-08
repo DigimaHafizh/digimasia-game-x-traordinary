@@ -231,7 +231,7 @@ export default function TreeMonitorExternal() {
                             color: 'var(--navy-dark)',
                             marginTop: '16px',
                             letterSpacing: '1px',
-                            background: 'white',
+                            background: 'var(--blue-light)',
                             border: '3px solid black',
                             padding: '6px 12px',
                             borderRadius: '12px',
@@ -244,7 +244,7 @@ export default function TreeMonitorExternal() {
             </div>
 
             {/* Monitor Progress Bar */}
-            <div style={{ flexShrink: 0, background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)', position: 'relative', zIndex: 11 }}>
+            <div style={{ flexShrink: 0, background: 'var(--blue-light)', padding: '12px 16px', borderRadius: '16px', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)', position: 'relative', zIndex: 11 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: 'clamp(12px, 1.2vw, 16px)', fontWeight: 800, color: 'var(--navy-dark)', letterSpacing: '2px', marginBottom: '8px' }}>
                     <span>PROGRESS MENUJU GRAND TREE</span>
                     <span>{Math.round(progress)}% · {totalWater} / {TOTAL_WATER_GOAL} L</span>

@@ -304,7 +304,7 @@ export default function AdminPage() {
                                     <TreeMonitor />
                                 )}
                                 {phase === 'LOGIN' && (
-                                    <div className="card" style={{ padding: '24px', border: '3px solid var(--black)', background: 'rgba(255, 255, 255, 0.5)' }}>
+                                    <div className="card" style={{ padding: '24px', border: '3px solid var(--black)', background: 'var(--blue-light)' }}>
                                         <div className="screen-header" style={{ marginBottom: '24px', paddingBottom: '16px', borderBottom: '3px dashed var(--black)' }}>
                                             <div style={{
                                                 width: '64px', height: '64px',
@@ -389,7 +389,7 @@ export default function AdminPage() {
                     >
                         <div
                             className="card"
-                            style={{ maxWidth: '400px', width: '100%', textAlign: 'center', padding: '40px', background: 'var(--white)', border: '5px solid var(--black)', boxShadow: '15px 15px 0 var(--black)' }}
+                            style={{ maxWidth: '400px', width: '100%', textAlign: 'center', padding: '40px', background: 'var(--blue-light)', border: '5px solid var(--black)', boxShadow: '15px 15px 0 var(--black)' }}
                         >
                             <div style={{
                                 width: '80px', height: '80px',
