@@ -50,15 +50,12 @@ export default function Trivia() {
         }
     };
 
-    // Stop BGM and play fanfare IMMEDIATELY when Trivia ends
-    const hasPlayedCompleteRef = useRef(false);
+    // Stop BGM IMMEDIATELY when Trivia ends
     useLayoutEffect(() => {
-        if ((phase === 'TRANSITION' || (currentQuestion >= 10 && timer === 0)) && !hasPlayedCompleteRef.current) {
-            hasPlayedCompleteRef.current = true;
+        if (phase === 'TRANSITION' || (currentQuestion >= 10 && timer === 0)) {
             stopBGM();
-            playComplete();
         }
-    }, [phase, timer, currentQuestion, stopBGM, playComplete]);
+    }, [phase, timer, currentQuestion, stopBGM]);
 
     // === DEFINITIVE FIX: Deferred feedback on timer expiry ===
     // When timer hits 0, resolve the pending answer result to state and play SFX
@@ -71,17 +68,12 @@ export default function Trivia() {
     }, [currentQuestion]);
 
     useEffect(() => {
-        if (timer === 0 && pendingCorrectRef.current !== null && !hasPlayedCorrectSFX.current) {
-            hasPlayedCorrectSFX.current = true;
+        if (timer === 0 && pendingCorrectRef.current !== null) {
             // Now it's safe to update state for UI feedback
             setIsCorrect(pendingCorrectRef.current);
             setPointsEarned(pendingPointsRef.current);
-            // Play SFX only if correct
-            if (pendingCorrectRef.current === true) {
-                setTimeout(() => playStageUp(), 30);
-            }
         }
-    }, [timer, playStageUp]);
+    }, [timer]);
 
     // Fetch question whenever currentQuestion changes
     useEffect(() => {
@@ -127,7 +119,6 @@ export default function Trivia() {
         if (!user || !question || timer === 0) return;
 
         startBGMOnce(); // Attempt to start BGM on first interaction
-        playMenuSelect(); // Play retro select blip
 
         // Prevent redundant clicks if already selected this exact option
         if (selectedOption === optIdx) return;
