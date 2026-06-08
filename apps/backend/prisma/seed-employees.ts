@@ -21,6 +21,7 @@ const employees = [
     { name: "Hanafiah Yunan Putri", division: "Content Design" },
     { name: "Andre Alfadjrid", division: "Content Design" },
     { name: "Hari Mujana", division: "Content Design" },
+    { name: "Candra Prasetyo", division: "Content Design" },
     { name: "Stepanus", division: "Interaction Design" },
     { name: "Heri Irwanto", division: "Interaction Design" },
     { name: "Tedy Iman Priyo Lestanto", division: "Interaction Design" },
@@ -59,11 +60,19 @@ async function main() {
         },
     });
 
-    console.log('Seeding employees...');
+    const seededUsers: any[] = [];
     for (let i = 0; i < employees.length; i++) {
         const emp = employees[i];
-        const pin = (1001 + i).toString();
-        await prisma.user.create({
+        let pin = (1001 + i).toString();
+
+        // Custom PIN updates as requested
+        if (emp.name === "Hanafiah Yunan Putri") pin = "1019";
+        else if (emp.name === "Stepanus") pin = "1016";
+        // Prevent collision: if someone else ends up with 1016 or 1019 via the formula, give them a different one
+        else if (pin === "1016") pin = "1116";
+        else if (pin === "1019") pin = "1119";
+
+        const user = await prisma.user.create({
             data: {
                 name: emp.name,
                 pin: pin,
@@ -75,7 +84,9 @@ async function main() {
                 score: 0,
             },
         });
+        seededUsers.push({ Name: user.name, PIN: user.pin, Division: user.division });
     }
+    console.table(seededUsers);
 
     console.log('Seeding candidates (Teams & Digimers)...');
     await prisma.candidate.createMany({
