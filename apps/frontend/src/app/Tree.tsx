@@ -503,11 +503,10 @@ export default function Tree() {
                                 </span>
                             </div>
 
-                            {/* Reservoir tank visual */}
                             <div style={{
                                 flex: 1,
                                 height: '60px',
-                                background: 'white',
+                                background: '#f0f4f8',
                                 borderRadius: '12px',
                                 border: '3px solid var(--black)',
                                 boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.1)',

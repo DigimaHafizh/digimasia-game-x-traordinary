@@ -151,7 +151,7 @@ export default function Trivia() {
     };
 
     const isTimedOut = timer === 0;
-    const showFeedback = isSubmitted && isCorrect !== null;
+    const showFeedback = isTimedOut && isSubmitted && isCorrect !== null;
     // Strict fairness: display 10 until the NEW question data is actually loaded in state
     const displayTimer = (isLoading || !question || question.index !== currentQuestion) ? 10 : timer;
 

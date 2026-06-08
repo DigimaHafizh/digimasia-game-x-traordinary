@@ -131,7 +131,7 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
     maxVotes: number;
 }) {
     const logoSrc = type === 'team'
-        ? '/assets/branding/Logo_X-Traordinary Squad.png'
+        ? '/assets/branding/Logo_X-Traordinary Team.png'
         : '/assets/branding/Logo_X-Traordinary Digimers.png';
 
     const winner = data.find(d => d.id === winnerId);
@@ -145,7 +145,7 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
             animation: 'winnerReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both',
         }}>
             {/* Branding Image Header */}
-            <div style={{ padding: '0 20px', width: '100%', display: 'flex', justifyContent: 'center', marginTop: '-40px' }}>
+            <div style={{ padding: '0 20px', width: '100%', display: 'flex', justifyContent: 'center', marginTop: '-10px' }}>
                 <img
                     src={logoSrc}
                     alt="Awards Logo"
@@ -208,32 +208,7 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                 </div>
             )}
 
-            {/* Others — Smaller dimmed cards */}
-            {others.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(8px, 1.5vw, 14px)', width: '100%' }}>
-                    {others.map((item, idx) => (
-                        <div key={item.id} style={{
-                            padding: '10px 8px',
-                            border: '3px solid rgba(0,0,0,0.4)',
-                            background: 'rgba(255,255,255,0.15)',
-                            opacity: 0.55, filter: 'grayscale(0.5)',
-                            width: 'clamp(90px, 14vw, 130px)',
-                            textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
-                            borderRadius: '12px', boxShadow: '3px 3px 0 rgba(0,0,0,0.5)',
-                            animation: `popInRight 0.5s ${0.2 + idx * 0.08}s both`,
-                        }}>
-                            <div style={{
-                                width: '100%', aspectRatio: '1', borderRadius: '8px',
-                                border: '2px solid rgba(0,0,0,0.4)', overflow: 'hidden', background: '#ccc',
-                            }}>
-                                <img src={getImageForId(item.id, item.name, item.imageUrl)} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            </div>
-                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(10px, 1.4vw, 14px)', color: 'white', letterSpacing: '1px', lineHeight: 1.2 }}>{item.name}</div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>{item.count} votes</div>
-                        </div>
-                    ))}
-                </div>
-            )}
+            {/* Others list removed as per QC feedback - show only winner */}
         </div>
     );
 });
@@ -352,7 +327,7 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
     const maxVotes = useMemo(() => Math.max(...stats.map(d => d.count), 1), [stats]);
 
     const logoSrc = type === 'team'
-        ? '/assets/branding/Logo_X-Traordinary Squad.png'
+        ? '/assets/branding/Logo_X-Traordinary Team.png'
         : '/assets/branding/Logo_X-Traordinary Digimers.png';
 
     const wrapperStyle = isFocused ? {
@@ -528,7 +503,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
         audio.playTensionDrone();
         audio.playTick();
         setActiveFocus(type);
-        setCountdownState({ type, count: 10 });
+        setCountdownState({ type, count: 5 });
     };
 
     useEffect(() => {

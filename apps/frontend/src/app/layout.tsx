@@ -104,17 +104,18 @@ export default function RootLayout({
         {/* ── BOTTOM RIGHT ELEMENT DECORATION ── */}
         <div style={{
           position: 'fixed',
-          bottom: 0,
-          right: 0,
-          zIndex: 10, /* Higher than base bg, lower than important UI */
-          pointerEvents: 'none', /* Prevent blocking clicks */
-          display: 'flex'
+          bottom: '8px',
+          right: '8px',
+          zIndex: 10,
+          pointerEvents: 'none',
+          display: 'flex',
+          opacity: 0.8 /* Subtler decoration */
         }}>
           <img
             src="/assets/branding/Element.png"
             alt="Decoration Element"
             style={{
-              width: 'clamp(100px, 20vw, 200px)',
+              width: 'clamp(80px, 15vw, 150px)',
               height: 'auto',
               display: 'block'
             }}
