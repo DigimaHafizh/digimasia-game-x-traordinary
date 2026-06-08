@@ -57,7 +57,7 @@ export default function LeaderboardWidget({ isPaused = false }: { isPaused?: boo
 
                 return (
                     <div key={i} className="rank-row" style={{
-                        background: i === 0 ? 'var(--lime)' : i === 1 ? '#E8E8E8' : i === 2 ? '#FFE4CC' : 'var(--white)',
+                        background: i === 0 ? 'var(--lime)' : i === 1 ? 'var(--blue-light)' : i === 2 ? 'var(--pink-light)' : 'var(--blue-light)',
                     }}>
                         <div className="rank-num">#{i + 1}</div>
                         <div className="rank-avatar" style={{

@@ -1,0 +1,334 @@
+{
+  "questions": [
+    {
+      "questionNumber": 1,
+      "question": "Di tahun berapakah digima ASIA resmi didirikan dan mulai berkarya di industri digital learning & animasi tanah air?",
+      "answerOptions": [
+        {
+          "text": "2012",
+          "isCorrect": false
+        },
+        {
+          "text": "2014",
+          "isCorrect": false
+        },
+        {
+          "text": "2016",
+          "isCorrect": true
+        },
+        {
+          "text": "2018",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 2,
+      "question": "Divisi manakah di digima ASIA yang paling sering berkoordinasi secara intens untuk memastikan integrasi antara aset visual animasi dan sistem berjalan mulus tanpa bug?",
+      "answerOptions": [
+        {
+          "text": "Tim Organization Support & Tim Customer Support",
+          "isCorrect": false
+        },
+        {
+          "text": "Tim Software Engineer & Tim Content Design",
+          "isCorrect": true
+        },
+        {
+          "text": "Tim Interaction Design & Tim Customer Support",
+          "isCorrect": false
+        },
+        {
+          "text": "Tim Project Management & Tim Sales",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 3,
+      "question": "Saat menghadapi proyek e-learning berskala besar, format standardisasi internasional apa yang paling sering diutak-atik tim developer digima ASIA agar konten bisa berjalan di LMS?",
+      "answerOptions": [
+        {
+          "text": "MP4 Video Only",
+          "isCorrect": false
+        },
+        {
+          "text": "SCORM Package",
+          "isCorrect": true
+        },
+        {
+          "text": "PDF Documents",
+          "isCorrect": false
+        },
+        {
+          "text": "Powerpoint Slides",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 4,
+      "question": "Siapakah sosok pimpinan atau jajaran manajemen awal yang menjadi motor penggerak utama di balik arah strategis dan kesuksesan bisnis digima ASIA?",
+      "answerOptions": [
+        {
+          "text": "Vania Sari Muchardie",
+          "isCorrect": false
+        },
+        {
+          "text": "Daniel Virginia Lie",
+          "isCorrect": true
+        },
+        {
+          "text": "Karib Chiang",
+          "isCorrect": false
+        },
+        {
+          "text": "Dyah Prajnaparamita",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 5,
+      "question": "Apa pilar layanan utama yang ditawarkan oleh digima ASIA kepada klien korporat dalam mentransformasi materi training konvensional?",
+      "answerOptions": [
+        {
+          "text": "Penjualan Perangkat Keras Komputer",
+          "isCorrect": false
+        },
+        {
+          "text": "Digital Learning Content, Animation, & Custom E-Learning Development",
+          "isCorrect": true
+        },
+        {
+          "text": "Jasa Pembuatan Baliho Fisik",
+          "isCorrect": false
+        },
+        {
+          "text": "Konsultan Pajak Korporasi",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 6,
+      "question": "Di IntikomHub, area manakah yang paling sering dijadikan tempat 'pelarian' digimer untuk mencari inspirasi segar atau sekadar meluruskan punggung yang pegal akibat kelamaan duduk?",
+      "answerOptions": [
+        {
+          "text": "Pantry",
+          "isCorrect": false
+        },
+        {
+          "text": "Basement Pojok",
+          "isCorrect": true
+        },
+        {
+          "text": "Rooftop",
+          "isCorrect": false
+        },
+        {
+          "text": "Delta",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 7,
+      "question": "Jenis software desain/animasi apa yang menjadi senjata tempur utama dan wajib terinstal di komputer setiap anggota tim Content Design digima ASIA?",
+      "answerOptions": [
+        {
+          "text": "Figma",
+          "isCorrect": false
+        },
+        {
+          "text": "Adobe Creative Cloud",
+          "isCorrect": true
+        },
+        {
+          "text": "Corel Draw",
+          "isCorrect": false
+        },
+        {
+          "text": "Microsoft Paint",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 8,
+      "question": "Buku panduan atau standar operasional (SOP) internal digima ASIA yang mengatur tata tertib, hak, dan kewajiban karyawan dikelola secara rapi oleh tim apa?",
+      "answerOptions": [
+        {
+          "text": "Tim Project Management",
+          "isCorrect": false
+        },
+        {
+          "text": "Tim Organization Support",
+          "isCorrect": true
+        },
+        {
+          "text": "Tim Interaction Design",
+          "isCorrect": false
+        },
+        {
+          "text": "Tim Customer Support",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 9,
+      "question": "digimer dengan status kepegawaian PKWT mendapatkan benefit dapat memilih hadiah ulang tahun berupa?",
+      "answerOptions": [
+        {
+          "text": "Voucher Makan Bakmi Koga",
+          "isCorrect": false
+        },
+        {
+          "text": "Makan siang gratis senilai 300.000",
+          "isCorrect": false
+        },
+        {
+          "text": "1 Hari Libur",
+          "isCorrect": true
+        },
+        {
+          "text": "Sepatu baru",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 10,
+      "question": "Apa sapaan internal atau sebutan akrab yang biasanya digunakan sesama karyawan digima ASIA untuk menyapa rekan kerja agar suasana terasa hangat dan kekeluargaan?",
+      "answerOptions": [
+        {
+          "text": "'Mas' / 'Mba' / 'Kak'",
+          "isCorrect": true
+        },
+        {
+          "text": "'Yang Mulia'",
+          "isCorrect": false
+        },
+        {
+          "text": "'Baginda'",
+          "isCorrect": false
+        },
+        {
+          "text": "'Paduka'",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 11,
+      "question": "Bagaimanakah gaya berpakaian (dress code) keseharian karyawan digima ASIA?",
+      "answerOptions": [
+        {
+          "text": "Wajib Setelan Jas Hitam, Dasi, dan Sepatu Pantofel Mengkilap",
+          "isCorrect": false
+        },
+        {
+          "text": "Smart Casual (Kaos rapi, Kemeja santai, Jeans, dan Sneakers)",
+          "isCorrect": true
+        },
+        {
+          "text": "Pakaian Olahraga Lengkap Bersepatu Bola",
+          "isCorrect": false
+        },
+        {
+          "text": "Bebas menggunakan baju tidur (Piyama)",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 12,
+      "question": "Apa keuntungan utama yang dirasakan klien korporat saat menggunakan jasa e-learning berbasis animasi dari digima ASIA dibandingkan metode training baca buku manual?",
+      "answerOptions": [
+        {
+          "text": "Biaya cetak kertas menjadi jauh lebih mahal",
+          "isCorrect": false
+        },
+        {
+          "text": "Materi pembelajaran lebih mudah dipahami, menarik secara visual, dan bisa diakses kapan dan di mana saja",
+          "isCorrect": true
+        },
+        {
+          "text": "Karyawan klien jadi punya alasan untuk tidur saat jam kerja",
+          "isCorrect": false
+        },
+        {
+          "text": "Membuat sistem komputer klien otomatis melambat",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 13,
+      "question": "Aktivitas pagi hari apa yang sering dilakukan tim Software Engineer untuk menyelaraskan progress kerjaan harian agar tidak ada tugas yang tumpang tindih?",
+      "answerOptions": [
+        {
+          "text": "Senam Kesegaran Jasmani bersama",
+          "isCorrect": false
+        },
+        {
+          "text": "Daily Stand-up Meeting",
+          "isCorrect": true
+        },
+        {
+          "text": "Product Committee Meeting",
+          "isCorrect": false
+        },
+        {
+          "text": "Management Coordination Meeting",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 14,
+      "question": "Jika sebuah modul pembelajaran membutuhkan fitur kuis interaktif yang seru di dalamnya, komponen apa yang wajib disiapkan tim Software Engineer agar skor nilai tersimpan akurat?",
+      "answerOptions": [
+        {
+          "text": "Kamera Pengawas Wajah",
+          "isCorrect": false
+        },
+        {
+          "text": "Logika JavaScript dan fungsi pengiriman nilai (LMS API Communication)",
+          "isCorrect": true
+        },
+        {
+          "text": "Animasi kembang api durasi 2 jam",
+          "isCorrect": false
+        },
+        {
+          "text": "Fitur pemutar musik latar yang tidak bisa dimatikan",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "questionNumber": 15,
+      "question": "Ulang tahun (Anniversary) yang dirayakan digima ASIA saat ini merupakan simbol pembuktian atas...",
+      "answerOptions": [
+        {
+          "text": "Berakhirnya seluruh operasional produksi kantor",
+          "isCorrect": false
+        },
+        {
+          "text": "Konsistensi, ketangguhan, dedikasi tim, dan kepercayaan tak ternilai dari para klien selama bertahun-tahun berkarya",
+          "isCorrect": true
+        },
+        {
+          "text": "Bahwa kantor akan pindah ke planet lain minggu depan",
+          "isCorrect": false
+        },
+        {
+          "text": "Kemenangan mutlak tim esport kantor di turnamen nasional",
+          "isCorrect": false
+        }
+      ]
+    }
+  ]
+}

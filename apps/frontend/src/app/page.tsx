@@ -34,7 +34,7 @@ function WaitingCard({ user }: { user: any }) {
           height: '72px',
           borderRadius: '50%',
           border: '3px solid var(--yellow)',
-          background: 'var(--white)',
+          background: 'var(--blue-light)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

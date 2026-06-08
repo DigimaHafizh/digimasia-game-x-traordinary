@@ -61,7 +61,7 @@ let EventsGateway = EventsGateway_1 = class EventsGateway {
         this.logger.log(`Answer received: Q${data.questionIndex} Option ${data.optionIndex}`);
     }
     async handleWaterTap() {
-        await this.sessionService.incrementWater(10);
+        await this.sessionService.incrementWater(2);
     }
 };
 exports.EventsGateway = EventsGateway;

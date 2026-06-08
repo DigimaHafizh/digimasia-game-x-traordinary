@@ -469,7 +469,7 @@ h4 {
 
 /* ══ CARD ══ */
 .card {
-  background: var(--white);
+  background: var(--blue-light);
   border: var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);

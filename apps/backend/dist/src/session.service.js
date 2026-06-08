@@ -65,7 +65,7 @@ let SessionService = SessionService_1 = class SessionService {
     async incrementWaterInTransaction(tx, amount) {
         const session = await tx.session.findUnique({ where: { id: 'singleton' } });
         const newTotal = (session?.totalWater || 0) + amount;
-        const newStage = Math.min(9, Math.floor(newTotal / 100));
+        const newStage = Math.min(9, Math.floor(newTotal / 500));
         await tx.session.update({
             where: { id: 'singleton' },
             data: {
@@ -78,7 +78,7 @@ let SessionService = SessionService_1 = class SessionService {
         this.onStateChange(this.state);
     }
     async internalUpdateWater(total) {
-        const newStage = Math.min(9, Math.floor(total / 100));
+        const newStage = Math.min(9, Math.floor(total / 500));
         if (this.state.treeStage !== newStage) {
             this.state.treeStage = newStage;
         }

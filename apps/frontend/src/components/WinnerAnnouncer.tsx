@@ -50,7 +50,7 @@ const NomineeList = memo(function NomineeList({ data, accentColor, textColor, ma
             {data.map((item, idx) => (
                 <div key={item.id} style={{
                     display: 'flex', alignItems: 'center', gap: '16px',
-                    background: 'white',
+                    background: 'var(--blue-light)',
                     border: '3px solid var(--black)',
                     borderRadius: '16px',
                     padding: '12px 16px',
@@ -197,7 +197,7 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                     {/* Vote Badge */}
                     <div style={{
                         display: 'flex', alignItems: 'center', gap: '8px',
-                        background: 'white', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)',
+                        background: 'var(--blue-light)', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)',
                         padding: '6px 20px', borderRadius: '14px',
                         fontFamily: 'var(--font-mono)', fontSize: 'clamp(12px, 1.5vw, 16px)', fontWeight: 800, color: 'var(--navy-dark)',
                     }}>
@@ -286,7 +286,7 @@ const WinnerCard = memo(function WinnerCard({ winner, accentColor, textColor, vo
 
             {/* Votes */}
             <div style={{
-                background: 'white',
+                background: 'var(--blue-light)',
                 border: '3px solid var(--black)',
                 boxShadow: '4px 4px 0 var(--black)',
                 padding: '8px 20px',
@@ -621,7 +621,7 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
             {flashActive && (
                 <div style={{
                     position: 'fixed', inset: 0,
-                    background: 'white', zIndex: 9999,
+                    background: 'var(--blue-light)', zIndex: 9999,
                     animation: 'screenFlash 0.7s ease-out forwards',
                     pointerEvents: 'none',
                 }} />

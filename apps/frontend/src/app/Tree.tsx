@@ -146,7 +146,7 @@ export default function Tree() {
 
     if (isSyncing) return (
         <div style={{ minHeight: 'calc(100dvh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="card" style={{ padding: '24px 40px', textAlign: 'center' }}>
+            <div className="card" style={{ background: 'var(--yellow)', padding: '24px 40px', textAlign: 'center' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', letterSpacing: '2px' }}>MENYIAPKAN PERALATAN...</div>
             </div>
         </div>
@@ -369,7 +369,7 @@ export default function Tree() {
                 <div style={{
                     padding: '12px 16px',
                     borderTop: '3px solid var(--black)',
-                    background: isMaxStage ? 'var(--lime)' : 'var(--white)',
+                    background: isMaxStage ? 'var(--lime)' : 'var(--blue-light)',
                     position: 'relative', zIndex: 1,
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

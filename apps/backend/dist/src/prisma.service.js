@@ -13,28 +13,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PrismaService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
-const adapter_libsql_1 = require("@prisma/adapter-libsql");
-const client_2 = require("@libsql/client");
 let PrismaService = PrismaService_1 = class PrismaService extends client_1.PrismaClient {
     logger = new common_1.Logger(PrismaService_1.name);
     constructor() {
-        const url = process.env.TURSO_DATABASE_URL;
-        const authToken = process.env.TURSO_AUTH_TOKEN;
-        let adapter = undefined;
-        if (url && authToken) {
-            const libsql = (0, client_2.createClient)({ url, authToken });
-            adapter = new adapter_libsql_1.PrismaLibSQL(libsql);
-        }
-        super(adapter ? { adapter } : undefined);
-        if (adapter) {
-            console.log('✅ Prisma connected via Turso (Cloud)');
-        }
-        else {
-            console.log('✅ Prisma connected via SQLite (Local)');
-        }
+        super();
+        this.logger.log('✅ PrismaService initialized — connecting to Neontech PostgreSQL');
     }
     async onModuleInit() {
         await this.$connect();
+        this.logger.log('✅ Prisma connected to Neontech PostgreSQL');
     }
 };
 exports.PrismaService = PrismaService;

@@ -180,7 +180,7 @@ export default function TriviaMonitor() {
                         padding: '32px',
                         border: '5px solid var(--black)',
                         boxShadow: '10px 10px 0 var(--black)',
-                        background: '#FFF',
+                        background: 'var(--blue-light)',
                         borderRadius: '20px'
                     }}>
                         <div style={{
@@ -262,7 +262,7 @@ export default function TriviaMonitor() {
                                     <div style={{
                                         position: 'absolute',
                                         inset: 0,
-                                        background: 'rgba(255,255,255,0.6)',
+                                        background: 'rgba(255,255,255,0.2)',
                                         display: 'flex',
                                         alignItems: 'center',
                                         animation: 'pulse 1.5s infinite'
@@ -284,7 +284,7 @@ export default function TriviaMonitor() {
                             return (
                                 <div key={optIdx} className="card" style={{
                                     padding: '16px 20px',
-                                    background: isCorrect ? 'var(--lime)' : '#FFF',
+                                    background: isCorrect ? 'var(--lime)' : 'var(--blue-light)',
                                     border: isCorrect ? '4px solid var(--black)' : '3px solid #000',
                                     boxShadow: isCorrect ? '5px 5px 0 var(--black)' : '4px 4px 0 #000',
                                     borderRadius: '12px',
@@ -324,7 +324,7 @@ export default function TriviaMonitor() {
                                             </div>
                                         </div>
                                         {!isStatsStale && (
-                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: '#000', background: '#FFF', padding: '4px 8px', border: '2px solid #000', borderRadius: '4px' }}>
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: '#000', background: 'var(--white)', padding: '4px 8px', border: '2px solid #000', borderRadius: '4px' }}>
                                                 {count} ({percent}%)
                                             </div>
                                         )}

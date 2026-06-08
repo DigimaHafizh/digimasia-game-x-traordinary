@@ -291,7 +291,10 @@ export default function Trivia() {
                                     key={idx}
                                     className={optClass}
                                     disabled={true}
-                                    style={{ cursor: 'not-allowed' }}
+                                    style={{
+                                        cursor: 'not-allowed',
+                                        background: isThisSelected ? (showFeedback ? (isCorrect === true ? 'var(--lime)' : 'var(--pink-hot)') : 'var(--yellow)') : 'var(--blue-light)'
+                                    }}
                                 >
                                     <span className="opt-letter">{OPTION_LETTERS[idx]}</span>
                                     <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px' }}>
@@ -331,7 +334,7 @@ export default function Trivia() {
 
                     {/* No answer */}
                     {showNoAnswer && (
-                        <div className="card" style={{ textAlign: 'center', padding: '16px', background: '#f0f0f0' }}>
+                        <div className="card" style={{ textAlign: 'center', padding: '16px', background: 'var(--blue-light)' }}>
                             <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', letterSpacing: '1px', color: '#333' }}>
                                 ⏰ WAKTU HABIS!
                             </div>
@@ -398,7 +401,10 @@ export default function Trivia() {
                                 // Allow user to change answer as long as timer hasn't run out
                                 onClick={() => !isLoading && handleSelect(idx)}
                                 disabled={isLoading}
-                                style={{ opacity: isLoading ? 0.6 : 1 }}
+                                style={{
+                                    opacity: isLoading ? 0.6 : 1,
+                                    background: isThisSelected ? 'var(--yellow)' : 'var(--blue-light)'
+                                }}
                             >
                                 <span className="opt-letter">{OPTION_LETTERS[idx]}</span>
                                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px' }}>
