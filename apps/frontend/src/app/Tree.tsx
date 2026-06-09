@@ -225,14 +225,14 @@ export default function Tree() {
 
     return (
         <div style={{
-            height: 'calc(100dvh - 140px)', // Account for Topbar, Ticker, and Footer globally
-            padding: '12px 16px 20px',
+            height: 'calc(100dvh - 140px)',
+            padding: '8px 14px 12px',
             maxWidth: '480px',
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            gap: '8px',
+            gap: '6px',
             position: 'relative',
             overflow: 'hidden',
             boxSizing: 'border-box'
@@ -288,9 +288,11 @@ export default function Tree() {
                     <div style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: '10px',
-                        color: 'rgba(255,255,255,0.7)',
+                        color: 'var(--yellow)',
+                        textShadow: '1px 1px 0 var(--black)',
                         letterSpacing: '2px',
                         marginTop: '4px',
+                        fontWeight: 700,
                     }}>
                         POMPA AIR · SIRAMI POHON · TUMBUH BERSAMA!
                     </div>
@@ -336,7 +338,7 @@ export default function Tree() {
                 {/* Tree image — hero zone */}
                 <div style={{
                     position: 'relative',
-                    height: 'clamp(120px, 30vh, 180px)',
+                    height: 'clamp(100px, 24vh, 160px)',
                     width: '100%',
                     backgroundColor: 'var(--blue-bright)',
                     backgroundImage: "url('/assets/branding/BG1.png')",
@@ -449,7 +451,7 @@ export default function Tree() {
 
             {/* ── PUMP + RESERVOIR SECTION ──── */}
             {!isMaxStage && (
-                <div className="card" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="card" style={{ padding: '8px 14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', gap: '16px', alignItems: 'stretch' }}>
 
                         {/* LEFT: Animated Pump SVG */}
@@ -466,7 +468,7 @@ export default function Tree() {
                                 POMPA AIR
                             </div>
                             {/* Droplet spray area */}
-                            <div style={{ position: 'relative', width: '80px', height: '110px' }}>
+                            <div style={{ position: 'relative', width: '80px', height: '80px' }}>
                                 {/* Flying droplets */}
                                 {droplets.map(d => (
                                     <div key={d.id} style={{
@@ -480,7 +482,7 @@ export default function Tree() {
                                 ))}
 
                                 {/* Pump SVG */}
-                                <svg viewBox="0 0 80 110" width="80" height="110">
+                                <svg viewBox="0 0 80 110" width="80" height="80">
                                     {/* Pump body */}
                                     <rect x="28" y="60" width="24" height="40" rx="4" fill="#3B82F6" stroke="#000" strokeWidth="2" />
                                     <rect x="32" y="64" width="16" height="12" rx="2" fill="#60A5FA" />
@@ -529,7 +531,7 @@ export default function Tree() {
 
                             <div style={{
                                 flex: 1,
-                                height: '60px',
+                                height: '48px',
                                 background: '#f0f4f8',
                                 borderRadius: '12px',
                                 border: '3px solid var(--black)',

@@ -7,7 +7,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useTreeAudio } from '@/hooks/useTreeAudio';
 import { useSocket } from '@/hooks/useSocket';
 
-const TOTAL_WATER_GOAL = 1000;
+const TOTAL_WATER_GOAL = 5000;
 
 interface WaterDrop {
     id: number;
@@ -258,29 +258,6 @@ export default function TreeMonitorExternal() {
                             💧
                         </div>
                     ))}
-
-                    {/* Watering particles splash at base */}
-                    {isWatering && (
-                        <div style={{
-                            position: 'absolute',
-                            bottom: '10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            display: 'flex',
-                            gap: '4px',
-                            zIndex: 10,
-                            pointerEvents: 'none',
-                        }}>
-                            {['🌊', '💦', '🌊'].map((e, i) => (
-                                <span key={i} style={{
-                                    fontSize: 'clamp(18px, 2.5vw, 24px)',
-                                    opacity: 0.85,
-                                    animation: `tm-waterPulse ${0.8 + i * 0.15}s ease-in-out infinite`,
-                                    animationDelay: `${i * 0.2}s`,
-                                }}>{e}</span>
-                            ))}
-                        </div>
-                    )}
                 </div>
 
                 {!isMaxStage && (

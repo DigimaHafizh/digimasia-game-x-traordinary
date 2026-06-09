@@ -176,29 +176,6 @@ export default function TreeMonitor() {
                     }}>
                         {totalWater}L
                     </div>
-
-                    {/* Watering particles splash at base */}
-                    {isWatering && (
-                        <div style={{
-                            position: 'absolute',
-                            bottom: '6px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            display: 'flex',
-                            gap: '4px',
-                            zIndex: 10,
-                            pointerEvents: 'none',
-                        }}>
-                            {['🌊', '💦', '🌊'].map((e, i) => (
-                                <span key={i} style={{
-                                    fontSize: '14px',
-                                    opacity: 0.85,
-                                    animation: `tm-waterPulse ${0.8 + i * 0.15}s ease-in-out infinite`,
-                                    animationDelay: `${i * 0.2}s`,
-                                }}>{e}</span>
-                            ))}
-                        </div>
-                    )}
                 </div>
 
                 {/* Stats row below the tree */}
