@@ -85,14 +85,12 @@ const ValueMascot = ({ size = 110, showLabel = true, interval = 900 }: { size?: 
 const DigimasiaBrandLogo = () => (
     <div style={{ position: 'relative', width: 'fit-content', margin: '0 auto clamp(20px, 5vw, 40px) auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 24px)' }}>
-            <div style={{ width: 'clamp(60px, 15vw, 90px)', height: 'clamp(60px, 15vw, 90px)', position: 'relative' }}>
-                <svg viewBox="0 0 100 100" width="100%" height="100%">
-                    <circle cx="50" cy="50" r="48" fill="#1e3a8a" stroke="#ffffff" strokeWidth="2" />
-                    <path d="M2 50H98M50 2V98" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-                    <ellipse cx="50" cy="50" rx="48" ry="20" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
-                    <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
-                    <path d="M50 2A48 48 0 0 1 50 98" fill="rgba(0,0,0,0.2)" />
-                </svg>
+            <div style={{ width: 'clamp(80px, 20vw, 120px)', height: 'clamp(80px, 20vw, 120px)', position: 'relative' }}>
+                <img
+                    src="/assets/branding/Logo_DAA_Transparant copy.png"
+                    alt="Digima Asia Logo"
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
             </div>
             <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(28px, 6vw, 48px)', fontWeight: 'bold', color: 'white', letterSpacing: 'clamp(1px, 0.5vw, 2px)', lineHeight: 1, textShadow: '4px 4px 0 #000', whiteSpace: 'nowrap' }}>

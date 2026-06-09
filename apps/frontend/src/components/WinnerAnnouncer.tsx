@@ -330,12 +330,17 @@ const AwardPanel = memo(function AwardPanel({ title, accentColor, textColor = 'v
         ? '/assets/branding/Logo_X-Traordinary Team.png'
         : '/assets/branding/Logo_X-Traordinary Digimers.png';
 
+    const bgImage = type === 'team'
+        ? '/assets/branding/TOTY.png'
+        : '/assets/branding/DOTY.png';
+
     const wrapperStyle = isFocused ? {
         display: 'flex', flexDirection: 'column' as const, flex: 1, overflow: 'hidden'
     } : {
         backgroundColor: '#f8f9fa',
-        backgroundImage: 'radial-gradient(rgba(0,0,0,0.1) 2px, transparent 0)',
-        backgroundSize: '24px 24px',
+        backgroundImage: `url('${bgImage}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         border: '6px solid var(--black)',
         borderRadius: '32px',
         boxShadow: `12px 12px 0 ${accentColor}`,

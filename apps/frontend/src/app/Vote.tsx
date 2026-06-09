@@ -103,7 +103,7 @@ export default function Vote({ type }: { type: 'team' | 'digimer' }) {
             {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
                 <img
-                    src={type === 'team' ? '/assets/branding/Logo_X-Traordinary Squad.png' : '/assets/branding/Logo_X-Traordinary Digimers.png'}
+                    src={type === 'team' ? '/assets/branding/Logo_X-Traordinary Team.png' : '/assets/branding/Logo_X-Traordinary Digimers.png'}
                     alt={type === 'team' ? 'The X-Traordinary Squad' : 'The X-Traordinary Digimers'}
                     style={{ height: 'auto', width: '100%', maxWidth: '350px', margin: '0 auto', display: 'block' }}
                 />

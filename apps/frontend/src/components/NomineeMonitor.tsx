@@ -112,7 +112,7 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
             {/* Section label */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <img
-                    src={category === 'team' ? '/assets/branding/Logo_X-Traordinary Squad.png' : '/assets/branding/Logo_X-Traordinary Digimers.png'}
+                    src={category === 'team' ? '/assets/branding/Logo_X-Traordinary Team.png' : '/assets/branding/Logo_X-Traordinary Digimers.png'}
                     alt={category === 'team' ? 'Squad Candidates' : 'Individual Nominees'}
                     style={{ height: '48px', width: 'auto' }}
                 />
