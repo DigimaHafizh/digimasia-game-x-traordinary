@@ -9,14 +9,26 @@ import { useSocket } from '@/hooks/useSocket';
 
 const TOTAL_WATER_GOAL = 1000;
 
+interface WaterDrop {
+    id: number;
+    x: number;
+    delay: number;
+    size: number;
+}
+let dropIdCounter = 0;
+
 export default function TreeMonitorExternal() {
     const { totalWater, treeStage, _hasHydrated } = useGameStore();
     const [mounted, setMounted] = useState(false);
     const [isMuted, setIsMutedState] = useState(false);
     const [isLevelingUp, setIsLevelingUp] = useState(false);
+    const [waterDrops, setWaterDrops] = useState<WaterDrop[]>([]);
+    const [isWatering, setIsWatering] = useState(false);
     const audio = useTreeAudio();
+    const prevWaterRef = useRef(totalWater);
     const prevStageRef = useRef(treeStage);
     const bgmStarted = useRef(false);
+    const wateringTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useSocket(); // Vital to subscribe to backend state broadcasts
 
@@ -56,6 +68,31 @@ export default function TreeMonitorExternal() {
         prevStageRef.current = treeStage;
     }, [treeStage, audio]);
 
+    const spawnDrops = useCallback(() => {
+        const count = 5 + Math.floor(Math.random() * 5);
+        const drops: WaterDrop[] = Array.from({ length: count }, (_, i) => ({
+            id: dropIdCounter++,
+            x: 10 + Math.random() * 80,
+            delay: i * 0.05,
+            size: 0.8 + Math.random() * 0.7,
+        }));
+        setWaterDrops(prev => [...prev, ...drops]);
+        setTimeout(() => {
+            const ids = drops.map(d => d.id);
+            setWaterDrops(prev => prev.filter(d => !ids.includes(d.id)));
+        }, 1600);
+    }, []);
+
+    useEffect(() => {
+        if (totalWater > prevWaterRef.current && totalWater > 0) {
+            spawnDrops();
+            setIsWatering(true);
+            if (wateringTimerRef.current) clearTimeout(wateringTimerRef.current);
+            wateringTimerRef.current = setTimeout(() => setIsWatering(false), 2000);
+        }
+        prevWaterRef.current = totalWater;
+    }, [totalWater, spawnDrops]);
+
     if (!mounted || !_hasHydrated) return null;
 
     const progress = Math.min(100, (totalWater / TOTAL_WATER_GOAL) * 100);
@@ -63,6 +100,18 @@ export default function TreeMonitorExternal() {
 
     return (
         <TVFrame>
+            <style>{`
+                @keyframes tm-dropFall {
+                    0%   { transform: translateY(-20px) scale(0.6); opacity: 0; }
+                    20%  { opacity: 1; }
+                    80%  { opacity: 0.8; }
+                    100% { transform: translateY(40vh) scale(0.9); opacity: 0; }
+                }
+                @keyframes tm-waterPulse {
+                    0%, 100% { box-shadow: 4px 4px 0 var(--black); }
+                    50%      { box-shadow: 0 0 0 6px rgba(59,130,246,0.5), 4px 4px 0 var(--black); }
+                }
+            `}</style>
             {/* Monitor Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexShrink: 0, position: 'relative', zIndex: 11 }}>
                 <div>
@@ -85,7 +134,7 @@ export default function TreeMonitorExternal() {
                         textShadow: '2px 2px 0px var(--black)',
                         marginTop: '4px'
                     }}>
-                        DIGIMA ASIA 10TH ANNIVERSARY
+                        {isWatering ? '💧 USERS SEDANG MENYIRAM...' : 'DIGIMA ASIA 10TH ANNIVERSARY'}
                     </div>
                 </div>
 
@@ -114,6 +163,16 @@ export default function TreeMonitorExternal() {
                         {isMuted ? '🔇' : '🔊'}
                     </button>
 
+                    {isWatering && (
+                        <div style={{
+                            background: 'var(--blue-light)', border: '3px solid var(--blue-bright)',
+                            borderRadius: '12px', padding: '6px 16px', fontFamily: 'var(--font-mono)',
+                            fontSize: 'clamp(14px, 1.8vw, 18px)', fontWeight: 800, color: 'var(--blue-bright)',
+                            animation: 'tm-waterPulse 0.8s ease-in-out infinite'
+                        }}>
+                            💧 LIVE TAPPING
+                        </div>
+                    )}
                     <div style={{
                         background: 'var(--lime)',
                         border: '3px solid var(--black)',
@@ -172,9 +231,56 @@ export default function TreeMonitorExternal() {
                     maxHeight: '40vh',
                     aspectRatio: '1',
                     display: 'flex',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    position: 'relative'
                 }}>
                     <TreeVisual stage={treeStage} size="100%" isLevelingUp={isLevelingUp} />
+
+                    {/* 💧 Water Droplets Animation Container */}
+                    {waterDrops.map(drop => (
+                        <div
+                            key={drop.id}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: `${drop.x}%`,
+                                fontSize: `clamp(24px, ${4 * drop.size}vh, 48px)`,
+                                animationName: 'tm-dropFall',
+                                animationDuration: '1.2s',
+                                animationDelay: `${drop.delay}s`,
+                                animationFillMode: 'both',
+                                animationTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)',
+                                pointerEvents: 'none',
+                                zIndex: 20,
+                                transformOrigin: 'center top',
+                            }}
+                        >
+                            💧
+                        </div>
+                    ))}
+
+                    {/* Watering particles splash at base */}
+                    {isWatering && (
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '10px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            display: 'flex',
+                            gap: '4px',
+                            zIndex: 10,
+                            pointerEvents: 'none',
+                        }}>
+                            {['🌊', '💦', '🌊'].map((e, i) => (
+                                <span key={i} style={{
+                                    fontSize: 'clamp(18px, 2.5vw, 24px)',
+                                    opacity: 0.85,
+                                    animation: `tm-waterPulse ${0.8 + i * 0.15}s ease-in-out infinite`,
+                                    animationDelay: `${i * 0.2}s`,
+                                }}>{e}</span>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {!isMaxStage && (

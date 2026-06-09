@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { getBackendUrl } from '@/lib/config';
 import { useTreeAudio } from '@/hooks/useTreeAudio';
@@ -43,12 +43,24 @@ export default function Trivia() {
         }
     };
 
-    const startBGMOnce = () => {
+    const startBGMOnce = useCallback(() => {
         if (!hasStartedBGM.current && bgmEnabled) {
             playTriviaBGM();
             hasStartedBGM.current = true;
         }
-    };
+    }, [bgmEnabled, playTriviaBGM]);
+
+    // Auto-trigger BGM when mounting (relies on browser user-activation rules from prior pages)
+    useEffect(() => {
+        startBGMOnce();
+        const trigger = () => startBGMOnce();
+        window.addEventListener('click', trigger, { once: true });
+        window.addEventListener('touchstart', trigger, { once: true });
+        return () => {
+            window.removeEventListener('click', trigger);
+            window.removeEventListener('touchstart', trigger);
+        };
+    }, [startBGMOnce]);
 
     // Stop BGM IMMEDIATELY when Trivia ends
     useLayoutEffect(() => {
