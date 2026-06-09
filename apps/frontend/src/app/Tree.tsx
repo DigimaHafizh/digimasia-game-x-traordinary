@@ -176,10 +176,25 @@ export default function Tree() {
                     <div style={{ display: 'flex', justifyContent: 'center', height: '140px', marginBottom: '16px' }}>
                         <TreeVisual stage={9} size="100%" />
                     </div>
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 8vw, 36px)', color: 'var(--black)', letterSpacing: '2px', lineHeight: 1.1 }}>
+                    <div style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 'clamp(28px, 8vw, 36px)',
+                        color: 'var(--yellow)',
+                        textShadow: '2px 2px 0 var(--black)',
+                        letterSpacing: '2px',
+                        lineHeight: 1.1
+                    }}>
                         BERSIAP MENYIRAM!
                     </div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#555', marginTop: '16px', letterSpacing: '1px', lineHeight: 1.5 }}>
+                    <div style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '11px',
+                        color: 'var(--white)',
+                        textShadow: '1px 1px 0 var(--black)',
+                        marginTop: '16px',
+                        letterSpacing: '1px',
+                        lineHeight: 1.5
+                    }}>
                         <strong>{collectedWater}L</strong> AIR TERSEDIA<br />
                         <strong>{contributedWater}L</strong> SUDAH KAMU SUMBANGKAN
                     </div>
