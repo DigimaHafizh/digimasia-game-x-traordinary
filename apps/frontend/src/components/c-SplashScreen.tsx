@@ -83,17 +83,17 @@ const ValueMascot = ({ size = 110, showLabel = true, interval = 900 }: { size?: 
 };
 
 const DigimasiaBrandLogo = () => (
-    <div style={{ position: 'relative', width: 'fit-content', margin: '0 auto clamp(20px, 5vw, 40px) auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 24px)' }}>
-            <div style={{ width: 'clamp(80px, 20vw, 120px)', height: 'clamp(80px, 20vw, 120px)', position: 'relative' }}>
+    <div style={{ position: 'relative', width: 'fit-content', margin: '0 auto clamp(16px, 4vw, 32px) auto' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2.5vw, 20px)' }}>
+            <div style={{ width: 'clamp(70px, 16vw, 110px)', height: 'clamp(70px, 16vw, 110px)', position: 'relative', flexShrink: 0 }}>
                 <img
                     src="/assets/branding/Logo_DAA_Transparant copy.png"
                     alt="Digima Asia Logo"
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(2px 2px 0 rgba(0,0,0,0.3))' }}
                 />
             </div>
             <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(28px, 6vw, 48px)', fontWeight: 'bold', color: 'white', letterSpacing: 'clamp(1px, 0.5vw, 2px)', lineHeight: 1, textShadow: '4px 4px 0 #000', whiteSpace: 'nowrap' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(24px, 5.5vw, 44px)', fontWeight: 'bold', color: 'white', letterSpacing: 'clamp(1px, 0.4vw, 2px)', lineHeight: 1, textShadow: '4px 4px 0 #000', whiteSpace: 'nowrap' }}>
                     DIGIMA ASIA
                 </div>
                 <div style={{
