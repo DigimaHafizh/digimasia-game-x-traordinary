@@ -141,34 +141,35 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
     return (
         <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            width: '100%', gap: '4px',
+            width: '100%', flex: 1, gap: '0',
             animation: 'winnerReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+            justifyContent: 'center'
         }}>
             {/* Branding Image Header */}
-            <div style={{ padding: '0 20px', width: '100%', display: 'flex', justifyContent: 'center', marginTop: '-10px' }}>
+            <div style={{ padding: '0 10px', width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '1vh' }}>
                 <img
                     src={logoSrc}
                     alt="Awards Logo"
-                    style={{ height: 'auto', width: '100%', maxWidth: 'clamp(320px, 50vw, 500px)', display: 'block' }}
+                    style={{ height: 'auto', maxHeight: '16vh', width: '100%', maxWidth: 'clamp(200px, 40vw, 400px)', display: 'block', objectFit: 'contain' }}
                 />
             </div>
 
             {/* WINNER — Big Spotlight Card (No White Box, just floating elements) */}
             {winner && (
                 <div style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1vh',
                     position: 'relative',
                     animation: 'popInRight 0.6s both',
                     maxWidth: '100%',
                 }}>
                     {/* Crown */}
-                    <div style={{ fontSize: 'clamp(40px, 6vh, 64px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-24px', zIndex: 1 }}>👑</div>
+                    <div style={{ fontSize: 'clamp(28px, 5vh, 48px)', animation: 'crownFloat 2.5s ease-in-out infinite', marginBottom: '-18px', zIndex: 1 }}>👑</div>
 
                     {/* Big Photo */}
                     <div style={{
-                        width: 'clamp(240px, 42vh, 380px)', height: 'clamp(240px, 42vh, 380px)',
-                        borderRadius: '24px', border: `6px solid var(--black)`,
-                        overflow: 'hidden', boxShadow: `6px 6px 0 ${accentColor}`,
+                        width: 'clamp(140px, 28vh, 260px)', height: 'clamp(140px, 28vh, 260px)',
+                        borderRadius: '24px', border: `5px solid var(--black)`,
+                        overflow: 'hidden', boxShadow: `5px 5px 0 ${accentColor}`,
                         background: accentColor,
                         animation: 'sparkleGlow 2.5s ease-in-out infinite',
                     }}>
@@ -178,28 +179,28 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                     {/* Name Badge */}
                     <div style={{
                         background: accentColor,
-                        border: '4px solid var(--black)', boxShadow: '6px 6px 0 var(--black)',
-                        padding: '8px 32px', borderRadius: '50px',
-                        fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 4vh, 40px)',
-                        letterSpacing: '1px', color: textColor, marginTop: '2px',
+                        border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)',
+                        padding: '4px 20px', borderRadius: '50px',
+                        fontFamily: 'var(--font-display)', fontSize: 'clamp(16px, 3vh, 28px)',
+                        letterSpacing: '1px', color: textColor, marginTop: '2px', textAlign: 'center',
                     }}>{winner.name}</div>
 
                     {/* Division */}
                     {winner.division && (
                         <div style={{
                             background: 'var(--black)', color: accentColor,
-                            padding: '3px 14px', borderRadius: '8px',
-                            fontFamily: 'var(--font-mono)', fontSize: 'clamp(9px, 1.2vw, 13px)',
+                            padding: '3px 12px', borderRadius: '8px',
+                            fontFamily: 'var(--font-mono)', fontSize: 'clamp(9px, 1vw, 12px)',
                             letterSpacing: '2px', fontWeight: 800,
                         }}>{winner.division.toUpperCase()}</div>
                     )}
 
                     {/* Vote Badge */}
                     <div style={{
-                        display: 'flex', alignItems: 'center', gap: '8px',
-                        background: 'var(--blue-light)', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)',
-                        padding: '6px 20px', borderRadius: '14px',
-                        fontFamily: 'var(--font-mono)', fontSize: 'clamp(12px, 1.5vw, 16px)', fontWeight: 800, color: 'var(--navy-dark)',
+                        display: 'flex', alignItems: 'center', gap: '6px',
+                        background: 'var(--blue-light)', border: '2px solid var(--black)', boxShadow: '3px 3px 0 var(--black)',
+                        padding: '4px 16px', borderRadius: '12px',
+                        fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 1.2vw, 14px)', fontWeight: 800, color: 'var(--navy-dark)',
                     }}>
                         <span>🗳️</span>
                         <span>{winner.count} VOTES</span>
@@ -207,8 +208,6 @@ const CardNomineeList = memo(function CardNomineeList({ data, accentColor, textC
                     </div>
                 </div>
             )}
-
-            {/* Others list removed as per QC feedback - show only winner */}
         </div>
     );
 });
