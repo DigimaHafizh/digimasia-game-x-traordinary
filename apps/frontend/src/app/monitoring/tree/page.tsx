@@ -162,7 +162,16 @@ export default function TreeMonitorExternal() {
 
     return (
         <TVFrame>
-            <style>{`
+            {/* Added BG2 to cover TV bounds behind tree visual */}
+            <div style={{
+                position: 'absolute', inset: 0,
+                backgroundImage: "url('/assets/branding/BG2.png')",
+                backgroundSize: 'cover', backgroundPosition: 'center',
+                zIndex: 0
+            }} />
+            <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+
+                <style>{`
                 @keyframes tm-dropFall {
                     0%   { transform: translateY(-20px) scale(0.6); opacity: 0; }
                     20%  { opacity: 1; }
@@ -175,286 +184,287 @@ export default function TreeMonitorExternal() {
                 }
             `}</style>
 
-            {/* Monitor Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexShrink: 0, position: 'relative', zIndex: 11 }}>
-                <div>
-                    <div style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(24px, 3vw, 42px)',
-                        letterSpacing: '2px',
-                        color: 'var(--yellow)',
-                        textShadow: '3px 3px 0px var(--black)',
-                        lineHeight: 1
-                    }}>
-                        LIVE TREE GROWTH
+                {/* Monitor Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexShrink: 0, position: 'relative', zIndex: 11 }}>
+                    <div>
+                        <div style={{
+                            fontFamily: 'var(--font-display)',
+                            fontSize: 'clamp(24px, 3vw, 42px)',
+                            letterSpacing: '2px',
+                            color: 'var(--yellow)',
+                            textShadow: '3px 3px 0px var(--black)',
+                            lineHeight: 1
+                        }}>
+                            LIVE TREE GROWTH
+                        </div>
+                        <div style={{
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: 'clamp(12px, 1.5vw, 16px)',
+                            letterSpacing: '2px',
+                            fontWeight: 800,
+                            color: 'var(--white)',
+                            textShadow: '2px 2px 0px var(--black)',
+                            marginTop: '4px'
+                        }}>
+                            {isWatering ? '💧 DIGIMERS SEDANG MENYIRAM...' : 'DIGIMA ASIA 10TH ANNIVERSARY'}
+                        </div>
                     </div>
-                    <div style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 'clamp(12px, 1.5vw, 16px)',
-                        letterSpacing: '2px',
-                        fontWeight: 800,
-                        color: 'var(--white)',
-                        textShadow: '2px 2px 0px var(--black)',
-                        marginTop: '4px'
-                    }}>
-                        {isWatering ? '💧 DIGIMERS SEDANG MENYIRAM...' : 'DIGIMA ASIA 10TH ANNIVERSARY'}
-                    </div>
-                </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <button
-                        onClick={() => {
-                            startBGMOnce();
-                            const next = !isMuted;
-                            setIsMutedState(next);
-                            audio.setMuted(next);
-                            if (!next) startBGMOnce();
-                        }}
-                        style={{
-                            background: isMuted ? '#444' : 'var(--lime)',
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <button
+                            onClick={() => {
+                                startBGMOnce();
+                                const next = !isMuted;
+                                setIsMutedState(next);
+                                audio.setMuted(next);
+                                if (!next) startBGMOnce();
+                            }}
+                            style={{
+                                background: isMuted ? '#444' : 'var(--lime)',
+                                border: '3px solid var(--black)',
+                                boxShadow: '4px 4px 0 var(--black)',
+                                padding: '6px 14px',
+                                borderRadius: '12px',
+                                fontFamily: 'var(--font-display)',
+                                fontSize: 'clamp(16px, 2vw, 22px)',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {isMuted ? '🔇' : '🔊'}
+                        </button>
+
+
+                        <div style={{
+                            background: 'var(--lime)',
                             border: '3px solid var(--black)',
                             boxShadow: '4px 4px 0 var(--black)',
-                            padding: '6px 14px',
+                            padding: '6px 16px',
                             borderRadius: '12px',
                             fontFamily: 'var(--font-display)',
-                            fontSize: 'clamp(16px, 2vw, 22px)',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        {isMuted ? '🔇' : '🔊'}
-                    </button>
-
-
-                    <div style={{
-                        background: 'var(--lime)',
-                        border: '3px solid var(--black)',
-                        boxShadow: '4px 4px 0 var(--black)',
-                        padding: '6px 16px',
-                        borderRadius: '12px',
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(16px, 2vw, 20px)',
-                        color: 'var(--black)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
-                    }}>
-                        <span style={{ width: '12px', height: '12px', background: 'red', borderRadius: '50%', animation: 'blink 1.5s infinite' }} />
-                        ON AIR
+                            fontSize: 'clamp(16px, 2vw, 20px)',
+                            color: 'var(--black)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}>
+                            <span style={{ width: '12px', height: '12px', background: 'red', borderRadius: '50%', animation: 'blink 1.5s infinite' }} />
+                            ON AIR
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Main Content Area: Tree + Side Leaderboard */}
-            <div style={{
-                flex: 1,
-                minHeight: 0,
-                display: 'flex',
-                gap: '24px',
-                marginTop: '12px',
-                marginBottom: '12px',
-                position: 'relative',
-                zIndex: 11
-            }}>
-                {/* Left Side: Tree & Stats */}
+                {/* Main Content Area: Tree + Side Leaderboard */}
                 <div style={{
                     flex: 1,
+                    minHeight: 0,
                     display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '2vw',
-                    background: 'rgba(255,255,255,0.05)',
-                    borderRadius: '24px',
-                    padding: '24px',
-                    position: 'relative'
+                    gap: '24px',
+                    marginTop: '12px',
+                    marginBottom: '12px',
+                    position: 'relative',
+                    zIndex: 11
                 }}>
-                    {!isMaxStage && (
-                        <div style={{
-                            background: 'var(--blue-light)',
-                            border: '3px solid var(--black)',
-                            boxShadow: '6px 6px 0 var(--black)',
-                            padding: '16px 20px',
-                            borderRadius: '16px',
-                            flexShrink: 0,
-                            maxWidth: '180px'
-                        }}>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: 'var(--black)', marginBottom: '8px' }}>STAGE CURRENT</div>
-                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--black)', lineHeight: 1 }}>
-                                {treeStage + 1} <span style={{ fontSize: '0.6em', color: '#555' }}>/ 10</span>
-                            </div>
-                            <div style={{
-                                fontFamily: 'var(--font-mono)',
-                                fontSize: 'clamp(11px, 1.2vw, 15px)',
-                                color: 'var(--black)',
-                                fontWeight: 800,
-                                marginTop: '12px',
-                                textWrap: 'balance',
-                                lineHeight: '1.2'
-                            }}>
-                                {TREE_STAGE_LABELS[Math.min(treeStage, 9)]}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Center Tree Area (Always centered & responsive) */}
+                    {/* Left Side: Tree & Stats */}
                     <div style={{
                         flex: 1,
-                        height: '100%',
-                        maxHeight: '45vh',
                         display: 'flex',
-                        justifyContent: 'center',
+                        flexDirection: 'row',
                         alignItems: 'center',
-                        position: 'relative',
-                        padding: '16px'
+                        justifyContent: 'center',
+                        gap: '2vw',
+                        background: 'rgba(255,255,255,0.05)',
+                        borderRadius: '24px',
+                        padding: '24px',
+                        position: 'relative'
                     }}>
-                        <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', paddingBottom: '10px' }}>
-                            <TreeVisual stage={treeStage} size={isMaxStage ? '110%' : '90%'} isLevelingUp={isLevelingUp} />
-
-                            {/* DROPS */}
-                            {waterDrops.map(drop => (
-                                <div
-                                    key={drop.id}
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: `${drop.x}%`,
-                                        fontSize: `clamp(24px, ${4 * drop.size}vh, 48px)`,
-                                        animationName: 'tm-dropFall',
-                                        animationDuration: '1.2s',
-                                        animationDelay: `${drop.delay}s`,
-                                        animationFillMode: 'both',
-                                        animationTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)',
-                                        pointerEvents: 'none',
-                                        zIndex: 20
-                                    }}
-                                >
-                                    💧
+                        {!isMaxStage && (
+                            <div style={{
+                                background: 'var(--blue-light)',
+                                border: '3px solid var(--black)',
+                                boxShadow: '6px 6px 0 var(--black)',
+                                padding: '16px 20px',
+                                borderRadius: '16px',
+                                flexShrink: 0,
+                                maxWidth: '180px'
+                            }}>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: 'var(--black)', marginBottom: '8px' }}>STAGE CURRENT</div>
+                                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--black)', lineHeight: 1 }}>
+                                    {treeStage + 1} <span style={{ fontSize: '0.6em', color: '#555' }}>/ 10</span>
                                 </div>
-                            ))}
+                                <div style={{
+                                    fontFamily: 'var(--font-mono)',
+                                    fontSize: 'clamp(11px, 1.2vw, 15px)',
+                                    color: 'var(--black)',
+                                    fontWeight: 800,
+                                    marginTop: '12px',
+                                    textWrap: 'balance',
+                                    lineHeight: '1.2'
+                                }}>
+                                    {TREE_STAGE_LABELS[Math.min(treeStage, 9)]}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Center Tree Area (Always centered & responsive) */}
+                        <div style={{
+                            flex: 1,
+                            height: '100%',
+                            maxHeight: '45vh',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            position: 'relative',
+                            padding: '16px'
+                        }}>
+                            <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', paddingBottom: '10px' }}>
+                                <TreeVisual stage={treeStage} size={isMaxStage ? '110%' : '90%'} isLevelingUp={isLevelingUp} />
+
+                                {/* DROPS */}
+                                {waterDrops.map(drop => (
+                                    <div
+                                        key={drop.id}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: `${drop.x}%`,
+                                            fontSize: `clamp(24px, ${4 * drop.size}vh, 48px)`,
+                                            animationName: 'tm-dropFall',
+                                            animationDuration: '1.2s',
+                                            animationDelay: `${drop.delay}s`,
+                                            animationFillMode: 'both',
+                                            animationTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)',
+                                            pointerEvents: 'none',
+                                            zIndex: 20
+                                        }}
+                                    >
+                                        💧
+                                    </div>
+                                ))}
 
 
+                            </div>
                         </div>
+
+                        {!isMaxStage && (
+                            <div style={{
+                                background: 'var(--blue-light)',
+                                border: '3px solid var(--black)',
+                                boxShadow: '6px 6px 0 var(--black)',
+                                padding: '16px 20px',
+                                borderRadius: '16px',
+                                textAlign: 'right',
+                                flexShrink: 0,
+                                maxWidth: '180px'
+                            }}>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: 'var(--black)', marginBottom: '8px' }}>TOTAL AIR</div>
+                                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--black)', lineHeight: 1 }}>
+                                    {totalWater} L
+                                </div>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(11px, 1.2vw, 15px)', color: 'var(--black)', fontWeight: 800, marginTop: '12px' }}>
+                                    TARGET: {TOTAL_WATER_GOAL}L
+                                </div>
+                            </div>
+                        )}
+
+
                     </div>
 
-                    {!isMaxStage && (
+                    {/* Right Side Sidebar Leaderboard */}
+                    <div style={{
+                        width: 'clamp(300px, 22vw, 420px)',
+                        background: 'rgba(255, 255, 255, 0.95)', // Clean white panel
+                        border: '4px solid var(--black)',
+                        boxShadow: '8px 8px 0 var(--black)',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflow: 'hidden'
+                    }}>
                         <div style={{
-                            background: 'var(--blue-light)',
-                            border: '3px solid var(--black)',
-                            boxShadow: '6px 6px 0 var(--black)',
-                            padding: '16px 20px',
-                            borderRadius: '16px',
-                            textAlign: 'right',
-                            flexShrink: 0,
-                            maxWidth: '180px'
+                            background: 'var(--blue-bright)', // Matches TV monitor header/logo
+                            color: 'white', padding: '16px',
+                            borderBottom: '4px solid var(--black)', fontFamily: 'var(--font-display)',
+                            fontSize: '24px', textAlign: 'center', letterSpacing: '1px'
                         }}>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: 'var(--black)', marginBottom: '8px' }}>TOTAL AIR</div>
-                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--black)', lineHeight: 1 }}>
-                                {totalWater} L
+                            🏆 TOP CONTRIBUTORS
+                        </div>
+                        <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {topContributors.map((c, i) => {
+                                const seedStr = encodeURIComponent(c.name + c.division);
+                                const avatarUrl = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${seedStr}`;
+
+                                return (
+                                    <div key={c.id} style={{
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        background: i === 0 ? 'var(--lime)' : 'white',
+                                        border: '3px solid var(--black)', borderRadius: '16px', padding: '12px 16px',
+                                        boxShadow: '4px 4px 0 rgba(0,0,0,0.1)'
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                            <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', width: '28px', color: 'var(--black)' }}>#{i + 1}</div>
+                                            {/* Pixel Art Avatar */}
+                                            <div style={{
+                                                width: '56px', height: '56px',
+                                                borderRadius: '50%',
+                                                background: i === 0 ? 'var(--lime)' : 'var(--blue-light)',
+                                                border: '3px solid var(--black)',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                overflow: 'hidden', flexShrink: 0
+                                            }}>
+                                                <img src={avatarUrl} alt="Avatar" style={{ width: '110%', height: '110%', imageRendering: 'pixelated', marginTop: '6px' }} />
+                                            </div>
+                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 900, color: 'var(--black)', lineHeight: 1.2 }}>{c.name.toUpperCase()}</div>
+                                                <div style={{
+                                                    fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'white',
+                                                    background: 'var(--black)', padding: '2px 6px', borderRadius: '4px',
+                                                    marginTop: '4px', alignSelf: 'flex-start'
+                                                }}>{c.division.toUpperCase()}</div>
+                                            </div>
+                                        </div>
+                                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '24px', color: 'var(--blue-bright)' }}>
+                                            {c.contributedWater}L
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Monitor Progress Bar */}
+                <div style={{ flexShrink: 0, background: 'var(--blue-light)', padding: '12px 16px', borderRadius: '16px', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)', position: 'relative', zIndex: 11 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '16px', fontWeight: 800, marginBottom: '8px' }}>
+                        <span>{isMaxStage ? '🏆 POHON TELAH TUMBUH SEMPURNA!' : 'PROGRESS MENUJU GRAND TREE'}</span>
+                        <span>{Math.round(progress)}% · {totalWater} / {TOTAL_WATER_GOAL} L</span>
+                    </div>
+                    <div style={{ height: '24px', background: '#e5e7eb', borderRadius: '12px', overflow: 'hidden', border: '2px solid #333' }}>
+                        <div style={{
+                            height: '100%', width: `${progress}%`,
+                            background: 'linear-gradient(90deg, var(--lime), #34d399)',
+                            transition: 'width 0.8s ease-out'
+                        }} />
+                    </div>
+
+                    {/* Stage-level progress */}
+                    {!isMaxStage && (
+                        <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '2px dashed rgba(0,0,0,0.1)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666', letterSpacing: '1px', marginBottom: '6px', fontWeight: 700 }}>
+                                <span>KE STAGE BERIKUTNYA</span>
+                                <span>{totalWater % WATER_PER_STAGE} / {WATER_PER_STAGE} L</span>
                             </div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(11px, 1.2vw, 15px)', color: 'var(--black)', fontWeight: 800, marginTop: '12px' }}>
-                                TARGET: {TOTAL_WATER_GOAL}L
+                            <div style={{ height: '12px', background: 'rgba(255,255,255,0.7)', borderRadius: '6px', overflow: 'hidden', border: '2px solid rgba(0,0,0,0.2)' }}>
+                                <div style={{
+                                    height: '100%',
+                                    width: `${stageProgress}%`,
+                                    background: 'var(--lime)',
+                                    borderRadius: '6px',
+                                    transition: 'width 0.4s ease',
+                                }} />
                             </div>
                         </div>
                     )}
-
-
                 </div>
-
-                {/* Right Side Sidebar Leaderboard */}
-                <div style={{
-                    width: 'clamp(300px, 22vw, 420px)',
-                    background: 'rgba(255, 255, 255, 0.95)', // Clean white panel
-                    border: '4px solid var(--black)',
-                    boxShadow: '8px 8px 0 var(--black)',
-                    borderRadius: '24px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'hidden'
-                }}>
-                    <div style={{
-                        background: 'var(--blue-bright)', // Matches TV monitor header/logo
-                        color: 'white', padding: '16px',
-                        borderBottom: '4px solid var(--black)', fontFamily: 'var(--font-display)',
-                        fontSize: '24px', textAlign: 'center', letterSpacing: '1px'
-                    }}>
-                        🏆 TOP CONTRIBUTORS
-                    </div>
-                    <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {topContributors.map((c, i) => {
-                            const seedStr = encodeURIComponent(c.name + c.division);
-                            const avatarUrl = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${seedStr}`;
-
-                            return (
-                                <div key={c.id} style={{
-                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    background: i === 0 ? 'var(--lime)' : 'white',
-                                    border: '3px solid var(--black)', borderRadius: '16px', padding: '12px 16px',
-                                    boxShadow: '4px 4px 0 rgba(0,0,0,0.1)'
-                                }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', width: '28px', color: 'var(--black)' }}>#{i + 1}</div>
-                                        {/* Pixel Art Avatar */}
-                                        <div style={{
-                                            width: '56px', height: '56px',
-                                            borderRadius: '50%',
-                                            background: i === 0 ? 'var(--lime)' : 'var(--blue-light)',
-                                            border: '3px solid var(--black)',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            overflow: 'hidden', flexShrink: 0
-                                        }}>
-                                            <img src={avatarUrl} alt="Avatar" style={{ width: '110%', height: '110%', imageRendering: 'pixelated', marginTop: '6px' }} />
-                                        </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 900, color: 'var(--black)', lineHeight: 1.2 }}>{c.name.toUpperCase()}</div>
-                                            <div style={{
-                                                fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'white',
-                                                background: 'var(--black)', padding: '2px 6px', borderRadius: '4px',
-                                                marginTop: '4px', alignSelf: 'flex-start'
-                                            }}>{c.division.toUpperCase()}</div>
-                                        </div>
-                                    </div>
-                                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '24px', color: 'var(--blue-bright)' }}>
-                                        {c.contributedWater}L
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
-
-            {/* Monitor Progress Bar */}
-            <div style={{ flexShrink: 0, background: 'var(--blue-light)', padding: '12px 16px', borderRadius: '16px', border: '3px solid var(--black)', boxShadow: '4px 4px 0 var(--black)', position: 'relative', zIndex: 11 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '16px', fontWeight: 800, marginBottom: '8px' }}>
-                    <span>{isMaxStage ? '🏆 POHON TELAH TUMBUH SEMPURNA!' : 'PROGRESS MENUJU GRAND TREE'}</span>
-                    <span>{Math.round(progress)}% · {totalWater} / {TOTAL_WATER_GOAL} L</span>
-                </div>
-                <div style={{ height: '24px', background: '#e5e7eb', borderRadius: '12px', overflow: 'hidden', border: '2px solid #333' }}>
-                    <div style={{
-                        height: '100%', width: `${progress}%`,
-                        background: 'linear-gradient(90deg, var(--lime), #34d399)',
-                        transition: 'width 0.8s ease-out'
-                    }} />
-                </div>
-
-                {/* Stage-level progress */}
-                {!isMaxStage && (
-                    <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '2px dashed rgba(0,0,0,0.1)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666', letterSpacing: '1px', marginBottom: '6px', fontWeight: 700 }}>
-                            <span>KE STAGE BERIKUTNYA</span>
-                            <span>{totalWater % WATER_PER_STAGE} / {WATER_PER_STAGE} L</span>
-                        </div>
-                        <div style={{ height: '12px', background: 'rgba(255,255,255,0.7)', borderRadius: '6px', overflow: 'hidden', border: '2px solid rgba(0,0,0,0.2)' }}>
-                            <div style={{
-                                height: '100%',
-                                width: `${stageProgress}%`,
-                                background: 'var(--lime)',
-                                borderRadius: '6px',
-                                transition: 'width 0.4s ease',
-                            }} />
-                        </div>
-                    </div>
-                )}
             </div>
         </TVFrame>
     );

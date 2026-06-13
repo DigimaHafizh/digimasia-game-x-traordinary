@@ -32,7 +32,9 @@ export default function Final() {
                 width: '100%',
                 padding: '0',
                 overflow: 'hidden',
-                background: 'var(--navy-dark)',
+                backgroundImage: "url('/assets/branding/BG1.png')",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 border: '4px solid var(--black)',
                 boxShadow: '8px 8px 0 var(--black)',
                 borderRadius: '24px',
@@ -155,11 +157,12 @@ export default function Final() {
                     </div>
 
                     <div style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '9px',
-                        color: 'rgba(255,255,255,0.4)',
-                        letterSpacing: '1px',
-                        marginTop: '8px',
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '24px',
+                        color: 'var(--white)',
+                        letterSpacing: '2px',
+                        marginTop: '20px',
+                        textShadow: '2px 2px 0 var(--black)'
                     }}>
                         TERIMA KASIH ATAS PARTISIPASI KAMU!
                     </div>
@@ -169,10 +172,14 @@ export default function Final() {
             {/* Support Message or Secondary info */}
             <div style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '9px',
-                color: 'rgba(255,255,255,0.6)',
+                fontSize: '12px',
+                color: 'var(--white)',
+                fontWeight: 800,
                 textAlign: 'center',
-                letterSpacing: '1px',
+                letterSpacing: '2px',
+                background: 'var(--black)',
+                padding: '6px 16px',
+                borderRadius: '16px',
                 animation: 'fadeIn 2s forwards',
             }}>
                 SESSION COMPLETED · DIGIMA ASIA 2026

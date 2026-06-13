@@ -179,25 +179,18 @@ export default function Tree() {
                         WAITING SYSTEM ⏳
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', height: '180px', marginBottom: '10px', marginTop: '-20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', height: '180px', marginBottom: '10px', marginTop: '10px' }}>
                         <TreeVisual stage={9} size="100%" noEffects={true} />
                     </div>
 
                     <div style={{
+                        marginTop: '0px',
                         fontFamily: 'var(--font-display)',
-                        fontSize: '52px',
+                        fontSize: '36px',
                         color: 'var(--yellow)',
                         letterSpacing: '2px',
                         lineHeight: 1.1,
                         textShadow: '2px 2px 0 var(--black)'
-                    }}>
-                        GET READY!
-                    </div>
-                    <div style={{
-                        fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--navy-dark)',
-                        letterSpacing: '1px', marginTop: '12px', fontWeight: 800,
-                        background: 'var(--white)', padding: '6px 16px', border: '3px solid var(--black)', borderRadius: '12px',
-                        boxShadow: '3px 3px 0 var(--navy-dark)'
                     }}>
                         GROW THE TREE SEGERA DIMULAI
                     </div>
@@ -205,20 +198,22 @@ export default function Tree() {
                     <div style={{ width: '80%', height: '3px', background: 'var(--black)', opacity: 0.1, margin: '24px 0 20px 0' }} />
 
                     <div style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '11px',
-                        color: 'var(--black)',
-                        letterSpacing: '1px',
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '8px',
-                        background: 'var(--white)',
-                        padding: '6px 12px',
-                        border: '3px solid var(--black)',
-                        borderRadius: '12px',
-                        boxShadow: '3px 3px 0 var(--black)'
+                        gap: '6px',
+                        background: 'var(--yellow)',
+                        padding: '12px 20px',
+                        border: '4px solid var(--black)',
+                        borderRadius: '16px',
+                        boxShadow: '4px 4px 0 var(--black)'
                     }}>
-                        TERKUMPUL: <strong style={{ fontSize: '14px', color: 'var(--blue-main)' }}>{collectedWater}L 💧</strong>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 900, color: 'var(--black)' }}>
+                            TOTAL AIR TERKUMPUL
+                        </div>
+                        <strong style={{ fontFamily: 'var(--font-display)', fontSize: '32px', color: 'var(--navy-dark)', lineHeight: 1 }}>
+                            {collectedWater}L 💧
+                        </strong>
                     </div>
                 </div>
             </div>
