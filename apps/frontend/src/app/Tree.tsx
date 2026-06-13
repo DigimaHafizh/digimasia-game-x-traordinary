@@ -170,7 +170,10 @@ export default function Tree() {
                     alignItems: 'center',
                     position: 'relative',
                     zIndex: 1,
-                    background: "url('/assets/branding/BG1.png') center/cover",
+                    overflow: 'visible',
+                    backgroundImage: "url('/assets/branding/BG1.png')",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
                 }}>
                     <div style={{ position: 'absolute', top: '-18px', background: 'var(--lime)', padding: '6px 16px', border: '3px solid var(--black)', borderRadius: '100px', fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '2px', color: 'var(--black)', boxShadow: '4px 4px 0 var(--black)', fontWeight: 900, transform: 'rotate(-3deg)' }}>
                         WAITING SYSTEM ⏳
@@ -183,11 +186,11 @@ export default function Tree() {
                     <div style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: '52px',
-                        color: 'var(--white)',
-                        WebkitTextStroke: '1px var(--black)',
+                        color: 'var(--yellow)',
+                        WebkitTextStroke: '2px var(--black)',
                         letterSpacing: '2px',
                         lineHeight: 1.1,
-                        textShadow: '3px 3px 0 var(--orange)'
+                        textShadow: '4px 4px 0 var(--black)'
                     }}>
                         GET READY!
                     </div>
@@ -209,9 +212,14 @@ export default function Tree() {
                         letterSpacing: '1px',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px'
+                        gap: '8px',
+                        background: 'var(--white)',
+                        padding: '6px 12px',
+                        border: '3px solid var(--black)',
+                        borderRadius: '12px',
+                        boxShadow: '3px 3px 0 var(--black)'
                     }}>
-                        TERKUMPUL: <strong style={{ fontSize: '14px', color: 'var(--white)', background: 'var(--navy-dark)', padding: '4px 8px', border: '2px solid var(--black)', borderRadius: '6px' }}>{collectedWater}L 💧</strong>
+                        TERKUMPUL: <strong style={{ fontSize: '14px', color: 'var(--blue-main)' }}>{collectedWater}L 💧</strong>
                     </div>
                 </div>
             </div>

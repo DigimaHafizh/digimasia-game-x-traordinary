@@ -110,7 +110,7 @@ export default function TreeMonitor() {
                 textAlign: 'center', padding: '60px', borderRadius: '20px',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 minHeight: '300px', border: '5px solid var(--black)', boxShadow: '8px 8px 0 var(--black)',
-                backgroundImage: "url('/assets/branding/BG2.png')",
+                backgroundImage: "url('/assets/branding/BG1.png')",
                 backgroundSize: 'cover', backgroundPosition: 'center',
                 position: 'relative', overflow: 'hidden'
             }}>
@@ -225,7 +225,7 @@ export default function TreeMonitor() {
                     justifyContent: 'center',
                     paddingBottom: '10px',
                 }}>
-                    <TreeVisual stage={treeStage} size="85%" isLevelingUp={isLevelingUp} />
+                    <TreeVisual stage={treeStage} size="100%" isLevelingUp={isLevelingUp} />
 
                     {/* 💧 Water Droplets Animation Overlay */}
                     {waterDrops.map(drop => (
