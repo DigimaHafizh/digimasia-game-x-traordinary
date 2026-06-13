@@ -284,7 +284,7 @@ export default function AdminPage() {
                                 {(phase === 'TRIVIA' || phase === 'TRANSITION') && (
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
-                                        <TriviaMonitor />
+                                        <TriviaMonitor muteSFX={true} />
                                     </div>
                                 )}
                                 {(phase === 'PRE_WATERING' || phase === 'WATERING') && (

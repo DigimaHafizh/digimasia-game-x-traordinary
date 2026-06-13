@@ -66,7 +66,7 @@ export default function TreeMonitorExternal() {
                 audio.playComplete();
                 audio.stopBGM();
             }
-            setTimeout(() => setIsLevelingUp(false), 3000);
+            setTimeout(() => setIsLevelingUp(false), 1000);
             prevStageRef.current = treeStage;
         }
         prevStageRef.current = treeStage;
@@ -138,12 +138,6 @@ export default function TreeMonitorExternal() {
                         backgroundSize: 'cover', backgroundPosition: 'center',
                         position: 'relative', overflow: 'hidden'
                     }}>
-                        {/* Inner card overlay with BG1 image */}
-                        <div style={{
-                            position: 'absolute', inset: 0,
-                            background: "url('/assets/branding/BG1.png') center/cover",
-                            borderRadius: '20px'
-                        }} />
                         <div style={{ position: 'relative', zIndex: 1 }}>
                             <TreeVisual stage={9} size="150px" noEffects={true} />
                         </div>
@@ -314,7 +308,7 @@ export default function TreeMonitorExternal() {
                         padding: '16px'
                     }}>
                         <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', paddingBottom: '10px' }}>
-                            <TreeVisual stage={treeStage} size={isMaxStage ? '85%' : '65%'} isLevelingUp={isLevelingUp} />
+                            <TreeVisual stage={treeStage} size={isMaxStage ? '100%' : '80%'} isLevelingUp={isLevelingUp} />
 
                             {/* DROPS */}
                             {waterDrops.map(drop => (

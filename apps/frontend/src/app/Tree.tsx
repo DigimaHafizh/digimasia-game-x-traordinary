@@ -152,7 +152,7 @@ export default function Tree() {
     if (phase === 'PRE_WATERING') return (
         <div style={{
             height: 'calc(100dvh - 140px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px',
+            display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '60px 24px 24px',
             backgroundColor: 'var(--blue-bright)',
             backgroundImage: "url('/assets/branding/BG2.png')",
             backgroundSize: 'cover',
@@ -183,11 +183,11 @@ export default function Tree() {
                     <div style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: '52px',
-                        color: 'var(--black)',
+                        color: 'var(--white)',
                         WebkitTextStroke: '1px var(--black)',
                         letterSpacing: '2px',
                         lineHeight: 1.1,
-                        textShadow: '3px 3px 0 var(--white)'
+                        textShadow: '3px 3px 0 var(--orange)'
                     }}>
                         GET READY!
                     </div>
@@ -211,7 +211,7 @@ export default function Tree() {
                         alignItems: 'center',
                         gap: '8px'
                     }}>
-                        TERKUMPUL: <strong style={{ fontSize: '14px', background: 'var(--blue-light)', padding: '4px 8px', border: '2px solid var(--black)', borderRadius: '6px' }}>{collectedWater}L 💧</strong>
+                        TERKUMPUL: <strong style={{ fontSize: '14px', color: 'var(--white)', background: 'var(--navy-dark)', padding: '4px 8px', border: '2px solid var(--black)', borderRadius: '6px' }}>{collectedWater}L 💧</strong>
                     </div>
                 </div>
             </div>

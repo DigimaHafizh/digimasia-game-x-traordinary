@@ -19,7 +19,7 @@ interface TriviaStats {
 const OPT_LETTERS = ['A', 'B', 'C', 'D'];
 const OPT_COLORS = ['var(--pink-hot)', 'var(--orange)', 'var(--blue-bright)', 'var(--lime)'];
 
-export default function TriviaMonitor() {
+export default function TriviaMonitor({ muteSFX = false }: { muteSFX?: boolean }) {
     const { currentQuestion, phase, timer } = useGameStore();
     const [stats, setStats] = useState<TriviaStats | null>(null);
     const [isStatsLoaded, setIsStatsLoaded] = useState(false);
@@ -62,7 +62,7 @@ export default function TriviaMonitor() {
     // Play SFX when Trivia finishes — using ref to avoid audio context issues
     const hasPlayedComplete = useRef(false);
     useEffect(() => {
-        if (phase === 'TRANSITION' && !hasPlayedComplete.current) {
+        if (phase === 'TRANSITION' && !hasPlayedComplete.current && !muteSFX) {
             hasPlayedComplete.current = true;
             // Small delay to ensure DOM has rendered result screen first
             setTimeout(() => playComplete(), 200);

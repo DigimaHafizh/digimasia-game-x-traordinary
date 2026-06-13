@@ -87,13 +87,13 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true, is
 
                 @keyframes floating {
                     0% { transform: translateY(0); }
-                    50% { transform: translateY(-8px); }
+                    50% { transform: translateY(-15px); }
                     100% { transform: translateY(0); }
                 }
                 
                 @keyframes tvGentleGrowth {
                     0% { transform: scale3d(1, 1, 1) translateY(0); filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
-                    50% { transform: scale3d(1.15, 1.15, 1) translateY(-15px); filter: drop-shadow(0 0 45px rgba(255,215,0,1)) brightness(1.2); }
+                    50% { transform: scale3d(1.15, 1.15, 1) translateY(-25px); filter: drop-shadow(0 0 45px rgba(255,215,0,1)) brightness(1.2); }
                     100% { transform: scale3d(1, 1, 1) translateY(0); filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
                 }
 
