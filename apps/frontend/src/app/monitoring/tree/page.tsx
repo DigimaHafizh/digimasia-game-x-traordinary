@@ -61,7 +61,10 @@ export default function TreeMonitorExternal() {
         if (treeStage > prevStageRef.current) {
             setIsLevelingUp(true);
             audio.playStageUp();
-            if (treeStage >= 9) audio.playComplete();
+            if (treeStage >= 9) {
+                audio.playComplete();
+                audio.stopBGM();
+            }
             const t = setTimeout(() => setIsLevelingUp(false), 3000);
             prevStageRef.current = treeStage;
             return () => clearTimeout(t);
@@ -111,6 +114,7 @@ export default function TreeMonitorExternal() {
     if (!mounted || !_hasHydrated) return null;
 
     const progress = Math.min(100, (totalWater / TOTAL_WATER_GOAL) * 100);
+    const stageProgress = ((totalWater % WATER_PER_STAGE) / WATER_PER_STAGE) * 100;
     const isMaxStage = treeStage >= 9;
 
     return (
@@ -340,7 +344,7 @@ export default function TreeMonitorExternal() {
                             return (
                                 <div key={c.id} style={{
                                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    background: i === 0 ? 'var(--yellow)' : 'white',
+                                    background: i === 0 ? 'var(--lime)' : 'white',
                                     border: '3px solid var(--black)', borderRadius: '16px', padding: '12px 16px',
                                     boxShadow: '4px 4px 0 rgba(0,0,0,0.1)'
                                 }}>
@@ -389,6 +393,25 @@ export default function TreeMonitorExternal() {
                         transition: 'width 0.8s ease-out'
                     }} />
                 </div>
+
+                {/* Stage-level progress */}
+                {!isMaxStage && (
+                    <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '2px dashed rgba(0,0,0,0.1)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666', letterSpacing: '1px', marginBottom: '6px', fontWeight: 700 }}>
+                            <span>KE STAGE BERIKUTNYA</span>
+                            <span>{totalWater % WATER_PER_STAGE} / {WATER_PER_STAGE} L</span>
+                        </div>
+                        <div style={{ height: '12px', background: 'rgba(255,255,255,0.7)', borderRadius: '6px', overflow: 'hidden', border: '2px solid rgba(0,0,0,0.2)' }}>
+                            <div style={{
+                                height: '100%',
+                                width: `${stageProgress}%`,
+                                background: 'var(--lime)',
+                                borderRadius: '6px',
+                                transition: 'width 0.4s ease',
+                            }} />
+                        </div>
+                    </div>
+                )}
             </div>
         </TVFrame>
     );
