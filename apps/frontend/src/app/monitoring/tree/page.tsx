@@ -115,41 +115,33 @@ export default function TreeMonitorExternal() {
     if (!hasStarted) {
         return (
             <TVFrame>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(40px, 6vw, 100px)', color: 'var(--yellow)', textShadow: '6px 6px 0 var(--black)', textAlign: 'center', lineHeight: 1.1 }}>
-                        GET READY
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
+                    <div className="card card-lime" style={{ textAlign: 'center', padding: '60px', border: '5px solid var(--black)', boxShadow: '10px 10px 0 var(--black)', borderRadius: '20px', margin: '40px auto', maxWidth: '800px', width: '90%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '56px', color: 'var(--black)', textShadow: '3px 3px 0 rgba(0,0,0,0.15)' }}>
+                            GET READY!
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '16px', color: '#333', letterSpacing: '4px', fontWeight: 800 }}>
+                            GROW THE TREE SEGERA DIMULAI
+                        </div>
+                        <button
+                            onClick={() => {
+                                setHasStarted(true);
+                                startBGMOnce();
+                            }}
+                            style={{
+                                background: 'var(--lime)', color: 'var(--black)',
+                                border: '4px solid var(--black)', boxShadow: '6px 6px 0 rgba(0,0,0,0.4)',
+                                borderRadius: '12px', padding: '16px 40px',
+                                fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '2px',
+                                cursor: 'pointer', transition: 'transform 0.1s',
+                                display: 'flex', alignItems: 'center', gap: '12px',
+                            }}
+                            onMouseDown={e => (e.currentTarget.style.transform = 'translate(3px,3px)')}
+                            onMouseUp={e => (e.currentTarget.style.transform = 'translate(0,0)')}
+                        >
+                            ▶ MULAI SEKARANG
+                        </button>
                     </div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', color: 'white', marginTop: '16px', letterSpacing: '4px', textShadow: '2px 2px 0 var(--black)' }}>
-                        GROW THE TREE IS STANDING BY
-                    </div>
-                    <button
-                        onClick={() => {
-                            setHasStarted(true);
-                            startBGMOnce();
-                        }}
-                        style={{
-                            marginTop: '60px',
-                            background: 'var(--lime)',
-                            border: '5px solid var(--black)',
-                            boxShadow: '8px 8px 0 var(--black)',
-                            padding: '20px 48px',
-                            borderRadius: '24px',
-                            fontFamily: 'var(--font-display)',
-                            fontSize: '36px',
-                            cursor: 'pointer',
-                            color: 'var(--black)',
-                            animation: 'tv-pulse-glow 2s infinite cubic-bezier(0.4, 0, 0.2, 1)',
-                        }}
-                    >
-                        START BROADCAST
-                    </button>
-                    <style>{`
-                        @keyframes tv-pulse-glow {
-                            0% { transform: scale(1); box-shadow: 8px 8px 0 var(--black); }
-                            50% { transform: scale(1.05); box-shadow: 12px 12px 0 var(--black), 0 0 40px rgba(52, 211, 153, 0.6); }
-                            100% { transform: scale(1); box-shadow: 8px 8px 0 var(--black); }
-                        }
-                    `}</style>
                 </div>
             </TVFrame>
         );
@@ -273,14 +265,14 @@ export default function TreeMonitorExternal() {
                             flexShrink: 0,
                             maxWidth: '180px'
                         }}>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: '#666', marginBottom: '8px' }}>STAGE CURRENT</div>
-                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--navy-dark)', lineHeight: 1 }}>
-                                {treeStage + 1} <span style={{ fontSize: '0.6em', color: '#888' }}>/ 10</span>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: 'var(--black)', marginBottom: '8px' }}>STAGE CURRENT</div>
+                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--black)', lineHeight: 1 }}>
+                                {treeStage + 1} <span style={{ fontSize: '0.6em', color: '#555' }}>/ 10</span>
                             </div>
                             <div style={{
                                 fontFamily: 'var(--font-mono)',
                                 fontSize: 'clamp(11px, 1.2vw, 15px)',
-                                color: 'var(--pink-hot)',
+                                color: 'var(--black)',
                                 fontWeight: 800,
                                 marginTop: '12px',
                                 textWrap: 'balance',
@@ -342,11 +334,11 @@ export default function TreeMonitorExternal() {
                             flexShrink: 0,
                             maxWidth: '180px'
                         }}>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: '#666', marginBottom: '8px' }}>TOTAL AIR</div>
-                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--blue-bright)', lineHeight: 1 }}>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(10px, 0.8vw, 12px)', color: 'var(--black)', marginBottom: '8px' }}>TOTAL AIR</div>
+                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--black)', lineHeight: 1 }}>
                                 {totalWater} L
                             </div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(11px, 1.2vw, 15px)', color: 'var(--navy-dark)', fontWeight: 800, marginTop: '12px' }}>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(11px, 1.2vw, 15px)', color: 'var(--black)', fontWeight: 800, marginTop: '12px' }}>
                                 TARGET: {TOTAL_WATER_GOAL}L
                             </div>
                         </div>
