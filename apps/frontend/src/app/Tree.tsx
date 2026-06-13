@@ -24,6 +24,7 @@ export default function Tree() {
         totalWater,
         collectedWater,
         contributedWater,
+        _hasHydrated,
         setUserState,
         setSessionState
     } = useGameStore();
@@ -39,62 +40,57 @@ export default function Tree() {
     const dropletIdRef = useRef(0);
     const audio = useTreeAudio();
 
-    // Sync user water balance from backend on mount
+    // Sync user water balance from backend on mount (Guarded by _hasHydrated)
     useEffect(() => {
-        const fetchStats = async () => {
-            if (!user?.id) { setIsSyncing(false); return; }
+        // Wait for store to hydrate from local storage first to prevent 0L flicker/reset
+        if (!_hasHydrated || !user?.id) return;
+
+        const syncAll = async () => {
+            // Small delay to ensure everything is settled on mobile (especially socket connection status)
+            await new Promise(r => setTimeout(r, 150));
+
             try {
-                const res = await fetch(`${getBackendUrl()}/users/${user.id}/stats?t=${Date.now()}`, {
+                // 1. Sync User Stats
+                const statsRes = await fetch(`${getBackendUrl()}/users/${user.id}/stats?t=${Date.now()}`, {
                     cache: 'no-store',
                     headers: { 'Cache-Control': 'no-cache, no-store', 'Pragma': 'no-cache' }
                 });
-                const data = await res.json();
-                if (data && data.collectedWater !== undefined) {
+                const statsData = await statsRes.json();
+
+                if (statsData && statsData.collectedWater !== undefined) {
                     const localStore = useGameStore.getState();
-                    // Only take backend value if local store has 0 (new/cleared session)
-                    // Otherwise preserve local state to prevent refresh-0 reset
                     const localWater = localStore.collectedWater;
                     const localContrib = localStore.contributedWater;
-                    // Backend is authoritative only if local is 0 (just logged in / store wiped)
-                    // In all other cases keep the higher value (local accumulated taps are most fresh)
-                    if (localWater === 0) {
-                        setUserState({
-                            collectedWater: data.collectedWater,
-                            contributedWater: data.contributedWater ?? 0,
-                        } as any);
-                    } else {
-                        // Only sync contributedWater if backend has more (from cross-device)
-                        if ((data.contributedWater ?? 0) > localContrib) {
-                            setUserState({ contributedWater: data.contributedWater } as any);
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error('Tree: Failed to sync water balance', err);
-            }
-        };
 
-        const fetchSession = async () => {
-            try {
-                const res = await fetch(`${getBackendUrl()}/session-state`);
-                const data = await res.json();
-                if (data) {
+                    // SYNC LOGIC:
+                    // If local is 0, we trust the backend (new device/cleared cache).
+                    // If local is > 0, we trust the HIGHER value to prevent refresh-0 reset.
+                    // This handles cases where backend is lagging OR local hydration was delayed.
+                    setUserState({
+                        collectedWater: Math.max(localWater, statsData.collectedWater),
+                        contributedWater: Math.max(localContrib, statsData.contributedWater ?? 0),
+                    } as any);
+                }
+
+                // 2. Sync Session State
+                const sessionRes = await fetch(`${getBackendUrl()}/session-state`);
+                const sessionData = await sessionRes.json();
+                if (sessionData) {
                     setSessionState({
-                        treeStage: data.treeStage ?? 0,
-                        totalWater: data.totalWater ?? 0,
-                        phase: data.phase
+                        treeStage: sessionData.treeStage ?? 0,
+                        totalWater: sessionData.totalWater ?? 0,
+                        phase: sessionData.phase
                     });
                 }
             } catch (err) {
-                console.error('Tree: Failed to sync session state', err);
+                console.error('Tree: Failed to sync data', err);
             } finally {
                 setIsSyncing(false);
             }
         };
 
-        fetchStats();
-        fetchSession();
-    }, [user?.id, setUserState, setSessionState]);
+        syncAll();
+    }, [_hasHydrated, user?.id, setUserState, setSessionState]);
 
     // Start BGM — wrapped in a one-shot callback triggered by user gesture
     const bgmStarted = useRef(false);
