@@ -59,6 +59,13 @@ export default function TriviaMonitor() {
         };
     }, [currentQuestion, phase]);
 
+    // Play SFX when Trivia finishes
+    useEffect(() => {
+        if (phase === 'TRANSITION') {
+            playComplete();
+        }
+    }, [phase, playComplete]);
+
     const handleNext = async () => {
         try {
             await fetch(`${getBackendUrl()}/admin/next-question`, { method: 'POST' });
@@ -282,7 +289,7 @@ export default function TriviaMonitor() {
                             return (
                                 <div key={optIdx} className="card" style={{
                                     padding: '16px 20px',
-                                    background: isCorrect ? 'var(--lime)' : 'var(--blue-light)',
+                                    background: isCorrect ? 'var(--lime)' : 'var(--white)',
                                     border: isCorrect ? '4px solid var(--black)' : '3px solid #000',
                                     boxShadow: isCorrect ? '5px 5px 0 var(--black)' : '4px 4px 0 #000',
                                     borderRadius: '12px',
@@ -294,12 +301,12 @@ export default function TriviaMonitor() {
                                     transition: 'all 0.4s ease',
                                     opacity: isStatsStale ? 0.7 : 1,
                                 }}>
-                                    {/* Background Progress Fill - subtle gray instead of neon colors to match user UI */}
+                                    {/* Background Progress Fill - matching the user app base color */}
                                     <div style={{
                                         position: 'absolute',
                                         top: 0, left: 0, bottom: 0,
                                         width: `${percent}%`,
-                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : 'var(--blue-light)',
                                         transition: 'width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                         zIndex: 0,
                                     }} />

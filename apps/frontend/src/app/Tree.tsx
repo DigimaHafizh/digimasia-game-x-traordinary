@@ -159,49 +159,59 @@ export default function Tree() {
             backgroundPosition: 'center',
         }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
-                <div style={{
+                <div style={{ display: 'flex', justifyContent: 'center', height: '140px', marginBottom: '-10px', zIndex: 2 }}>
+                    <TreeVisual stage={9} size="100%" noEffects={true} />
+                </div>
+                <div className="card card-yellow" style={{
                     width: '100%',
                     padding: '32px 20px',
                     border: '5px solid var(--black)',
-                    boxShadow: '8px 8px 0 var(--black)',
-                    backgroundImage: "url('/assets/branding/BG1.png')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    borderRadius: '16px'
+                    boxShadow: '10px 10px 0 var(--black)',
+                    borderRadius: '24px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    position: 'relative',
+                    zIndex: 1
                 }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', height: '140px', marginBottom: '16px' }}>
-                        <TreeVisual stage={9} size="100%" noEffects={true} />
+                    <div style={{ position: 'absolute', top: '-20px', background: 'var(--lime)', padding: '6px 16px', border: '3px solid var(--black)', borderRadius: '100px', fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '2px', color: 'var(--black)', boxShadow: '4px 4px 0 var(--black)', fontWeight: 900, transform: 'rotate(-3deg)' }}>
+                        WAITING SYSTEM ⏳
                     </div>
+
                     <div style={{
                         fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(36px, 10vw, 48px)',
-                        color: 'var(--white)',
-                        textShadow: '2px 2px 0 var(--black)',
+                        fontSize: '52px',
+                        color: 'var(--black)',
+                        WebkitTextStroke: '1px var(--black)',
                         letterSpacing: '2px',
-                        lineHeight: 1.1
+                        lineHeight: 1.1,
+                        textShadow: '3px 3px 0 var(--white)'
                     }}>
                         GET READY!
                     </div>
                     <div style={{
-                        fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--yellow)',
-                        letterSpacing: '2px', marginTop: '6px', fontWeight: 800
+                        fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--navy-dark)',
+                        letterSpacing: '1px', marginTop: '12px', fontWeight: 800,
+                        background: 'var(--white)', padding: '6px 16px', border: '3px solid var(--black)', borderRadius: '12px',
+                        boxShadow: '3px 3px 0 var(--navy-dark)'
                     }}>
-                        BERSIAP MENYIRAM
+                        GROW THE TREE SEGERA DIMULAI
                     </div>
+
+                    <div style={{ width: '80%', height: '3px', background: 'var(--black)', opacity: 0.1, margin: '24px 0 20px 0' }} />
+
                     <div style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: '11px',
-                        color: 'var(--white)',
-                        textShadow: '1px 1px 0 var(--black)',
-                        marginTop: '16px',
+                        color: 'var(--black)',
                         letterSpacing: '1px',
-                        lineHeight: 1.5
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
                     }}>
-                        <strong>{collectedWater}L</strong> AIR TERSEDIA
+                        TERKUMPUL: <strong style={{ fontSize: '14px', background: 'var(--blue-light)', padding: '4px 8px', border: '2px solid var(--black)', borderRadius: '6px' }}>{collectedWater}L 💧</strong>
                     </div>
                 </div>
-
-
             </div>
         </div>
     );
