@@ -340,7 +340,7 @@ export default function Trivia() {
                                 letterSpacing: '2px',
                                 color: isCorrect ? 'var(--black)' : 'var(--white)',
                             }}>
-                                {isCorrect ? `✔ BENAR! +${pointsEarned} AIR 💧` : '✘ JAWABAN SALAH!'}
+                                {isCorrect ? `✔ BENAR! ${pointsEarned > 0 ? `+${pointsEarned} AIR 💧` : '💧'}` : '✘ JAWABAN SALAH!'}
                             </div>
                             <div style={{
                                 fontFamily: 'var(--font-mono)',
