@@ -39,7 +39,15 @@ export default function TreeMonitorExternal() {
         setMounted(true);
     }, []);
 
-    // Start BGM manually via button
+    // Start BGM automatically when game starts (phase moves to WATERING)
+    useEffect(() => {
+        if (phase === 'WATERING' && !bgmStarted.current && treeStage < 9) {
+            bgmStarted.current = true;
+            audio.playBGM();
+        }
+    }, [phase, audio, treeStage]);
+
+    // Manual BGM start via button (legacy fallback)
     const startBGMOnce = useCallback(() => {
         if (!bgmStarted.current) {
             bgmStarted.current = true;

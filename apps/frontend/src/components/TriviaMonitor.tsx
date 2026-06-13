@@ -59,10 +59,16 @@ export default function TriviaMonitor() {
         };
     }, [currentQuestion, phase]);
 
-    // Play SFX when Trivia finishes
+    // Play SFX when Trivia finishes — using ref to avoid audio context issues
+    const hasPlayedComplete = useRef(false);
     useEffect(() => {
-        if (phase === 'TRANSITION') {
-            playComplete();
+        if (phase === 'TRANSITION' && !hasPlayedComplete.current) {
+            hasPlayedComplete.current = true;
+            // Small delay to ensure DOM has rendered result screen first
+            setTimeout(() => playComplete(), 200);
+        }
+        if (phase !== 'TRANSITION') {
+            hasPlayedComplete.current = false;
         }
     }, [phase, playComplete]);
 
@@ -328,7 +334,7 @@ export default function TriviaMonitor() {
                                             </div>
                                         </div>
                                         {!isStatsStale && (
-                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: '#000', background: 'var(--white)', padding: '4px 8px', border: '2px solid #000', borderRadius: '4px' }}>
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: '#000', background: 'var(--yellow)', padding: '4px 8px', border: '2px solid #000', borderRadius: '4px' }}>
                                                 {count} ({percent}%)
                                             </div>
                                         )}

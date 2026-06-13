@@ -65,6 +65,35 @@ export default function TreeMonitor() {
         fetchTop();
     }, [totalWater]);
 
+    // Water drop spawning effect
+    useEffect(() => {
+        if (totalWater > prevWaterRef.current) {
+            spawnDrops();
+            setIsWatering(true);
+            if (wateringTimerRef.current) clearTimeout(wateringTimerRef.current);
+            wateringTimerRef.current = setTimeout(() => setIsWatering(false), 2000);
+        }
+        prevWaterRef.current = totalWater;
+    }, [totalWater, spawnDrops]);
+
+    // Stage-up animation + SFX
+    useEffect(() => {
+        if (treeStage > prevStageRef.current) {
+            const label = TREE_STAGE_LABELS[Math.min(treeStage, 9)];
+            setStageToast(`STAGE ${treeStage + 1}|${label}`);
+            setTimeout(() => setStageToast(null), 3000);
+
+            setIsLevelingUp(true);
+            playStageUp();
+            const t = setTimeout(() => setIsLevelingUp(false), 3000);
+            prevStageRef.current = treeStage;
+            return () => clearTimeout(t);
+        }
+        prevStageRef.current = treeStage;
+    }, [treeStage, playStageUp]);
+
+    // --- All hooks are now above. Safe to early-return below. ---
+
     const handleStartWatering = async () => {
         try {
             await fetch(`${getBackendUrl()}/admin/phase`, {
@@ -94,34 +123,6 @@ export default function TreeMonitor() {
             </div>
         );
     }
-
-    useEffect(() => {
-        if (totalWater > prevWaterRef.current) {
-            // Water increased → user tapped
-            spawnDrops();
-
-            // Mark as watering for glow effect
-            setIsWatering(true);
-            if (wateringTimerRef.current) clearTimeout(wateringTimerRef.current);
-            wateringTimerRef.current = setTimeout(() => setIsWatering(false), 2000);
-        }
-        prevWaterRef.current = totalWater;
-    }, [totalWater, spawnDrops]);
-
-    useEffect(() => {
-        if (treeStage > prevStageRef.current) {
-            const label = TREE_STAGE_LABELS[Math.min(treeStage, 9)];
-            setStageToast(`STAGE ${treeStage + 1}|${label}`);
-            setTimeout(() => setStageToast(null), 3000);
-
-            setIsLevelingUp(true);
-            playStageUp();
-            const t = setTimeout(() => setIsLevelingUp(false), 3000);
-            prevStageRef.current = treeStage;
-            return () => clearTimeout(t);
-        }
-        prevStageRef.current = treeStage;
-    }, [treeStage, playStageUp]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
