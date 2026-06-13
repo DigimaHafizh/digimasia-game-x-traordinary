@@ -77,22 +77,48 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection {
   }
 
   @SubscribeMessage('water_tap')
-  async handleWaterTap(@ConnectedSocket() client: Socket) {
+  async handleWaterTap(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     const user = (client as any).user;
+    this.logger.log(`Water tap received from socket ${client.id}. User: ${user?.name || 'Unknown'} (Admin: ${user?.isAdmin})`);
+
     if (user && user.id) {
-      await this.prisma.$transaction(async (tx) => {
-        // Increment user contribution
-        await tx.user.update({
-          where: { id: user.id },
-          data: {
-            contributedWater: { increment: 1 },
-            collectedWater: { decrement: 1 }
+      try {
+        await this.prisma.$transaction(async (tx) => {
+          const dbUser = await tx.user.findUnique({ where: { id: user.id } });
+          if (!dbUser) {
+            this.logger.warn(`User ${user.id} not found in DB`);
+            return;
           }
+
+          // ADMINS have infinite water and don't decrement collectedWater
+          if (dbUser.isAdmin) {
+            await this.sessionService.incrementWaterInTransaction(tx, 1);
+            return;
+          }
+
+          // Regular users must have water
+          if (dbUser.collectedWater <= 0) {
+            this.logger.warn(`User ${user.name} has no water in DB. Tapping rejected.`);
+            return;
+          }
+
+          // Increment user contribution & decrement supply
+          await tx.user.update({
+            where: { id: user.id },
+            data: {
+              contributedWater: { increment: 1 },
+              collectedWater: { decrement: 1 }
+            }
+          });
+
+          // Update global session water
+          await this.sessionService.incrementWaterInTransaction(tx, 1);
         });
-        // Update global session water
-        await this.sessionService.incrementWaterInTransaction(tx, 1);
-      });
+      } catch (err) {
+        this.logger.error(`Error processing water tap for user ${user.id}:`, err);
+      }
     } else {
+      this.logger.log('Fallback: incrementing water for unknown user context');
       await this.sessionService.incrementWater(1);
     }
   }

@@ -22,8 +22,16 @@ export class SessionService implements OnModuleInit {
     constructor(private prisma: PrismaService) { }
 
     async onModuleInit() {
-        const session = await this.prisma.session.findUnique({
+        const session = await this.prisma.session.upsert({
             where: { id: 'singleton' },
+            update: {},
+            create: {
+                id: 'singleton',
+                phase: 'LOGIN',
+                currentQ: 0,
+                totalWater: 0,
+                treeStage: 0,
+            }
         });
 
         if (session) {
@@ -34,7 +42,7 @@ export class SessionService implements OnModuleInit {
                 treeStage: session.treeStage,
                 totalWater: session.totalWater,
             };
-            this.logger.log(`Session loaded: Phase ${this.state.phase}`);
+            this.logger.log(`Session loaded: Phase ${this.state.phase} | Water: ${this.state.totalWater}L`);
         }
     }
 
