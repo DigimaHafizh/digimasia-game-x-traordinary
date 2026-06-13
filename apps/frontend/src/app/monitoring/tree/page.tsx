@@ -132,7 +132,8 @@ export default function TreeMonitorExternal() {
             <TVFrame>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
                     <div className="card card-navy" style={{ textAlign: 'center', padding: '60px', borderRadius: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px', border: '5px solid var(--black)', boxShadow: '8px 8px 0 var(--black)' }}>
-                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '56px', color: 'var(--yellow)', textShadow: '2px 2px 0 var(--black)' }}>
+                        <TreeVisual stage={9} size="150px" noEffects={true} />
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '56px', color: 'var(--yellow)', textShadow: '2px 2px 0 var(--black)', marginTop: '20px' }}>
                             TREE: GET READY
                         </div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--white)', letterSpacing: '4px', marginTop: '12px' }}>
@@ -298,8 +299,8 @@ export default function TreeMonitorExternal() {
                         position: 'relative',
                         padding: '16px'
                     }}>
-                        <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                            <TreeVisual stage={treeStage} size="100%" isLevelingUp={isLevelingUp} />
+                        <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', paddingBottom: '10px' }}>
+                            <TreeVisual stage={treeStage} size={isMaxStage ? '85%' : '65%'} isLevelingUp={isLevelingUp} />
 
                             {/* DROPS */}
                             {waterDrops.map(drop => (

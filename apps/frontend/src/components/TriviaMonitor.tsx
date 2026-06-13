@@ -312,7 +312,7 @@ export default function TriviaMonitor() {
                                         position: 'absolute',
                                         top: 0, left: 0, bottom: 0,
                                         width: `${percent}%`,
-                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : 'var(--blue)',
+                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : '#93c5fd', // Explicit hex instead of variable
                                         transition: 'width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                         zIndex: 0,
                                     }} />

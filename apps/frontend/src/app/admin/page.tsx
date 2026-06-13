@@ -202,6 +202,7 @@ export default function AdminPage() {
                                 let currentIdx = phaseOrder.indexOf(phase);
                                 // Robust handling for phases not in PHASES list
                                 if (phase === 'TRANSITION') currentIdx = phaseOrder.indexOf('TRIVIA') + 0.5;
+                                if (phase === 'WATERING') currentIdx = phaseOrder.indexOf('PRE_WATERING') + 0.5;
                                 if (phase === 'FINAL') currentIdx = 99; // All steps done
                                 if (currentIdx < 0) currentIdx = 0; // Fallback for unknown phases
 

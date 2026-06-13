@@ -159,12 +159,9 @@ export default function Tree() {
             backgroundPosition: 'center',
         }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', height: '140px', marginBottom: '-10px', zIndex: 2 }}>
-                    <TreeVisual stage={9} size="100%" noEffects={true} />
-                </div>
-                <div className="card card-yellow" style={{
+                <div className="card" style={{
                     width: '100%',
-                    padding: '32px 20px',
+                    padding: '24px 20px',
                     border: '5px solid var(--black)',
                     boxShadow: '10px 10px 0 var(--black)',
                     borderRadius: '24px',
@@ -172,10 +169,15 @@ export default function Tree() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     position: 'relative',
-                    zIndex: 1
+                    zIndex: 1,
+                    background: '#60a5fa', // Bright Blue card
                 }}>
-                    <div style={{ position: 'absolute', top: '-20px', background: 'var(--lime)', padding: '6px 16px', border: '3px solid var(--black)', borderRadius: '100px', fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '2px', color: 'var(--black)', boxShadow: '4px 4px 0 var(--black)', fontWeight: 900, transform: 'rotate(-3deg)' }}>
+                    <div style={{ position: 'absolute', top: '-18px', background: 'var(--lime)', padding: '6px 16px', border: '3px solid var(--black)', borderRadius: '100px', fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '2px', color: 'var(--black)', boxShadow: '4px 4px 0 var(--black)', fontWeight: 900, transform: 'rotate(-3deg)' }}>
                         WAITING SYSTEM ⏳
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'center', height: '140px', marginBottom: '10px', marginTop: '-20px' }}>
+                        <TreeVisual stage={9} size="100%" noEffects={true} />
                     </div>
 
                     <div style={{
