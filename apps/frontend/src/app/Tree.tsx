@@ -51,11 +51,23 @@ export default function Tree() {
                 const data = await res.json();
                 if (data && data.collectedWater !== undefined) {
                     const localStore = useGameStore.getState();
-                    // Prefer larger state between what local persistence has vs backend to prevent wiping 
-                    setUserState({
-                        collectedWater: Math.max(data.collectedWater, localStore.collectedWater),
-                        contributedWater: Math.max(data.contributedWater ?? 0, localStore.contributedWater),
-                    } as any);
+                    // Only take backend value if local store has 0 (new/cleared session)
+                    // Otherwise preserve local state to prevent refresh-0 reset
+                    const localWater = localStore.collectedWater;
+                    const localContrib = localStore.contributedWater;
+                    // Backend is authoritative only if local is 0 (just logged in / store wiped)
+                    // In all other cases keep the higher value (local accumulated taps are most fresh)
+                    if (localWater === 0) {
+                        setUserState({
+                            collectedWater: data.collectedWater,
+                            contributedWater: data.contributedWater ?? 0,
+                        } as any);
+                    } else {
+                        // Only sync contributedWater if backend has more (from cross-device)
+                        if ((data.contributedWater ?? 0) > localContrib) {
+                            setUserState({ contributedWater: data.contributedWater } as any);
+                        }
+                    }
                 }
             } catch (err) {
                 console.error('Tree: Failed to sync water balance', err);
@@ -246,27 +258,27 @@ export default function Tree() {
                 return (
                     <div style={{
                         position: 'fixed',
-                        bottom: '24%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
+                        top: 0, left: 0, right: 0, bottom: 0,
                         zIndex: 10000,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         pointerEvents: 'none',
-                        width: 'min(80vw, 320px)',
                     }}>
                         <div style={{
                             background: 'var(--yellow)',
-                            border: '4px solid var(--black)',
-                            boxShadow: '5px 5px 0 var(--black)',
-                            borderRadius: '16px',
-                            padding: '10px 16px',
+                            border: '5px solid var(--black)',
+                            boxShadow: '8px 8px 0 var(--black)',
+                            borderRadius: '24px',
+                            padding: '18px 32px',
                             textAlign: 'center',
                             animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both',
                         }}>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', letterSpacing: '2px', color: '#555', marginBottom: '4px' }}>⬆️ LEVEL UP!</div>
-                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(14px, 4vw, 18px)', letterSpacing: '1px', color: 'var(--black)', lineHeight: 1.1 }}>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '3px', color: '#555', marginBottom: '6px', fontWeight: 800 }}>🌱 LEVEL UP!</div>
+                            <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 7vw, 32px)', letterSpacing: '2px', color: 'var(--black)', lineHeight: 1.1, textShadow: '2px 2px 0 rgba(0,0,0,0.15)' }}>
                                 {stageLabel}
                             </div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#333', marginTop: '3px', fontWeight: 700 }}>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#444', marginTop: '6px', fontWeight: 700, letterSpacing: '2px' }}>
                                 {treeName}
                             </div>
                         </div>

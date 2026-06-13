@@ -171,7 +171,7 @@ export default function TriviaMonitor({ muteSFX = false }: { muteSFX?: boolean }
                         letterSpacing: '4px',
                         fontWeight: 700
                     }}>
-                        GAME HAS ENDED · FINAL RANKINGS REVEALED
+                        TRIVIA SELESAI · FINAL RANKINGS REVEALED
                     </div>
                 </div>
 
