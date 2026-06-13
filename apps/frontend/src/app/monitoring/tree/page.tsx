@@ -298,7 +298,7 @@ export default function TreeMonitorExternal() {
                             {isMaxStage && (
                                 <div style={{
                                     position: 'absolute',
-                                    top: '5%',
+                                    top: '-15%',
                                     left: '50%',
                                     transform: 'translateX(-50%)',
                                     animation: 'float-up-down 3s ease-in-out infinite',

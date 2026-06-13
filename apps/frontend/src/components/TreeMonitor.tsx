@@ -120,17 +120,7 @@ export default function TreeMonitor() {
                     </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    {isWatering && (
-                        <div style={{
-                            fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '1px',
-                            color: 'var(--blue-bright)', fontWeight: 700,
-                            animation: 'tm-waterPulse 0.8s ease-in-out infinite',
-                            padding: '3px 10px', borderRadius: '20px',
-                            border: '2px solid var(--blue-bright)',
-                        }}>
-                            💧 LIVE TAPPING
-                        </div>
-                    )}
+
                     <span className="badge badge-green">
                         <span className="live-dot" /> LIVE
                     </span>
@@ -218,7 +208,7 @@ export default function TreeMonitor() {
                     {isMaxStage && (
                         <div style={{
                             position: 'absolute',
-                            top: '5%',
+                            top: '-10%',
                             left: '50%',
                             transform: 'translateX(-50%)',
                             animation: 'float-up-down 3s ease-in-out infinite',

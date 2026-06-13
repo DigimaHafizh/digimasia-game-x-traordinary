@@ -186,18 +186,7 @@ export default function Tree() {
                     }}>
                         BERSIAP MENYIRAM!
                     </div>
-                    <div style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '11px',
-                        color: 'var(--white)',
-                        textShadow: '1px 1px 0 var(--black)',
-                        marginTop: '16px',
-                        letterSpacing: '1px',
-                        lineHeight: 1.5
-                    }}>
-                        <strong>{collectedWater}L</strong> AIR TERSEDIA<br />
-                        <strong>{contributedWater}L</strong> SUDAH KAMU SUMBANGKAN
-                    </div>
+
                 </div>
 
                 {/* Start button */}
