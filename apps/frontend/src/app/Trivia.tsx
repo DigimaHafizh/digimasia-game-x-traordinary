@@ -86,6 +86,12 @@ export default function Trivia() {
             // Now it's safe to update state for UI feedback
             setIsCorrect(pendingCorrectRef.current);
             setPointsEarned(pendingPointsRef.current);
+
+            // Instantly sync local score if they gained points, otherwise Tree starts at 0 upon refresh.
+            if (pendingPointsRef.current > 0) {
+                const currentWater = useGameStore.getState().collectedWater;
+                useGameStore.getState().setUserState({ collectedWater: currentWater + pendingPointsRef.current });
+            }
         }
     }, [timer]);
 

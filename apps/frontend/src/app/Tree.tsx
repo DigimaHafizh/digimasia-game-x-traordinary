@@ -63,24 +63,23 @@ export default function Tree() {
                     const localContrib = localStore.contributedWater;
 
                     // SYNC LOGIC:
-                    // If local is 0, we trust the backend (new device/cleared cache).
-                    // If local is > 0, we trust the HIGHER value to prevent refresh-0 reset.
+                    // Always trust the HIGHER value to prevent refresh-0 reset.
                     // This handles cases where backend is lagging OR local hydration was delayed.
                     setUserState({
                         collectedWater: Math.max(localWater, statsData.collectedWater),
                         contributedWater: Math.max(localContrib, statsData.contributedWater ?? 0),
                     } as any);
-                }
 
-                // 2. Sync Session State
-                const sessionRes = await fetch(`${getBackendUrl()}/session-state`);
-                const sessionData = await sessionRes.json();
-                if (sessionData) {
-                    setSessionState({
-                        treeStage: sessionData.treeStage ?? 0,
-                        totalWater: sessionData.totalWater ?? 0,
-                        phase: sessionData.phase
-                    });
+                    // 2. Sync Session State
+                    const sessionRes = await fetch(`${getBackendUrl()}/session-state`);
+                    const sessionData = await sessionRes.json();
+                    if (sessionData) {
+                        setSessionState({
+                            treeStage: sessionData.treeStage ?? 0,
+                            totalWater: sessionData.totalWater ?? 0,
+                            phase: sessionData.phase
+                        });
+                    }
                 }
             } catch (err) {
                 console.error('Tree: Failed to sync data', err);
