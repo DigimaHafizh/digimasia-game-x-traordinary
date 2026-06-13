@@ -178,13 +178,19 @@ export default function Tree() {
                     </div>
                     <div style={{
                         fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(28px, 8vw, 36px)',
-                        color: 'var(--yellow)',
-                        textShadow: '2px 2px 0 var(--black)',
+                        fontSize: 'clamp(36px, 10vw, 48px)',
+                        color: 'var(--black)',
+                        textShadow: '2px 2px 0 rgba(0,0,0,0.1)',
                         letterSpacing: '2px',
                         lineHeight: 1.1
                     }}>
-                        BERSIAP MENYIRAM!
+                        GET READY!
+                    </div>
+                    <div style={{
+                        fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#333',
+                        letterSpacing: '2px', marginTop: '6px', fontWeight: 800
+                    }}>
+                        BERSIAP MENYIRAM
                     </div>
                     <div style={{
                         fontFamily: 'var(--font-mono)',

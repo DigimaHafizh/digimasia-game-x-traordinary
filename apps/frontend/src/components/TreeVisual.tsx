@@ -55,26 +55,27 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true, is
     }
 
     return (
-        <div style={{
-            width: size,
-            height: size,
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'visible',
-        }}>
+        <div
+            className={className}  // Apply to the parent wrapper!
+            style={{
+                width: size,
+                height: size,
+                display: 'flex',
+                alignItems: 'flex-end',
+                justifyContent: 'center',
+                position: 'relative',
+                overflow: 'visible',
+                animation: inlineAnim === 'none' ? undefined : inlineAnim,
+            }}>
             <img
                 key={`tree-${currentStage}-${isLevelingUp}`} // Force re-render on level up for animation trigger
                 src={src}
                 alt={`Tree Stage ${currentStage + 1}`}
-                className={className}
                 style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'contain',
                     objectPosition: 'bottom',
-                    animation: inlineAnim === 'none' ? undefined : inlineAnim,
                     filter: currentStage === 9 && !noEffects ? undefined : 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))',
                     transition: 'filter 0.8s ease',
                     transformOrigin: 'bottom center', // crucial for growth animation from the ground
