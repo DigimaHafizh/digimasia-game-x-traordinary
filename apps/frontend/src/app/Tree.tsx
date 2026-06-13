@@ -154,11 +154,11 @@ export default function Tree() {
             height: 'calc(100dvh - 140px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px',
             backgroundColor: 'var(--blue-bright)',
-            backgroundImage: "url('/assets/branding/BG2.png')",
+            backgroundImage: "url('/assets/branding/BG1.png')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
         }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', maxWidth: '400px', width: '100%', textAlign: 'center', marginTop: '20px' }}>
                 <div className="card" style={{
                     width: '100%',
                     padding: '24px 20px',

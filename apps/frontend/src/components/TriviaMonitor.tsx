@@ -291,6 +291,7 @@ export default function TriviaMonitor() {
                             const percent = totalAnswers ? Math.round((count / totalAnswers) * 100) : 0;
                             const optionText = isStatsStale ? '...' : (stats?.options?.[optIdx] || `Pilihan ${OPT_LETTERS[optIdx]}`);
                             const isCorrect = !isStatsStale && timer === 0 && stats?.correctAnswer === optIdx;
+                            const isWrong = !isStatsStale && timer === 0 && stats?.correctAnswer !== undefined && stats?.correctAnswer !== optIdx;
 
                             return (
                                 <div key={optIdx} className="card" style={{
@@ -312,7 +313,7 @@ export default function TriviaMonitor() {
                                         position: 'absolute',
                                         top: 0, left: 0, bottom: 0,
                                         width: `${percent}%`,
-                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : '#93c5fd', // Explicit hex instead of variable
+                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : isWrong ? '#ef4444' : '#93c5fd', // red explicitly for wrong, blue default
                                         transition: 'width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                         zIndex: 0,
                                     }} />

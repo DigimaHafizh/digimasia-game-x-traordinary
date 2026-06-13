@@ -56,6 +56,7 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true, is
 
     return (
         <div
+            key={`wrapper-${currentStage}-${isLevelingUp}`}
             className={className}  // Apply to the parent wrapper!
             style={{
                 width: size,
