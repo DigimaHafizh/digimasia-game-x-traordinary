@@ -204,48 +204,6 @@ export default function TreeMonitor() {
                         </div>
                     ))}
 
-                    {/* GRAND TREE FLOATING DECORATION INSTEAD OF BLOCKING OVERLAY */}
-                    {isMaxStage && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '-10%',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            animation: 'float-up-down 3s ease-in-out infinite',
-                            zIndex: 30,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            pointerEvents: 'none',
-                            width: 'max-content',
-                        }}>
-                            <div style={{
-                                fontFamily: 'var(--font-display)',
-                                fontSize: 'clamp(20px, 3.5vw, 32px)',
-                                color: 'var(--yellow)',
-                                textShadow: '2px 2px 0 var(--black), -1px -1px 0 var(--black), 1px -1px 0 var(--black), -1px 1px 0 var(--black), 1px 1px 0 var(--black)',
-                                letterSpacing: '2px',
-                                textAlign: 'center',
-                                lineHeight: 1.1
-                            }}>
-                                POHON TELAH<br />TUMBUH SEMPURNA!
-                            </div>
-                            <div style={{
-                                marginTop: '8px',
-                                background: 'var(--lime)',
-                                border: '2px solid var(--black)',
-                                boxShadow: '3px 3px 0 var(--black)',
-                                padding: '4px 12px',
-                                borderRadius: '16px',
-                                fontFamily: 'var(--font-mono)',
-                                fontSize: '12px',
-                                fontWeight: 800,
-                                color: 'var(--black)'
-                            }}>
-                                🌟 {totalWater}L AIR TERKUMPUL 🌟
-                            </div>
-                        </div>
-                    )}
 
                     {/* Stage badge overlay */}
                     <div style={{
@@ -378,7 +336,7 @@ export default function TreeMonitor() {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                background: i === 0 ? 'var(--yellow)' : i === 1 ? '#e2e8f0' : i === 2 ? '#edd1b0' : 'white',
+                                background: i === 0 ? 'var(--lime)' : 'white',
                                 border: '2px solid var(--black)',
                                 borderRadius: '12px',
                                 padding: '8px 12px',

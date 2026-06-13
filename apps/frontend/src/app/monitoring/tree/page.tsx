@@ -177,16 +177,7 @@ export default function TreeMonitorExternal() {
                         {isMuted ? '🔇' : '🔊'}
                     </button>
 
-                    {isWatering && (
-                        <div style={{
-                            background: 'var(--blue-light)', border: '3px solid var(--blue-bright)',
-                            borderRadius: '12px', padding: '6px 16px', fontFamily: 'var(--font-mono)',
-                            fontSize: 'clamp(14px, 1.8vw, 18px)', fontWeight: 800, color: 'var(--blue-bright)',
-                            animation: 'tm-waterPulse 0.8s ease-in-out infinite'
-                        }}>
-                            💧 LIVE TAPPING
-                        </div>
-                    )}
+
                     <div style={{
                         background: 'var(--lime)',
                         border: '3px solid var(--black)',
@@ -294,48 +285,7 @@ export default function TreeMonitorExternal() {
                                 </div>
                             ))}
 
-                            {/* GRAND TREE FLOATING DECORATION INSTEAD OF BLOCKING OVERLAY */}
-                            {isMaxStage && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '-15%',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    animation: 'float-up-down 3s ease-in-out infinite',
-                                    zIndex: 30,
-                                    width: 'max-content',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    pointerEvents: 'none'
-                                }}>
-                                    <div style={{
-                                        fontFamily: 'var(--font-display)',
-                                        fontSize: 'clamp(28px, 3.5vw, 42px)',
-                                        color: 'var(--yellow)',
-                                        textShadow: '3px 3px 0 var(--black), -1px -1px 0 var(--black), 1px -1px 0 var(--black), -1px 1px 0 var(--black), 1px 1px 0 var(--black)',
-                                        letterSpacing: '2px',
-                                        textAlign: 'center',
-                                        lineHeight: 1.1
-                                    }}>
-                                        POHON TELAH<br />TUMBUH SEMPURNA!
-                                    </div>
-                                    <div style={{
-                                        marginTop: '12px',
-                                        background: 'var(--lime)',
-                                        border: '3px solid var(--black)',
-                                        boxShadow: '4px 4px 0 var(--black)',
-                                        padding: '8px 16px',
-                                        borderRadius: '20px',
-                                        fontFamily: 'var(--font-mono)',
-                                        fontSize: 'clamp(12px, 1.5vw, 16px)',
-                                        fontWeight: 800,
-                                        color: 'var(--black)'
-                                    }}>
-                                        🌟 {totalWater}L AIR TERKUMPUL 🌟
-                                    </div>
-                                </div>
-                            )}
+
                         </div>
                     </div>
 

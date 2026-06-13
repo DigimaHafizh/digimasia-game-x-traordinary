@@ -221,9 +221,7 @@ export default function TriviaMonitor() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Header Card */}
                 <div className="card" style={{ padding: '24px', position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: '16px', right: '24px' }}>
-                        <span className="badge badge-pink" style={{ fontSize: '10px' }}>ADMIN VIEW</span>
-                    </div>
+
 
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', marginBottom: '24px' }}>
                         {/* Timer Circle */}

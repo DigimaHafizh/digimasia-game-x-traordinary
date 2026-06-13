@@ -38,6 +38,8 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true, is
     let anim = 'none';
     if (isLevelingUp) {
         anim = 'marioGrowth 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both';
+    } else if (currentStage === 9) {
+        anim = 'pulseGlow 2.5s ease-in-out infinite';
     } else if (isAnimated) {
         // floating gently
         anim = 'floating 3.5s ease-in-out infinite';
@@ -63,7 +65,7 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true, is
                     objectFit: 'contain',
                     objectPosition: 'bottom',
                     animation: anim,
-                    filter: currentStage === 9 ? 'drop-shadow(0 0 20px rgba(255,215,0,0.5))' : 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))',
+                    filter: currentStage === 9 ? undefined : 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))',
                     transition: 'filter 0.8s ease',
                     transformOrigin: 'bottom center', // crucial for growth animation from the ground
                 }}
@@ -73,6 +75,12 @@ export default function TreeVisual({ stage, size = '100%', isAnimated = true, is
                     0% { transform: translateY(0); }
                     50% { transform: translateY(-8px); }
                     100% { transform: translateY(0); }
+                }
+                
+                @keyframes pulseGlow {
+                    0% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(255,215,0,0.6)); }
+                    50% { transform: scale(1.03); filter: drop-shadow(0 0 45px rgba(255,235,50,0.9)); }
+                    100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(255,215,0,0.6)); }
                 }
                 
                 @keyframes marioGrowth {
