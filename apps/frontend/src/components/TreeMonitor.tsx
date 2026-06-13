@@ -209,6 +209,9 @@ export default function TreeMonitor() {
                     overflow: 'visible',
                     position: 'relative',
                     transition: 'box-shadow 0.3s ease',
+                    display: 'flex',            // <--- Added for floating support
+                    alignItems: 'flex-end',
+                    justifyContent: 'center',
                 }}>
                     <TreeVisual stage={treeStage} size="100%" isLevelingUp={isLevelingUp} />
 

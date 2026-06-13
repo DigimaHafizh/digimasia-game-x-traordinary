@@ -261,8 +261,9 @@ export default function Home() {
         </div>
       );
 
+    case 'PRE_WATERING':
     case 'WATERING':
-      if (treeStage >= 9 || totalWater >= 5000) return <Final />;
+      if ((phase === 'WATERING' || phase === 'PRE_WATERING') && (treeStage >= 9 || totalWater >= 5000)) return <Final />;
       return <Tree />;
 
     case 'FINAL':

@@ -257,8 +257,8 @@ export default function TriviaMonitor() {
 
                         {/* Question Info */}
                         <div className="card card-navy" style={{ flex: 1, padding: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.7)', letterSpacing: '2px', marginBottom: '8px' }}>
-                                PERTANYAAN #{currentQuestion} · {isStatsStale ? '...' : (stats?.totalAnswers || 0)} JAWABAN
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--yellow)', letterSpacing: '2px', marginBottom: '8px', fontWeight: 800 }}>
+                                PERTANYAAN #{currentQuestion}
                             </div>
                             <div style={{
                                 fontFamily: 'var(--font-body)',
@@ -312,7 +312,7 @@ export default function TriviaMonitor() {
                                         position: 'absolute',
                                         top: 0, left: 0, bottom: 0,
                                         width: `${percent}%`,
-                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : 'var(--blue-light)',
+                                        background: isCorrect ? 'rgba(255,255,255,0.2)' : 'var(--blue)',
                                         transition: 'width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                         zIndex: 0,
                                     }} />
