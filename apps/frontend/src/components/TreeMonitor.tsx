@@ -6,8 +6,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTreeAudio } from '@/hooks/useTreeAudio';
 import { getBackendUrl } from '@/lib/config';
 
-const TOTAL_WATER_GOAL = 3500;
-const WATER_PER_STAGE = 350;
+const TOTAL_WATER_GOAL = 100;
+const WATER_PER_STAGE = 10;
 
 interface WaterDrop {
     id: number;
