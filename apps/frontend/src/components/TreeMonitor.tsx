@@ -278,7 +278,7 @@ export default function TreeMonitor() {
                             CURRENT STAGE
                         </div>
                         <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 2.5vw, 24px)', letterSpacing: '1px', lineHeight: 1 }}>
-                            {treeStage + 1} / 10 · <span style={{ color: treeStage === 8 ? 'var(--pink-hot)' : 'inherit' }}>{TREE_STAGE_LABELS[Math.min(treeStage, 9)]}</span>
+                            {treeStage + 1} / 10 · <span style={{ color: 'var(--pink-hot)' }}>{TREE_STAGE_LABELS[Math.min(treeStage, 9)]}</span>
                         </div>
                     </div>
 
@@ -302,14 +302,14 @@ export default function TreeMonitor() {
                                     width: '22px', height: '22px',
                                     borderRadius: '50%',
                                     border: '2px solid var(--black)',
-                                    background: i < treeStage ? 'var(--lime)' : i === treeStage ? 'var(--blue-bright)' : '#e5e7eb',
+                                    background: (totalWater >= TOTAL_WATER_GOAL || i < treeStage) ? 'var(--lime)' : i === treeStage ? 'var(--blue-bright)' : '#e5e7eb',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700,
-                                    color: i <= treeStage ? 'var(--black)' : '#aaa',
+                                    color: (totalWater >= TOTAL_WATER_GOAL || i <= treeStage) ? 'var(--black)' : '#aaa',
                                     transition: 'all 0.4s ease',
-                                    boxShadow: i === treeStage ? '2px 2px 0 var(--black)' : 'none',
+                                    boxShadow: (!(totalWater >= TOTAL_WATER_GOAL) && i === treeStage) ? '2px 2px 0 var(--black)' : 'none',
                                 }}>
-                                    {i < treeStage ? '✓' : i + 1}
+                                    {(totalWater >= TOTAL_WATER_GOAL || i < treeStage) ? '✓' : i + 1}
                                 </div>
                             ))}
                         </div>

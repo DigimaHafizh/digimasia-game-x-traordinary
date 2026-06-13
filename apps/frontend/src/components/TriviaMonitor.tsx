@@ -59,17 +59,7 @@ export default function TriviaMonitor({ muteSFX = false }: { muteSFX?: boolean }
         };
     }, [currentQuestion, phase]);
 
-    // Play SFX when Trivia finishes — using ref to avoid audio context issues
-    const hasPlayedComplete = useRef(false);
-    useEffect(() => {
-        if (phase === 'TRANSITION' && !hasPlayedComplete.current && !muteSFX) {
-            hasPlayedComplete.current = true;
-            playComplete();
-        }
-        if (phase !== 'TRANSITION') {
-            hasPlayedComplete.current = false;
-        }
-    }, [phase, playComplete]);
+    // Parent component (TriviaMonitoringPage) handles the SFX to avoid duplicated strict-mode bugs.
 
     const handleNext = async () => {
         try {

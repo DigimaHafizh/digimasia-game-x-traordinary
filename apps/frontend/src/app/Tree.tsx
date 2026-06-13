@@ -49,14 +49,13 @@ export default function Tree() {
                     headers: { 'Cache-Control': 'no-cache, no-store', 'Pragma': 'no-cache' }
                 });
                 const data = await res.json();
-                if (data) {
-                    // Only update if we actually got a value (persistence might already have it)
-                    if (data.collectedWater !== undefined) {
-                        setUserState({
-                            collectedWater: data.collectedWater,
-                            contributedWater: data.contributedWater ?? 0,
-                        } as any);
-                    }
+                if (data && data.collectedWater !== undefined) {
+                    const localStore = useGameStore.getState();
+                    // Prefer larger state between what local persistence has vs backend to prevent wiping 
+                    setUserState({
+                        collectedWater: Math.max(data.collectedWater, localStore.collectedWater),
+                        contributedWater: Math.max(data.contributedWater ?? 0, localStore.contributedWater),
+                    } as any);
                 }
             } catch (err) {
                 console.error('Tree: Failed to sync water balance', err);
@@ -103,7 +102,6 @@ export default function Tree() {
             setStageToast(`STAGE ${treeStage + 1}|${label}`);
             setTimeout(() => setStageToast(null), 3000);
             audio.playStageUp();
-            if (treeStage >= 9) audio.playComplete();
         }
         prevStageRef.current = treeStage;
     }, [treeStage, audio]);

@@ -9,9 +9,7 @@ export default function Final() {
     const { totalWater } = useGameStore();
     const audio = useTreeAudio(true);
 
-    useEffect(() => {
-        audio.playComplete();
-    }, [audio]);
+    // NO SFX ON USER CONGRATULATION SCREEN
 
     return (
         <div style={{
