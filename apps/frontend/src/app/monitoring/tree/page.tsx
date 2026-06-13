@@ -150,7 +150,7 @@ export default function TreeMonitorExternal() {
                         textShadow: '2px 2px 0px var(--black)',
                         marginTop: '4px'
                     }}>
-                        {isWatering ? '💧 USERS SEDANG MENYIRAM...' : 'DIGIMA ASIA 10TH ANNIVERSARY'}
+                        {isWatering ? '💧 DIGIMERS SEDANG MENYIRAM...' : 'DIGIMA ASIA 10TH ANNIVERSARY'}
                     </div>
                 </div>
 

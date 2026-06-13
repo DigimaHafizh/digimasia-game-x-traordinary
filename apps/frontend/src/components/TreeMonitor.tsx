@@ -116,7 +116,7 @@ export default function TreeMonitor() {
                         LIVE TREE GROWTH
                     </div>
                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px' }}>
-                        {isWatering ? '💧 USERS SEDANG MENYIRAM...' : 'REAL-TIME UPDATING'}
+                        {isWatering ? '💧 DIGIMERS SEDANG MENYIRAM...' : 'REAL-TIME UPDATING'}
                     </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

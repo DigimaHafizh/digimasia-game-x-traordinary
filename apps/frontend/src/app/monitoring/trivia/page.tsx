@@ -74,7 +74,7 @@ export default function TriviaMonitoringPage() {
                         <span className="live-dot" style={{ width: '8px', height: '8px', background: 'red', borderRadius: '50%', animation: 'blink 1.5s infinite' }} /> X-TRAORDINARY — GROW WITH HEART : TOP CONTRIBUTORS
                     </div>
                 </div>
-                <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', flex: 1, minHeight: 0, overflowY: 'auto' }}>
+                <div style={{ width: '96%', maxWidth: '1400px', margin: '0 auto', flex: 1, minHeight: 0, overflowY: 'auto' }}>
                     <TriviaMonitor />
                 </div>
             </div>

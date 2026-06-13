@@ -174,7 +174,7 @@ export default function Tree() {
                     borderRadius: '16px'
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'center', height: '140px', marginBottom: '16px' }}>
-                        <TreeVisual stage={9} size="100%" />
+                        <TreeVisual stage={9} size="100%" noEffects={true} />
                     </div>
                     <div style={{
                         fontFamily: 'var(--font-display)',
