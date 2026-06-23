@@ -280,7 +280,8 @@ export default function TriviaMonitor({ muteSFX = false }: { muteSFX?: boolean }
                         {[0, 1, 2, 3].map((optIdx) => {
                             const count = isStatsStale ? 0 : (stats?.stats?.find(s => s.option === optIdx)?.count || 0);
                             const totalAnswers = isStatsStale ? 0 : (stats?.totalAnswers || 0);
-                            const percent = totalAnswers ? Math.round((count / totalAnswers) * 100) : 0;
+                            const totalUsers = isStatsStale ? 0 : (stats?.totalUsers || 0);
+                            const percent = totalUsers ? Math.round((count / totalUsers) * 100) : 0;
                             const optionText = isStatsStale ? '...' : (stats?.options?.[optIdx] || `Pilihan ${OPT_LETTERS[optIdx]}`);
                             const isCorrect = !isStatsStale && timer === 0 && stats?.correctAnswer === optIdx;
                             const isWrong = !isStatsStale && timer === 0 && stats?.correctAnswer !== undefined && stats?.correctAnswer !== optIdx;
@@ -380,7 +381,7 @@ export default function TriviaMonitor({ muteSFX = false }: { muteSFX?: boolean }
                             return (
                                 <div style={{
                                     minWidth: '120px',
-                                    background: golput > 0 ? 'var(--orange)' : 'var(--white)',
+                                    background: 'var(--white)',
                                     border: '4px solid var(--black)',
                                     boxShadow: '6px 6px 0 var(--black)',
                                     borderRadius: '14px',
