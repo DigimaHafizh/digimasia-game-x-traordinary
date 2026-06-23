@@ -22,7 +22,7 @@ export default function VotingMonitoringPage() {
                         <img
                             src="/assets/branding/Logo_X-Traordinary Team.png"
                             alt="Team Nominees"
-                            style={{ height: '60px', width: 'auto', marginBottom: '10px', alignSelf: 'center' }}
+                            style={{ height: '90px', width: 'auto', marginBottom: '10px', alignSelf: 'center' }}
                         />
                         <div style={{ flex: 1, overflowY: 'auto' }}>
                             <NomineeMonitor category="team" />
@@ -32,7 +32,7 @@ export default function VotingMonitoringPage() {
                         <img
                             src="/assets/branding/Logo_X-Traordinary Digimers.png"
                             alt="Digimer Nominees"
-                            style={{ height: '60px', width: 'auto', marginBottom: '10px', alignSelf: 'center' }}
+                            style={{ height: '90px', width: 'auto', marginBottom: '10px', alignSelf: 'center' }}
                         />
                         <div style={{ flex: 1, overflowY: 'auto' }}>
                             <NomineeMonitor category="digimer" />
