@@ -43,20 +43,28 @@ async function main() {
         });
     }
 
-    // 3. Create Dummy Candidates (if table empty)
-    const candidateCount = await prisma.candidate.count();
-    if (candidateCount === 0) {
-        await prisma.candidate.createMany({
-            data: [
-                { id: 't1', name: 'Tech Wizards', division: 'TECH', type: 'team', imageUrl: '' },
-                { id: 't2', name: 'Design Masters', division: 'DESIGN', type: 'team', imageUrl: '' },
-                { id: 't3', name: 'Marketing Heroes', division: 'MARKETING', type: 'team', imageUrl: '' },
-                { id: 'd1', name: 'Hafizh', division: 'TECH', type: 'digimer', imageUrl: '' },
-                { id: 'd2', name: 'Mita', division: 'DESIGN', type: 'digimer', imageUrl: '' },
-                { id: 'd3', name: 'Andre', division: 'TECH', type: 'digimer', imageUrl: '' },
-            ]
-        });
-    }
+    // 3. Clear and Create Candidates (taken out dummy data)
+    console.log('Clearing old candidates and votes...');
+    await prisma.vote.deleteMany({});
+    await prisma.candidate.deleteMany({});
+
+    console.log('Seeding real candidates...');
+    await prisma.candidate.createMany({
+        data: [
+            // Team of the Year (TOTY)
+            { id: 'toty-se-qa', name: 'Software Engineering & QA', division: 'TECH', type: 'team', imageUrl: '/assets/candidates/TOTY_SE & QA.png' },
+            { id: 'toty-cd', name: 'Content Design', division: 'CD', type: 'team', imageUrl: '/assets/candidates/TOTY_CD.png' },
+            { id: 'toty-sales-pm', name: 'Project Management & Sales', division: 'SALES', type: 'team', imageUrl: '/assets/candidates/TOTY_Sales & PM.png' },
+            { id: 'toty-ix', name: 'Interaction Design', division: 'DESIGN', type: 'team', imageUrl: '/assets/candidates/TOTY_IX.png' },
+            { id: 'toty-cs', name: 'Customer Support', division: 'CS', type: 'team', imageUrl: '/assets/candidates/TOTY_CS.png' },
+            { id: 'toty-ga-os', name: 'General Affairs & Organization Support', division: 'GA', type: 'team', imageUrl: '/assets/candidates/TOTY_GA & OS.png' },
+
+            // Digimer of the Year (DOTY)
+            { id: 'doty-rizky', name: 'Muhammad Rizky Husain', division: 'TECH', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Rizky.png' },
+            { id: 'doty-stepanus', name: 'Stepanus', division: 'TECH', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Stepanus.png' },
+            { id: 'doty-honey', name: 'Honey Fatricya', division: 'MARKETING', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Honey.png' },
+        ]
+    });
 
     // 4. Create Trivia Questions
     console.log('Seeding trivia questions...');
