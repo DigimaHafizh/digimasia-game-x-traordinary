@@ -133,12 +133,11 @@ export default function TreeMonitorExternal() {
                     flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%',
                     backgroundImage: "url('/assets/branding/BG2.png')", backgroundSize: 'cover', backgroundPosition: 'center'
                 }}>
-                    <div style={{
-                        textAlign: 'center', padding: '30px 20px', borderRadius: '20px',
+                    <div className="card card-navy" style={{
+                        textAlign: 'center', padding: '30px 40px', borderRadius: '20px',
                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                        minHeight: '300px', border: '5px solid var(--black)', boxShadow: '8px 8px 0 var(--black)',
-                        backgroundImage: "url('/assets/branding/BG1.png')",
-                        backgroundSize: 'cover', backgroundPosition: 'center',
+                        border: '5px solid var(--black)', boxShadow: '10px 10px 0 var(--black)',
+                        maxWidth: '850px', width: '100%', margin: '0 auto',
                         position: 'relative', overflow: 'hidden'
                     }}>
                         <div style={{ position: 'relative', zIndex: 1 }}>
