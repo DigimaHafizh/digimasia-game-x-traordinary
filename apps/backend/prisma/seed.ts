@@ -60,9 +60,9 @@ async function main() {
             { id: 'toty-ga-os', name: 'General Affairs & Organization Support', division: 'GA', type: 'team', imageUrl: '/assets/candidates/TOTY_GA & OS.png' },
 
             // Digimer of the Year (DOTY)
-            { id: 'doty-rizky', name: 'Muhammad Rizky Husain', division: 'TECH', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Rizky.png' },
-            { id: 'doty-stepanus', name: 'Stepanus', division: 'TECH', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Stepanus.png' },
-            { id: 'doty-honey', name: 'Honey Fatricya', division: 'MARKETING', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Honey.png' },
+            { id: 'doty-rizky', name: 'Muhammad Rizky Husain', division: 'Software Engineering & QA', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Rizky.png' },
+            { id: 'doty-stepanus', name: 'Stepanus', division: 'Interaction Design', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Stepanus.png' },
+            { id: 'doty-honey', name: 'Honey Fatricya', division: 'Organization Support', type: 'digimer', imageUrl: '/assets/candidates/DOTY_Honey.png' },
         ]
     });
 

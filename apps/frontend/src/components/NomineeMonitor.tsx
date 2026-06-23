@@ -64,9 +64,9 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
     const accentColor = category === 'team' ? 'var(--yellow)' : 'var(--blue-bright)';
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', justifyContent: 'center' }}>
+        <div className="no-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', justifyContent: 'center', overflowY: 'auto' }}>
             {/* Participation header */}
-            <div className="card" style={{ padding: '12px 16px' }}>
+            <div className="card" style={{ padding: '12px 16px', flexShrink: 0, minHeight: 'min-content' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
                     <div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#888', letterSpacing: '1px' }}>VOTING PARTICIPATION</div>
