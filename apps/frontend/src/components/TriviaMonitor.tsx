@@ -338,36 +338,71 @@ export default function TriviaMonitor({ muteSFX = false }: { muteSFX?: boolean }
                     </div>
                 </div>
 
-                {/* Correct Answer Reveal — shown when timer = 0 */}
+                {/* Correct Answer Reveal + Golput — shown when timer = 0 */}
                 {timer === 0 && stats?.correctAnswer !== undefined && (
-                    <div style={{
-                        background: 'var(--lime)',
-                        border: '4px solid var(--black)',
-                        boxShadow: '6px 6px 0 var(--black)',
-                        borderRadius: '14px',
-                        padding: '18px 24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '16px',
-                        animation: 'pop-in 0.4s ease-out',
-                    }}>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'stretch' }}>
+                        {/* Jawaban Benar */}
                         <div style={{
-                            width: '52px', height: '52px',
-                            background: 'var(--black)',
-                            color: 'var(--lime)',
-                            borderRadius: '50%',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontFamily: 'var(--font-display)', fontSize: '28px',
-                            flexShrink: 0,
+                            flex: 1,
+                            background: 'var(--lime)',
+                            border: '4px solid var(--black)',
+                            boxShadow: '6px 6px 0 var(--black)',
+                            borderRadius: '14px',
+                            padding: '18px 24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '16px',
+                            animation: 'pop-in 0.4s ease-out',
                         }}>
-                            {OPT_LETTERS[stats.correctAnswer]}
-                        </div>
-                        <div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '2px', color: '#333', marginBottom: '4px' }}>JAWABAN BENAR</div>
-                            <div style={{ fontFamily: 'var(--font-body)', fontSize: '18px', fontWeight: 800, color: 'var(--black)' }}>
-                                {stats.options?.[stats.correctAnswer] || `Option ${OPT_LETTERS[stats.correctAnswer]}`}
+                            <div style={{
+                                width: '52px', height: '52px',
+                                background: 'var(--black)',
+                                color: 'var(--lime)',
+                                borderRadius: '50%',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontFamily: 'var(--font-display)', fontSize: '28px',
+                                flexShrink: 0,
+                            }}>
+                                {OPT_LETTERS[stats.correctAnswer]}
+                            </div>
+                            <div>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '2px', color: '#333', marginBottom: '4px' }}>JAWABAN BENAR</div>
+                                <div style={{ fontFamily: 'var(--font-body)', fontSize: '18px', fontWeight: 800, color: 'var(--black)' }}>
+                                    {stats.options?.[stats.correctAnswer] || `Option ${OPT_LETTERS[stats.correctAnswer]}`}
+                                </div>
                             </div>
                         </div>
+
+                        {/* Golput Counter */}
+                        {(() => {
+                            const golput = Math.max(0, (stats.totalUsers || 0) - (stats.totalAnswers || 0));
+                            const golputPct = stats.totalUsers ? Math.round((golput / stats.totalUsers) * 100) : 0;
+                            return (
+                                <div style={{
+                                    minWidth: '120px',
+                                    background: golput > 0 ? 'var(--orange)' : 'var(--white)',
+                                    border: '4px solid var(--black)',
+                                    boxShadow: '6px 6px 0 var(--black)',
+                                    borderRadius: '14px',
+                                    padding: '14px 18px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '4px',
+                                    animation: 'pop-in 0.4s ease-out 0.1s both',
+                                    textAlign: 'center',
+                                }}>
+                                    <div style={{ fontSize: '22px' }}>🙈</div>
+                                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--black)', lineHeight: 1 }}>
+                                        {golput}
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', letterSpacing: '1px', color: 'var(--black)', fontWeight: 700 }}>
+                                        GOLPUT ({golputPct}%)
+                                    </div>
+                                </div>
+                            );
+                        })()}
                     </div>
                 )}
 
