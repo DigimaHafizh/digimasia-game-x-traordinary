@@ -18,15 +18,7 @@ export default function VotingMonitoringPage() {
                     </div>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', flex: 1, minHeight: 0 }}>
-                    <div className="card" style={{
-                        padding: '20px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        overflow: 'hidden',
-                        backgroundImage: "url('/assets/branding/BG1.png')",
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                    }}>
+                    <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         <img
                             src="/assets/branding/Logo_X-Traordinary Team.png"
                             alt="Team Nominees"
@@ -36,15 +28,7 @@ export default function VotingMonitoringPage() {
                             <NomineeMonitor category="team" />
                         </div>
                     </div>
-                    <div className="card" style={{
-                        padding: '20px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        overflow: 'hidden',
-                        backgroundImage: "url('/assets/branding/BG1.png')",
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                    }}>
+                    <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         <img
                             src="/assets/branding/Logo_X-Traordinary Digimers.png"
                             alt="Digimer Nominees"
