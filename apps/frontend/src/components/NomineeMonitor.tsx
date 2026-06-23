@@ -172,7 +172,7 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
                             {/* Blurred photo */}
                             <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
                                 <img
-                                    src={item.imageUrl || PLACEHOLDER_IMAGES[idx % PLACEHOLDER_IMAGES.length]}
+                                    src={PLACEHOLDER_IMAGES[idx % PLACEHOLDER_IMAGES.length]}
                                     alt="Mystery Candidate"
                                     style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(8px) grayscale(30%) brightness(0.8)', userSelect: 'none' }}
                                 />
