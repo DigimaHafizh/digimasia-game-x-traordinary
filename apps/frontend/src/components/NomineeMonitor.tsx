@@ -110,8 +110,8 @@ export default function NomineeMonitor({ category }: { category: 'team' | 'digim
                             {metadata.voterNames.map((name, i) => (
                                 <span key={i} style={{
                                     display: 'inline-block',
-                                    background: i === 0 ? barColor : '#f0f0f0',
-                                    color: i === 0 ? 'white' : '#333',
+                                    background: '#f0f0f0',
+                                    color: '#333',
                                     border: '1.5px solid var(--black)',
                                     borderRadius: '99px',
                                     padding: '2px 10px',
