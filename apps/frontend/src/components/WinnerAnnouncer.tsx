@@ -683,21 +683,6 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                     animation: 'fadeIn 0.4s ease'
                 }}>
                     <AwardPanel
-                        title="🌟 DIGIMER OF THE YEAR"
-                        accentColor="var(--blue-bright)"
-                        textColor="white"
-                        stats={digimerStats}
-                        winner={digimerWinner}
-                        revealed={revealedNomineesDigimer}
-                        setRevealed={setRevealedNomineesDigimer}
-                        showVotes={showDigimerVotes}
-                        setShowVotes={setShowDigimerVotes}
-                        winnerRevealed={finalWinnerDigimer}
-                        countdownValue={countdownState?.type === 'digimer' ? countdownState.count : null}
-                        onRevealWinner={() => handleWinnerReveal('digimer')}
-                        type="digimer"
-                    />
-                    <AwardPanel
                         title="🏅 BEST TEAM OF THE YEAR"
                         accentColor="var(--yellow)"
                         textColor="var(--black)"
@@ -711,6 +696,21 @@ export default function WinnerAnnouncer({ onClose }: WinnerAnnouncerProps) {
                         countdownValue={countdownState?.type === 'team' ? countdownState.count : null}
                         onRevealWinner={() => handleWinnerReveal('team')}
                         type="team"
+                    />
+                    <AwardPanel
+                        title="🌟 DIGIMER OF THE YEAR"
+                        accentColor="var(--blue-bright)"
+                        textColor="white"
+                        stats={digimerStats}
+                        winner={digimerWinner}
+                        revealed={revealedNomineesDigimer}
+                        setRevealed={setRevealedNomineesDigimer}
+                        showVotes={showDigimerVotes}
+                        setShowVotes={setShowDigimerVotes}
+                        winnerRevealed={finalWinnerDigimer}
+                        countdownValue={countdownState?.type === 'digimer' ? countdownState.count : null}
+                        onRevealWinner={() => handleWinnerReveal('digimer')}
+                        type="digimer"
                     />
                 </div>
             ) : activeFocus === 'digimer' ? (

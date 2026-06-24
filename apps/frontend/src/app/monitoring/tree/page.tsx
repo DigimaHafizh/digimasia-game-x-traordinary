@@ -8,8 +8,8 @@ import { useTreeAudio } from '@/hooks/useTreeAudio';
 import { useSocket } from '@/hooks/useSocket';
 import { getBackendUrl } from '@/lib/config';
 
-const TOTAL_WATER_GOAL = 100;
-const WATER_PER_STAGE = 10;
+const TOTAL_WATER_GOAL = 2000;
+const WATER_PER_STAGE = 200;
 
 interface WaterDrop {
     id: number;

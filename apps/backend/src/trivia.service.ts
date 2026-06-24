@@ -32,7 +32,7 @@ export class TriviaService {
         // Update state to next question
         Object.assign((this.session as any).state, {
             currentQuestion: nextQ,
-            timer: 10
+            timer: 15
         });
         this.session.onStateChange(this.session.getState());
 
@@ -51,6 +51,27 @@ export class TriviaService {
                 // STOP TIMER at 0. Waiting for Admin to click "Next"
                 if (this.timerInstance) clearInterval(this.timerInstance);
                 this.logger.log(`Question ${state.currentQuestion} timer expired. Waiting for Admin.`);
+
+                // AWARD 1L for Golput Users
+                try {
+                    const activeUsers = await this.prisma.user.findMany({ where: { isJoined: true, isAdmin: false } });
+                    const question = await this.prisma.question.findUnique({ where: { index: state.currentQuestion } });
+                    if (question) {
+                        const answeredUsers = await this.prisma.userAnswer.findMany({ where: { questionId: question.id } });
+                        const answeredIds = answeredUsers.map(a => a.userId);
+                        const golputUserIds = activeUsers.filter(u => !answeredIds.includes(u.id)).map(u => u.id);
+
+                        if (golputUserIds.length > 0) {
+                            await this.prisma.user.updateMany({
+                                where: { id: { in: golputUserIds } },
+                                data: { collectedWater: { increment: 1 }, score: { increment: 1 } }
+                            });
+                            this.logger.log(`Awarded 1L (Golput) to ${golputUserIds.length} users.`);
+                        }
+                    }
+                } catch (e) {
+                    this.logger.error('Error awarding golput points:', e);
+                }
 
                 // If it's the last question, automatically transition to Leaderboard after 1.5 seconds
                 if (state.currentQuestion >= 10) {
@@ -80,6 +101,7 @@ export class TriviaService {
                 where: { userId_questionId: { userId, questionId: question.id } }
             });
 
+            const hasAnswered = !!previousAnswer;
             const wasCorrect = previousAnswer?.isCorrect || false;
 
             // Simpan/Update jawaban
@@ -91,34 +113,33 @@ export class TriviaService {
                 create: { userId, questionId: question.id, selected: optionIndex, isCorrect },
             });
 
-            // Logic Reward (hanya jika ada perubahan status kebenaran)
-            let pointsEarned = 0;
-            if (isCorrect && !wasCorrect) {
-                // Calculate speed bonus based on current timer state
-                const currentTimer = this.session.getState().timer;
-                pointsEarned = 10 + (currentTimer > 0 ? currentTimer : 0);
-                // Hanya tambahkan point dan saldo air ke user
-                // JANGAN tambahkan ke contributedWater ataupun global tree water, 
-                // agar pohon tetap 0% saat awal fase Grow the Tree dimulai.
+            let waterChange = 0;
+            const currentTimer = this.session.getState().timer;
+            const speedBonus = currentTimer > 0 ? currentTimer : 0;
+            const rightPts = 10 + speedBonus;
+            const wrongPts = 5;
+
+            if (!hasAnswered) {
+                waterChange = isCorrect ? rightPts : wrongPts;
+            } else {
+                if (isCorrect && !wasCorrect) {
+                    waterChange = rightPts - wrongPts;
+                } else if (!isCorrect && wasCorrect) {
+                    waterChange = wrongPts - 10; // Simple deduction proxy
+                }
+            }
+
+            if (waterChange !== 0) {
                 await tx.user.update({
                     where: { id: userId },
                     data: {
-                        collectedWater: { increment: pointsEarned },
-                        score: { increment: pointsEarned },
-                    }
-                });
-            } else if (!isCorrect && wasCorrect) {
-                // If they somehow change from correct to wrong, deduct.
-                await tx.user.update({
-                    where: { id: userId },
-                    data: {
-                        collectedWater: { decrement: 10 },
-                        score: { decrement: 10 },
+                        collectedWater: { increment: waterChange },
+                        score: { increment: waterChange },
                     }
                 });
             }
 
-            return { correct: isCorrect, points: pointsEarned };
+            return { correct: isCorrect, points: Math.max(0, waterChange) };
         });
     }
 

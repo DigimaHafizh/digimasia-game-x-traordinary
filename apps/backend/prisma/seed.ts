@@ -71,7 +71,7 @@ async function main() {
     const questions = [
         {
             index: 1,
-            text: 'Kapan tanggal bulan dan tahun tepannya ulang tahun digima ASIA?',
+            text: 'Kapan tanggal bulan dan tahun tepatnya ulang tahun digima ASIA?',
             options: JSON.stringify(['14 Juni 2016', '19 Juni 2016', '25 Juni 2016', '26 Juni 2016']),
             answer: 0
         },
@@ -106,7 +106,7 @@ async function main() {
         },
         {
             index: 6,
-            text: 'Jika sebuah perusahaan ingin meningkatkan kompetensi karyawannya dan datang ke digima ASIA, “paket andalan” apa yang bisa kita tawarkan adalah...',
+            text: 'Jika sebuah perusahaan ingin meningkatkan kompetensi karyawannya dan datang ke digima ASIA, “paket andalan” apa yang bisa kita tawarkan?',
             options: JSON.stringify([
                 'Seminar, Outing, Gathering',
                 'LaaS, Learning Content Development, Strategic Execution & Implementation',
