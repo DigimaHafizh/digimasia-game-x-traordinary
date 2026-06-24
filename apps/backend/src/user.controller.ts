@@ -19,7 +19,6 @@ export class UserController {
         return this.prisma.user.findMany({
             where: { isAdmin: false, contributedWater: { gt: 0 } },
             orderBy: { contributedWater: 'desc' },
-            take: 10,
             select: { id: true, name: true, division: true, contributedWater: true }
         });
     }

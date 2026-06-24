@@ -25,7 +25,6 @@ export class AppService {
     const topUsers = await this.prisma.user.findMany({
       where: { isJoined: true, isAdmin: false },
       orderBy: isTriviaPhase ? { score: 'desc' } : { contributedWater: 'desc' },
-      take: 10,
       select: {
         name: true,
         division: true,

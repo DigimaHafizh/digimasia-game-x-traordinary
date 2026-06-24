@@ -48,7 +48,7 @@ export default function LeaderboardWidget({ isPaused = false }: { isPaused?: boo
     );
 
     return (
-        <div className="rank-list">
+        <div className="rank-list" style={{ maxHeight: '100%', overflowY: 'auto', paddingRight: '8px' }}>
             {leaderboard.map((entry, i) => {
                 const colorIdx = getDeterministicIndex(entry.name, AVATAR_COLORS.length);
                 const currentAvatarColor = AVATAR_COLORS[colorIdx];
