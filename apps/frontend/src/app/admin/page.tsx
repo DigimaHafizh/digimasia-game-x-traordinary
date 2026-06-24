@@ -236,6 +236,9 @@ export default function AdminPage() {
                             EXTERNAL MONITORS
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/lobby', '_blank')}>
+                                🏠 Lobby Monitor ↗
+                            </button>
                             <button className="btn" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.open('/monitoring/voting', '_blank')}>
                                 📊 Voting Monitor ↗
                             </button>
@@ -255,7 +258,7 @@ export default function AdminPage() {
                 {/* ─── MAIN CONTENT ─── */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {/* Monitor content */}
-                    <div className="card animate-pop-in" style={{ padding: '20px', minHeight: '400px' }}>
+                    <div className="card animate-pop-in" style={{ padding: '20px', minHeight: 'auto' }}>
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -310,7 +313,7 @@ export default function AdminPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div style={{ overflowY: 'auto' }}>
                                             <RegistrationLobby />
                                         </div>
                                     </div>
