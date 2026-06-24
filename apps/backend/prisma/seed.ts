@@ -18,25 +18,58 @@ async function main() {
         },
     });
 
-    // 2. Create Users
-    const users = [
-        { name: 'Hafizh', pin: '1001', division: 'TECH' },
-        { name: 'Mita', pin: '1002', division: 'DESIGN' },
-        { name: 'Domet', pin: '1003', division: 'TECH' },
-        { name: 'Rizky', pin: '1004', division: 'HR' },
-        { name: 'Hana', pin: '1005', division: 'MARKETING' },
-        { name: 'Frista', pin: '1006', division: 'FINANCE' },
-        { name: 'Andre', pin: '1007', division: 'TECH' },
+    // 2. Final Hardcoded Employees Mapping (Excel v2)
+    const employees = [
+        { name: "Agunahwan Absin", division: "Software Engineering & QA", pin: "1024" },
+        { name: "Agung Trisno Atmojo", division: "Content Design", pin: "1013" },
+        { name: "Alfridho Yuliananda", division: "Content Design", pin: "1007" },
+        { name: "Amelia Nur Azizah", division: "Content Design", pin: "1010" },
+        { name: "Andre Alfadjrid", division: "Content Design", pin: "1017" },
+        { name: "Asep Badrudin", division: "Content Design", pin: "1015" },
+        { name: "Candra Prasetyo", division: "Software Engineering & QA", pin: "1119" },
+        { name: "Cherly Diansacharina Tri Wahyuningsuara", division: "Customer Support", pin: "1032" },
+        { name: "Christover Ramanda Moa", division: "Software Engineering & QA", pin: "1026" },
+        { name: "Daniel V. Lie", division: "Global Chief Executive", pin: "1001" },
+        { name: "Danny Zainaldi", division: "Project Management", pin: "1036" },
+        { name: "Dyah Prajnaparamita", division: "Technology & Operation", pin: "1003" },
+        { name: "Fahmi Fikri Kurniawan", division: "Customer Support", pin: "1030" },
+        { name: "Fredy Wijaya", division: "Content Design", pin: "1014" },
+        { name: "Frista Diah Ramadhani", division: "Content Design", pin: "1009" },
+        { name: "Hanafiah Yunan Putri", division: "Content Design", pin: "1019" },
+        { name: "Hari Mujana", division: "Content Design", pin: "1018" },
+        { name: "Heri Irwanto", division: "Interaction Design", pin: "1021" },
+        { name: "Honey Fatricya", division: "Organization Support", pin: "1005" },
+        { name: "Inayatul Noor Amaliah", division: "Content Design", pin: "1008" },
+        { name: "Karib Chiang", division: "Technology & Operation", pin: "1002" },
+        { name: "Mayang Gita", division: "Sales", pin: "1035" },
+        { name: "Mediani Prima Ismary", division: "General Affairs", pin: "1034" },
+        { name: "Muhammad Hafizh Abdillah", division: "Software Engineering & QA", pin: "1029" },
+        { name: "Muhammad Reza", division: "Software Engineering & QA", pin: "1025" },
+        { name: "Muhammad Rizky Husain", division: "Software Engineering & QA", pin: "1027" },
+        { name: "Nabila Paradays", division: "Content Design", pin: "1011" },
+        { name: "Putra Indra Tri Cahya", division: "Customer Support", pin: "1031" },
+        { name: "Ratna Indah Screenaningrum", division: "Content Design", pin: "1012" },
+        { name: "Resfi Anggraeni", division: "General Affairs", pin: "1033" },
+        { name: "Stefany Arlianty", division: "Content Design", pin: "1006" },
+        { name: "Stepanus", division: "Interaction Design", pin: "1016" },
+        { name: "Tedy Iman Priyo Lestanto", division: "Interaction Design", pin: "1022" },
+        { name: "Vania Sari Muchardie", division: "Organization Support", pin: "1004" },
+        { name: "Wahyu Candra Indhiarta", division: "Software Engineering & QA", pin: "1028" },
+        { name: "Yusuf Faisal Agus Saputro", division: "Software Engineering & QA", pin: "1023" },
     ];
 
-    for (const u of users) {
+    console.log(`Seeding ${employees.length} users...`);
+    for (const emp of employees) {
         await prisma.user.upsert({
-            where: { pin: u.pin },
-            update: {},
+            where: { pin: emp.pin },
+            update: {
+                name: emp.name,
+                division: emp.division,
+            },
             create: {
-                name: u.name,
-                pin: u.pin,
-                division: u.division,
+                name: emp.name,
+                pin: emp.pin,
+                division: emp.division,
                 isAdmin: false,
                 isJoined: false,
             },
