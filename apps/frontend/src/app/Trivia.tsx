@@ -111,7 +111,7 @@ export default function Trivia() {
             setIsCorrect(null);
             setPointsEarned(0);
             try {
-                const resQ = await fetch(`${getBackendUrl()}/trivia-question/${currentQuestion}?userId=${user?.id}`);
+                const resQ = await fetch(`${getBackendUrl()}/trivia-question/${currentQuestion}?userId=${user?.id}`, { cache: 'no-store' });
                 const data = await resQ.json();
                 setQuestion({
                     ...data,

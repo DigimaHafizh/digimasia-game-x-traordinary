@@ -22,12 +22,12 @@ const getDeterministicIndex = (name: string, arrLength: number) => {
 export default function LobbyMonitorPage() {
     useSocket();
     const [participants, setParticipants] = useState<ParticipantEntry[]>([]);
-    const [now, setNow] = useState(new Date());
+    const [now, setNow] = useState<Date | null>(null);
 
     useEffect(() => {
         const fetchParticipants = async () => {
             try {
-                const res = await fetch(`${getBackendUrl()}/leaderboard`);
+                const res = await fetch(`${getBackendUrl()}/users/lobby`, { cache: 'no-store' });
                 const data = await res.json();
                 if (Array.isArray(data)) setParticipants(data);
             } catch { /* silent */ }
@@ -38,11 +38,12 @@ export default function LobbyMonitorPage() {
     }, []);
 
     useEffect(() => {
+        setNow(new Date());
         const clock = setInterval(() => setNow(new Date()), 1000);
         return () => clearInterval(clock);
     }, []);
 
-    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const timeStr = now ? now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--.--.--';
 
     return (
         <TVFrame bgImage="/assets/branding/BG2.png">

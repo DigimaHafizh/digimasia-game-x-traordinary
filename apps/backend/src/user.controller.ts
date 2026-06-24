@@ -5,6 +5,15 @@ import { PrismaService } from './prisma.service';
 export class UserController {
     constructor(private prisma: PrismaService) { }
 
+    @Get('lobby')
+    async getLobbyUsers() {
+        return this.prisma.user.findMany({
+            where: { isJoined: true, isAdmin: false },
+            orderBy: { name: 'asc' },
+            select: { id: true, name: true, division: true }
+        });
+    }
+
     @Get('tree/top-contributors')
     async getTopContributors() {
         return this.prisma.user.findMany({

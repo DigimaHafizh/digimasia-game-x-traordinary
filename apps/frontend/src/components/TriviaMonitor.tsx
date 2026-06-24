@@ -42,7 +42,7 @@ export default function TriviaMonitor({ muteSFX = false }: { muteSFX?: boolean }
 
         const fetchStats = async () => {
             try {
-                const res = await fetch(`${getBackendUrl()}/admin/trivia-stats?index=${currentQuestion}`, { signal: controller.signal });
+                const res = await fetch(`${getBackendUrl()}/admin/trivia-stats?index=${currentQuestion}`, { signal: controller.signal, cache: 'no-store' });
                 const data = await res.json();
                 setStats(data);
                 setIsStatsLoaded(true);

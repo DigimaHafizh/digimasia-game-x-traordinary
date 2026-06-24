@@ -25,8 +25,7 @@ export default function RegistrationLobby() {
     useEffect(() => {
         const fetchParticipants = async () => {
             try {
-                // Reuse leaderboard endpoint since it returns all joined active users
-                const res = await fetch(`${getBackendUrl()}/leaderboard`);
+                const res = await fetch(`${getBackendUrl()}/users/lobby`, { cache: 'no-store' });
                 const data = await res.json();
                 if (Array.isArray(data)) setParticipants(data);
             } catch (err) {
@@ -83,7 +82,7 @@ export default function RegistrationLobby() {
                             flexDirection: 'column',
                             alignItems: 'center',
                             gap: '10px',
-                            animation: `popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${Math.random() * 0.2}s both`
+                            animation: `popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${(i % 10) * 0.04}s both`
                         }}>
                             {/* Avatar Bubble */}
                             <div style={{
